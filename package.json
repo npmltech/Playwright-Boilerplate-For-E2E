@@ -1,0 +1,30 @@
+{
+  "name": "my-playwright-project",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test:go": "playwright test --config=config/playwright.config.ts",
+    "test:headed": "playwright test --config=config/playwright.config.ts --headed",
+    "test:debug": "playwright test --config=config/playwright.config.ts --debug",
+    "test:report": "playwright show-report reports --port 9324",
+    "cucumber": "NODE_OPTIONS='--import tsx/esm' cucumber-js --require ./support/world.ts --require ./support/hooks.ts --require './steps/**/*.ts' --require-module tsx/cjs --format ./node_modules/allure-cucumberjs/dist/cjs/reporter.js --format-options '{\"resultsDir\":\"./allure-results\"}' --format @cucumber/pretty-formatter features/**/*.feature",
+    "allure:generate": "node node_modules/allure-commandline/bin/allure generate allure-results --clean -o allure-report",
+    "allure:open": "node node_modules/allure-commandline/bin/allure open allure-report",
+    "allure:serve": "node node_modules/allure-commandline/bin/allure serve allure-results",
+    "allure:report": "yarn cucumber && yarn allure:generate && yarn allure:open"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.7.0",
+    "@cucumber/pretty-formatter": "^1.0.1",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.0",
+    "allure-commandline": "^2.37.0",
+    "allure-cucumberjs": "2.15.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  }
+}

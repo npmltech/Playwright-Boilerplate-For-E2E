@@ -1,0 +1,17 @@
+export default {
+    default: {
+        import: [
+            'support/world.ts',
+            'support/hooks.ts',
+            'steps/login.step.ts',
+        ],
+        format: [
+            './node_modules/allure-cucumberjs/dist/esm/reporter.js',
+            '@cucumber/pretty-formatter',
+        ],
+        formatOptions: {
+            resultsDir: './allure-results',
+        },
+        paths: ['features/**/*.feature'],
+    },
+};

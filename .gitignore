@@ -416,3 +416,12 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# My Own Settings
+
+**/allure*
+*.lock
+**/*report*
+**/*reports*
+**/*result*
+**/*-results*

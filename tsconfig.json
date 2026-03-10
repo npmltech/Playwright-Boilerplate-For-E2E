@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@data/*": [
+        "data/*"
+      ],
+      "@helpers/*": [
+        "tests/helpers/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts"
+, "config/cucumber.config.js"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
