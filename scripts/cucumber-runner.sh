@@ -1,17 +1,14 @@
-# Run cucumber and search everywhere for allure files
+#!/bin/bash
+
 mkdir -p allure-results
-
-NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
-  --require ./support/world.ts \
-  --require ./support/hooks.ts \
-  --require './steps/**/*.ts' \
-  --require-module tsx/cjs \
-  --format ./node_modules/allure-cucumberjs/dist/cjs/reporter.js \
-  --format-options '{"resultsDir":"./allure-results"}' \
-  --format @cucumber/pretty-formatter \
-  features/**/*.feature
-
-# Search everywhere for generated files
-find . -name "*-result.json" 2>/dev/null | grep -v node_modules
-find . -name "*-container.json" 2>/dev/null | grep -v node_modules
-find . -name "allure-results" 2>/dev/null | grep -v node_modules
+  
+  NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
+    --import support/world.ts \
+    --import support/hooks.ts \
+    --import steps/login.step.ts \
+    --format @cucumber/pretty-formatter \
+    --format html:cucumber-reports/cucumber-report.html \
+    --format json:cucumber-reports/cucumber-report.json \
+    --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js \
+    --format-options '{"resultsDir":"./allure-results"}' \
+    features/**/*.feature 2>&1 | tee cucumber-reports/cucumber.log

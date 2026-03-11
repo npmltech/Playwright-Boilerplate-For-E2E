@@ -2,10 +2,9 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { users } from '../../data/users';
 
-console.log('>> carregando login.step.ts');
+console.log('>> Carregando Login.step.ts');
 
 test.describe('Login', () => {
-
   test('should login successfully', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
@@ -19,6 +18,8 @@ test.describe('Login', () => {
 
     await loginPage.login('wrong@email.com', 'wrongpassword');
 
-    expect(page.locator('//*[contains(text(), "required")]')).toBeVisible;
+    await expect(
+      page.locator('//*[contains(text(), "required")]')
+    ).toBeVisible();
   });
 });

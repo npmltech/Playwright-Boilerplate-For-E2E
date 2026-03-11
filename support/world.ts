@@ -3,13 +3,13 @@ import { type IWorldOptions } from '@cucumber/cucumber';
 import { type Browser, type BrowserContext, type Page } from '@playwright/test';
 
 export class CustomWorld extends World {
-    browser!: Browser;
-    context!: BrowserContext;
-    page!: Page;
+  browser!: Browser;
+  context!: BrowserContext;
+  page!: Page;
 
-    constructor(options: IWorldOptions) {
-        super(options);
-    }
+  constructor(options: IWorldOptions) {
+    super(options);
+  }
 }
 
 setWorldConstructor(CustomWorld);
