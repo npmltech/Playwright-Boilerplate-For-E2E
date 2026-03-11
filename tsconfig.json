@@ -8,21 +8,11 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@pages/*": [
-        "pages/*"
-      ],
-      "@data/*": [
-        "data/*"
-      ],
-      "@helpers/*": [
-        "tests/helpers/*"
-      ]
+      "@pages/*": ["pages/*"],
+      "@data/*": ["data/*"],
+      "@helpers/*": ["tests/helpers/*"]
     }
   },
-  "include": [
-    "**/*.ts"
-, "config/cucumber.config.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "config/cucumber.config.js"],
+  "exclude": ["node_modules"]
 }
