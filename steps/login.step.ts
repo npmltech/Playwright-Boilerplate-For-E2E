@@ -7,17 +7,17 @@ import { users } from '../data/users';
 setDefaultTimeout(10_000);
 
 Given('que eu estou na página de login', async function (this: CustomWorld) {
-  const loginPage = new LoginPage(this.page);
+  const loginPage = new LoginPage(this.page, this);
   await loginPage.navigate('/');
 });
 
 When('eu insiro credenciais válidas', async function (this: CustomWorld) {
-  const loginPage = new LoginPage(this.page);
+  const loginPage = new LoginPage(this.page, this);
   await loginPage.login(users.standard.username, users.standard.password);
 });
 
 When('eu insiro credenciais inválidas', async function (this: CustomWorld) {
-  const loginPage = new LoginPage(this.page);
+  const loginPage = new LoginPage(this.page, this);
   await loginPage.login('wrong@email.com', 'wrongpassword');
 });
 

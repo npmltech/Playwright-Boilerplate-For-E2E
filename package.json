@@ -27,6 +27,8 @@
     "allure:report": "yarn cucumber && yarn allure:generate && yarn allure:open",
     "allure:serve": "node node_modules/allure-commandline/bin/allure serve allure-results",
     "cucumber": "bash scripts/cucumber-runner.sh",
+    "cucumber:quiet": "bash scripts/cucumber-runner.sh quiet",
+    "cucumber:verbose": "bash scripts/cucumber-runner.sh verbose",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:lint": "yarn lint:fix && yarn format",
