@@ -135,6 +135,7 @@ For detailed information about TesterBud, including setup, features, and best pr
 📖 **[Read About TesterBud](./about_testerbud.md)**
 
 This guide covers:
+
 - What is TesterBud and why use it
 - Key features and practice applications
 - Getting started with the Practice Login Form
@@ -349,7 +350,8 @@ timeout: 60_000, // 60 seconds
 
 ### Issue: Can't connect to base URL
 
-**Solution**: 
+**Solution**:
+
 1. Check `.env` file has correct `BASE_URL`
 2. Verify the application is running
 3. Check network connectivity
@@ -357,6 +359,7 @@ timeout: 60_000, // 60 seconds
 ### Issue: Steps not found
 
 **Solution**:
+
 1. Ensure step files are imported in `cucumber.config.cjs`
 2. Check step definitions match feature file text exactly
 3. Run `yarn cucumber` to see detailed error messages
