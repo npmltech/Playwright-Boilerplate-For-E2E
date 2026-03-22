@@ -1,75 +1,65 @@
-## 🌐 About TesterBud
+# About TesterBud
 
-**TesterBud** is a practice website designed for QA engineers and automation testers to learn and improve their testing skills in a safe, controlled environment.
+TesterBud is the target application used by this boilerplate to demonstrate production-like E2E automation patterns with Playwright and Cucumber.
 
-### What is TesterBud?
+## Why This Project Uses TesterBud
 
-TesterBud provides realistic web applications with intentional bugs and challenges that simulate real-world testing scenarios. It's perfect for:
+- Public practice environment with stable and repeatable login scenarios
+- Good fit for both imperative tests (`@playwright/test`) and BDD scenarios (`@cucumber/cucumber`)
+- Real UI interactions (inputs, buttons, validation messages) without local app setup
 
-- Learning automation testing frameworks
-- Practicing BDD (Behavior-Driven Development)
-- Improving test case writing skills
-- Testing different types of web elements
-- Understanding common web vulnerabilities
+## Implemented Coverage in This Boilerplate
 
-### Key Features
+The project currently automates the Practice Login Form flow at:
 
-- **Practice Applications**: Multiple sample applications to test
-- **Various Complexity Levels**: From beginner to advanced scenarios
-- **Real-world Elements**: Forms, tables, dropdowns, alerts, and more
-- **Bug Challenges**: Find intentional bugs to practice debugging
-- **Free Access**: No registration required for basic features
+- `https://testerbud.com/practice-login-form`
 
-### Practice Login Form
+Implemented scenarios:
 
-The **Practice Login Form** (`https://testerbud.com/practice-login-form`) used in this boilerplate includes:
+- Successful login path using credential data loaded from environment variables
+- Invalid credential path validating error visibility
+- Same business flow covered in both runners
+- Playwright tests in `tests/e2e/login.spec.ts`
+- BDD scenarios in `features/login.feature` with steps in `steps/login.step.ts`
 
-- Username and password input fields
-- Login validation
-- Error message handling
-- Session management
-- Various test scenarios (valid/invalid credentials)
+## How TesterBud Is Wired in This Repo
 
-### Why Use TesterBud for This Project?
+- Base URL and credentials are read from `.env`
+- Shared user data is centralized in `data/users.ts`
+- Page interactions are encapsulated in `pages/login.page.ts`
+- BDD hooks create and dispose browser context per scenario (`support/hooks.ts`)
+- Playwright config runs Chromium and Firefox against the same target URL (`config/playwright.config.ts`)
 
-✅ **Safe Environment**: No risk of testing production data
-✅ **Consistent Results**: Same behavior every test run
-✅ **Learning Resource**: Great for beginners and intermediate testers
-✅ **No Dependencies**: Doesn't require local application setup
-✅ **Realistic Scenarios**: Real HTML/JavaScript elements to interact with
+## Recommended Environment Setup
 
-### Getting Started with TesterBud
+Use these variables in `.env`:
 
-1. Visit [https://testerbud.com/](https://testerbud.com/)
-2. Explore available practice applications
-3. Choose the login form or other practice modules
-4. Update `.env` file with TesterBud credentials
-5. Run your tests against the practice application
+```properties
+BASE_URL=https://testerbud.com/practice-login-form
+USERNAME=user@premiumbank.com
+PASSWORD=Bank@123
+PORT=3000
+```
 
-### Other Practice Applications on TesterBud
+## Running Against TesterBud
 
-- **Login Form**: Basic authentication testing
-- **Dynamic Elements**: Testing dynamic content
-- **Tables & Lists**: Data table validation
-- **Dropdowns & Select**: Selection element testing
-- **Alerts & Modals**: Pop-up and dialog handling
-- **File Upload**: File handling scenarios
+- `yarn test:go` for Playwright runner
+- `yarn cucumber` for Cucumber BDD runner
+- `yarn allure:report` for end-to-end BDD + Allure workflow
 
-### Tips for Testing TesterBud
+## Useful TesterBud Practice Extensions
 
-- Use browser developer tools (F12) to inspect elements
-- Practice writing multiple test scenarios
-- Test edge cases (empty fields, special characters, etc.)
-- Document your findings and test results
-- Share your test automation improvements
+After validating login, you can expand automation using other TesterBud practice modules such as:
 
-### Resources
+- Dynamic elements
+- Table and list assertions
+- Dropdown interactions
+- Alerts and modal dialogs
+- File upload workflows
 
-- **Website**: [https://testerbud.com/](https://testerbud.com/)
-- **Perfect For**: Learning test automation with Playwright
-- **Difficulty**: Beginner to Intermediate
-- **Cost**: Free
+## Practical Tips
 
----
-
-**Note**: TesterBud is an excellent resource for learning. Once you master testing here, apply the same patterns to your own applications!
+- Keep selectors inside page objects to reduce test maintenance
+- Keep credentials and base URL in `.env`, never hardcode them
+- Use the same scenario in both runners when validating framework parity
+- Check generated artifacts (`reports`, `cucumber-reports`, `allure-results`) after each run
