@@ -1,9 +1,12 @@
+const featureLocale = process.env.FEATURE_LOCALE || 'pt-br';
+
 export default {
     default: {
         import: [
             'support/world.ts',
             'support/hooks.ts',
             'steps/login.step.ts',
+            'steps/register.step.ts',
         ],
         format: [
             './node_modules/allure-cucumberjs/dist/esm/reporter.js',
@@ -12,6 +15,6 @@ export default {
         formatOptions: {
             resultsDir: './allure-results',
         },
-        paths: ['features/**/*.feature'],
+        paths: [`features/${featureLocale}/**/*.feature`],
     },
 };

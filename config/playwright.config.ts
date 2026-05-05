@@ -7,28 +7,44 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-console.log('BASE_URL:', process.env.BASE_URL);
+const defaultBaseUrl =
+  'https://automationteststore.com/index.php?rt=account/login';
+const baseURL = process.env.BASE_URL || defaultBaseUrl;
+const videoMode = process.env.PW_VIDEO_MODE || 'retain-on-failure';
+const shouldUseWebServer = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(
+  baseURL
+);
+const projects = [
+  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+  { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+];
+
+console.log('BASE_URL:', baseURL);
 
 export default defineConfig({
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-  ],
+  projects,
   reporter: [['html', { outputFolder: '../reports' }]],
   retries: process.env.CI ? 2 : 0,
   testDir: '../tests/e2e',
   timeout: 30_000,
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL,
+    launchOptions: {
+      args: ['--disable-blink-features=AutomationControlled'],
+    },
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
-    video: 'retain-on-failure',
+    video: videoMode as 'off' | 'on' | 'retain-on-failure' | 'on-first-retry',
   },
-  webServer: {
-    command: `node ${path.resolve(__dirname, 'start-server-if-free.js')}`,
-    reuseExistingServer: !process.env.CI,
-    gracefulShutdown: { signal: 'SIGINT', timeout: 500 },
-    timeout: 5000,
-    url: process.env.BASE_URL || 'http://localhost:3000',
-  },
+  ...(shouldUseWebServer
+    ? {
+        webServer: {
+          command: `node ${path.resolve(__dirname, 'start-server-if-free.js')}`,
+          reuseExistingServer: !process.env.CI,
+          gracefulShutdown: { signal: 'SIGINT', timeout: 500 },
+          timeout: 5000,
+          url: baseURL,
+        },
+      }
+    : {}),
 });
