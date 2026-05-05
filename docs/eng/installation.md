@@ -64,7 +64,7 @@ yarn playwright install
 Create or update `.env` in the project root:
 
 ```properties
-BASE_URL=https://automationteststore.com/index.php?rt=account/login
+BASE_URL=https://automationteststore.com/
 USERNAME=tester_champion
 PASSWORD=123123
 ```

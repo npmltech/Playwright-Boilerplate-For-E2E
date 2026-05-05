@@ -6,7 +6,7 @@ Automation Test Store is a public e-commerce site designed for QA and automation
 
 Main URL used in this project:
 
-- https://automationteststore.com/index.php\?rt\=account/login
+- https://automationteststore.com/
 
 ## Why this target fits this project
 

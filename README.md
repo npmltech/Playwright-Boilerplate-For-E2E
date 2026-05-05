@@ -26,6 +26,12 @@ Em seguida, crie o arquivo `.env` (veja [Instalação](docs/pt-br/instalacao.md)
 yarn test:api
 ```
 
+To run the full suite with video and verbose output:
+
+```bash
+yarn test:all:video:prompt
+```
+
 ## Documentation / Documentação
 
 | Topic | English | Português |
