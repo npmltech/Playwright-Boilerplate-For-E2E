@@ -33,11 +33,14 @@ When('I click on forgot my password', async function (this: CustomWorld) {
   await loginPage.waitForElementVisible();
 });
 
-When('I try to log in without filling credentials', async function (this: CustomWorld) {
-  const loginPage = new LoginPage(this.page, this);
-  await loginPage.loginWithEmptyCredentials();
-  await loginPage.waitForElementVisible();
-});
+When(
+  'I try to log in without filling credentials',
+  async function (this: CustomWorld) {
+    const loginPage = new LoginPage(this.page, this);
+    await loginPage.loginWithEmptyCredentials();
+    await loginPage.waitForElementVisible();
+  }
+);
 
 Then('I should be logged in successfully', async function (this: CustomWorld) {
   await expect(this.page).toHaveURL(routePatterns.account, {

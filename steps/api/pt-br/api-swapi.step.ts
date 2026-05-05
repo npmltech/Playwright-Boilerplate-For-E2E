@@ -55,15 +55,20 @@ Then(
   }
 );
 
-Then('a resposta deve conter um array de filmes', async function (this: CustomWorld) {
-  if (!swapiResponse || !Array.isArray(swapiResponse)) {
-    this.getColorizedLog('red')('A resposta não contém um array de filmes válido');
-    throw new Error('Response does not contain a valid films array');
+Then(
+  'a resposta deve conter um array de filmes',
+  async function (this: CustomWorld) {
+    if (!swapiResponse || !Array.isArray(swapiResponse)) {
+      this.getColorizedLog('red')(
+        'A resposta não contém um array de filmes válido'
+      );
+      throw new Error('Response does not contain a valid films array');
+    }
+    this.getColorizedLog('green')(
+      `Array de filmes encontrado com ${swapiResponse.length} filmes`
+    );
   }
-  this.getColorizedLog('green')(
-    `Array de filmes encontrado com ${swapiResponse.length} filmes`
-  );
-});
+);
 
 Then(
   'o array deve ter mais de {int} filmes',
@@ -89,12 +94,22 @@ Then(
       throw new Error('No films array found');
     }
 
-    const requiredProps = ['title', 'episode_id', 'director', 'producer', 'release_date'];
+    const requiredProps = [
+      'title',
+      'episode_id',
+      'director',
+      'producer',
+      'release_date',
+    ];
     const missingProps = [];
 
     for (const film of swapiResponse) {
       for (const prop of requiredProps) {
-        if (!(prop in film) || film[prop] === null || film[prop] === undefined) {
+        if (
+          !(prop in film) ||
+          film[prop] === null ||
+          film[prop] === undefined
+        ) {
           missingProps.push(`${film.title || 'Unknown'}.${prop}`);
         }
       }
@@ -104,10 +119,14 @@ Then(
       this.getColorizedLog('red')(
         `Propriedades obrigatórias faltando: ${missingProps.join(', ')}`
       );
-      throw new Error(`Missing required properties: ${missingProps.join(', ')}`);
+      throw new Error(
+        `Missing required properties: ${missingProps.join(', ')}`
+      );
     }
 
-    this.getColorizedLog('green')('Todos os filmes têm as propriedades obrigatórias');
+    this.getColorizedLog('green')(
+      'Todos os filmes têm as propriedades obrigatórias'
+    );
   }
 );
 
@@ -165,9 +184,7 @@ Then(
 
     if (!valid) {
       const errors = ajv.errorsText(validate.errors);
-      this.getColorizedLog('red')(
-        `Validação JSON Schema falhou:\n${errors}`
-      );
+      this.getColorizedLog('red')(`Validação JSON Schema falhou:\n${errors}`);
       throw new Error(`Validação JSON Schema falhou: ${errors}`);
     }
 

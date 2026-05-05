@@ -62,14 +62,14 @@ What each variable controls:
 You do not need to change these to start, but it helps to know how the project behaves:
 
 - Playwright config (`config/playwright.config.ts`):
-	- Uses `BASE_URL` from `.env`
-	- Runs Chromium and Firefox
-	- Applies Chromium-only args: `--disable-blink-features=AutomationControlled`, `--ozone-platform=x11`
-	- Captures screenshot/trace/video on failures/retries
+  - Uses `BASE_URL` from `.env`
+  - Runs Chromium and Firefox
+  - Applies Chromium-only args: `--disable-blink-features=AutomationControlled`, `--ozone-platform=x11`
+  - Captures screenshot/trace/video on failures/retries
 - Cucumber config (`config/cucumber.config.cjs`):
-	- Loads steps by locale via `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
-	- Loads features by locale via `features/**/${FEATURE_LOCALE}/**/*.feature`
-	- Generates pretty/json/allure outputs
+  - Loads steps by locale via `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
+  - Loads features by locale via `features/**/${FEATURE_LOCALE}/**/*.feature`
+  - Generates pretty/json/allure outputs
 
 ## 6) First execution (recommended order)
 
@@ -101,9 +101,9 @@ Useful notes:
 
 - zsh autocorrect prompt (`test` -> `tests`):
 
-	```bash
-	unsetopt correct correctall
-	```
+  ```bash
+  unsetopt correct correctall
+  ```
 
 - If login fails intermittently in Firefox, keep current page-object submit fallback (already implemented)
 - If headed browser fails on Linux Wayland, keep current defaults (Chromium forced to X11 via launch args; Firefox native Wayland)

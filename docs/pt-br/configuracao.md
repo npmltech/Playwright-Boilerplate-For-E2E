@@ -26,13 +26,13 @@ Comportamento atual:
 - Carrega `BASE_URL` do `.env`
 - Executa dois projetos: Chromium e Firefox
 - Args do Chromium:
-	- `--disable-blink-features=AutomationControlled`
-	- `--ozone-platform=x11`
+  - `--disable-blink-features=AutomationControlled`
+  - `--ozone-platform=x11`
 - Firefox sem override forcado de X11 (suporte Wayland nativo)
 - Artefatos:
-	- `screenshot: only-on-failure`
-	- `trace: on-first-retry`
-	- `video`: controlado por `PW_VIDEO_MODE`
+  - `screenshot: only-on-failure`
+  - `trace: on-first-retry`
+  - `video`: controlado por `PW_VIDEO_MODE`
 
 Comando para validar:
 
@@ -45,17 +45,17 @@ yarn test:pw:headed:video
 Comportamento atual:
 
 - Imports:
-	- `support/world.ts`
-	- `support/hooks.ts`
-	- steps por locale
+  - `support/world.ts`
+  - `support/hooks.ts`
+  - steps por locale
 - Descoberta de steps:
-	- `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
+  - `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
 - Descoberta de features:
-	- `features/**/${FEATURE_LOCALE}/**/*.feature`
+  - `features/**/${FEATURE_LOCALE}/**/*.feature`
 - Saidas:
-	- Pretty formatter
-	- Relatorio JSON
-	- Allure
+  - Pretty formatter
+  - Relatorio JSON
+  - Allure
 
 Comando para validar:
 
@@ -80,8 +80,8 @@ yarn test:cucumber:no-workers:headless:video
 ## 6) Erros comuns e prevencao
 
 - `BASE_URL` incorreta:
-	- Use a raiz do site (`https://automationteststore.com/`), nao a rota de login
+  - Use a raiz do site (`https://automationteststore.com/`), nao a rota de login
 - Locale incorreto:
-	- Para features em ingles, defina `FEATURE_LOCALE=eng`
+  - Para features em ingles, defina `FEATURE_LOCALE=eng`
 - Interrupcao por autocorrecao do zsh:
-	- `unsetopt correct correctall`
+  - `unsetopt correct correctall`

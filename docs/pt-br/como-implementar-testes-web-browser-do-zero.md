@@ -39,7 +39,9 @@ Crie `features/web/pt-br/minha-jornada.feature`:
 
 ```gherkin
 # language: pt
-@web @smoke @minha_jornada
+@web
+@smoke
+@minha_jornada
 Funcionalidade: Minha jornada web
 
   Cenario: Acessar pagina inicial e validar elemento principal
@@ -81,7 +83,9 @@ export class MinhaJornadaPage {
   }
 
   async validarTituloPrincipal() {
-    await expect(this.page.locator(minhaJornadaLocator.tituloPrincipal).first()).toBeVisible();
+    await expect(
+      this.page.locator(minhaJornadaLocator.tituloPrincipal).first()
+    ).toBeVisible();
   }
 }
 ```
@@ -100,10 +104,13 @@ Given('que eu acesso a pagina inicial', async function (this: CustomWorld) {
   await pagina.abrirPaginaInicial();
 });
 
-Then('devo ver o titulo principal da pagina', async function (this: CustomWorld) {
-  const pagina = new MinhaJornadaPage(this.page);
-  await pagina.validarTituloPrincipal();
-});
+Then(
+  'devo ver o titulo principal da pagina',
+  async function (this: CustomWorld) {
+    const pagina = new MinhaJornadaPage(this.page);
+    await pagina.validarTituloPrincipal();
+  }
+);
 ```
 
 Boas praticas:

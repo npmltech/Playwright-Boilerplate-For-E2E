@@ -60,13 +60,13 @@ When('I fill in valid required data', async function (this: CustomWorld) {
     .locator(registerLocator.emailInput)
     .fill(`teste.${suffix}@example.com`);
   await this.page.locator(registerLocator.telephoneInput).fill('11999999999');
-  await this.page
-    .locator(registerLocator.address1Input)
-    .fill('Rua Teste, 123');
+  await this.page.locator(registerLocator.address1Input).fill('Rua Teste, 123');
   await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
   await this.page.locator(registerLocator.countrySelect).selectOption('30');
   await this.page.waitForTimeout(300);
-  await this.page.locator(registerLocator.zoneSelect).selectOption({ index: 1 });
+  await this.page
+    .locator(registerLocator.zoneSelect)
+    .selectOption({ index: 1 });
   await this.page.locator(registerLocator.postcodeInput).fill('01000');
   await this.page.locator(registerLocator.loginNameInput).fill(`user${suffix}`);
   await this.page.locator(registerLocator.passwordInput).fill('SenhaForte@123');

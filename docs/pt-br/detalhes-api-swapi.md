@@ -11,9 +11,11 @@ O projeto inclui testes abrangentes para a Star Wars API (https://swapi.info) pa
 ### Arquivos de feature
 
 **Portugues:**
+
 - `features/api/pt-br/api-swapi.feature` - Cenarios em portugues para testes da API SWAPI (`# language: pt`)
 
 **Ingles:**
+
 - `features/api/eng/api-swapi.feature` - English scenarios for SWAPI API tests (`# language: en`)
 
 ### Definicoes de steps
@@ -32,12 +34,14 @@ O projeto inclui testes abrangentes para a Star Wars API (https://swapi.info) pa
 **EN:** Get Star Wars Films List Successfully
 
 Valida que:
+
 - A API responde com status HTTP 200
 - A resposta contem um array de filmes
 - O array contem mais de 0 filmes
 - Cada filme possui propriedades obrigatorias (title, episode_id, director, producer, release_date)
 
 **Execucao:**
+
 ```bash
 yarn test:cucumber:no-workers:headed:video --tags "@swapi"
 ```
@@ -49,7 +53,7 @@ yarn test:cucumber:no-workers:headed:video --tags "@swapi"
 Usa `Esquema do Cenario` com tabela de `Exemplos` para executar uma verificacao parametrizada por propriedade:
 
 | property     |
-|--------------|
+| ------------ |
 | title        |
 | episode_id   |
 | director     |
@@ -60,6 +64,7 @@ Valida que o primeiro filme da resposta possui cada propriedade presente e nao v
 Um unico step definition `o primeiro filme deve ter a propriedade {string}` cobre todas as linhas.
 
 **Execucao:**
+
 ```bash
 yarn test:api
 ```
@@ -69,17 +74,20 @@ yarn test:api
 **EN:** Validate Films Response Against JSON Schema
 
 Valida que:
+
 - A resposta e um array no nivel raiz
 - Cada objeto de filme corresponde ao schema esperado da SWAPI
 - As propriedades obrigatorias possuem os tipos corretos
 - `release_date` segue o padrao `YYYY-MM-DD`
 
 Notas de implementacao:
+
 - Usa `ajv` para validacao de JSON Schema
 - Coleta todos os erros de schema com `allErrors: true`
 - Falha o cenario com um resumo dos erros de validacao quando algum item e invalido
 
 **Execucao:**
+
 ```bash
 yarn test:api
 ```
@@ -87,16 +95,19 @@ yarn test:api
 ## Executando testes de API
 
 ### Todos os testes (UI + API)
+
 ```bash
 yarn test:cucumber:no-workers:headed:video
 ```
 
 ### Somente testes SWAPI
+
 ```bash
 yarn test:cucumber:no-workers:headed:video --tags "@swapi"
 ```
 
 ### Somente testes de API (qualquer API)
+
 ```bash
 yarn test:cucumber:no-workers:headless:video --tags "@api"
 
@@ -107,6 +118,7 @@ yarn test:api:eng
 ```
 
 ### Modo especifico
+
 ```bash
 # Headless
 yarn test:cucumber:no-workers:headless:video --tags "@swapi"
@@ -125,6 +137,7 @@ CUCUMBER_PARALLEL=4 yarn test:cucumber:workers:headless:video --tags "@swapi"
 **Metodo:** GET
 
 **Exemplo de resposta:**
+
 ```json
 [
   {
@@ -148,6 +161,7 @@ CUCUMBER_PARALLEL=4 yarn test:cucumber:workers:headless:video --tags "@swapi"
 ## Propriedades obrigatorias
 
 Cada filme na resposta deve ter:
+
 - `title` (string) - Titulo do filme
 - `episode_id` (number) - Numero do episodio
 - `director` (string) - Nome(s) do diretor
@@ -157,6 +171,7 @@ Cada filme na resposta deve ter:
 ## Validacao por JSON Schema
 
 O cenario com AJV valida a resposta completa contra um schema que exige:
+
 - resposta como array no nivel raiz
 - pelo menos um item de filme
 - campos obrigatorios: `title`, `episode_id`, `director`, `producer`, `release_date`
@@ -165,12 +180,14 @@ O cenario com AJV valida a resposta completa contra um schema que exige:
 - arrays opcionais da SWAPI como `characters`, `planets`, `starships`, `vehicles` e `species`
 
 Pacotes relevantes:
+
 - `ajv` - Validador JSON Schema usado nos steps da API SWAPI
 - `@cucumber/messages` - Peer dependency explicita exigida por pacotes de formatter/reporting em instalacoes Yarn 4
 
 ## Tratamento de erros
 
 Os testes incluem tratamento abrangente de erros:
+
 - Erros de rede sao capturados e logados
 - Divergencias de status code sao reportadas de forma clara
 - Propriedades ausentes sao identificadas por filme e nome da propriedade
@@ -180,12 +197,14 @@ Os testes incluem tratamento abrangente de erros:
 ## Saida da execucao
 
 Ao executar os testes de API, voce vera logs coloridos:
+
 - Mensagens azuis para acesso e chamadas de API
 - Mensagens verdes para validacoes com sucesso
 - Mensagens vermelhas para falhas
 - Mensagens ciano para requisicoes HTTP
 
 Exemplo:
+
 ```
 🎬 Acessando a API SWAPI de filmes...
 📡 Fazendo requisicao GET para: https://swapi.info/api/films
@@ -202,6 +221,7 @@ Exemplo:
 - `@smoke` - Teste de fumaca (validacao basica)
 
 Combine tags para filtrar:
+
 ```bash
 yarn test:cucumber:no-workers:headed:video --tags "@api and @smoke"
 ```

@@ -29,17 +29,17 @@ This process is reflected in the final code and in troubleshooting guidance in [
 Use this sequence whenever you need to implement or stabilize a change:
 
 1. Discover context first:
-	- Identify impacted files (config, scripts, pages, steps, docs)
-	- Read only the sections needed for the current task
+   - Identify impacted files (config, scripts, pages, steps, docs)
+   - Read only the sections needed for the current task
 2. Apply focused edits:
-	- Prefer small, low-risk changes
-	- Keep selectors and assertions explicit and stable
+   - Prefer small, low-risk changes
+   - Keep selectors and assertions explicit and stable
 3. Validate quickly:
-	- Run only impacted tests first
-	- Expand to broader suites after local validation passes
+   - Run only impacted tests first
+   - Expand to broader suites after local validation passes
 4. Document and commit:
-	- Update docs/changelog for behavior changes
-	- Use semantic commits grouped by concern
+   - Update docs/changelog for behavior changes
+   - Use semantic commits grouped by concern
 
 ## Practical commands
 

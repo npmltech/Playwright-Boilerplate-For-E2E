@@ -47,7 +47,9 @@ Crie o arquivo em `features/api/pt-br/minha-api.feature`:
 
 ```gherkin
 # language: pt
-@api @smoke @minha_api
+@api
+@smoke
+@minha_api
 Funcionalidade: API Minha API
 
   Cenario: Consultar health da API com sucesso

@@ -26,13 +26,13 @@ Current behavior:
 - Loads `BASE_URL` from `.env`
 - Runs two projects: Chromium and Firefox
 - Chromium launch args:
-	- `--disable-blink-features=AutomationControlled`
-	- `--ozone-platform=x11`
+  - `--disable-blink-features=AutomationControlled`
+  - `--ozone-platform=x11`
 - Keeps Firefox without forced X11 override (native Wayland support)
 - Artifacts:
-	- `screenshot: only-on-failure`
-	- `trace: on-first-retry`
-	- `video`: controlled by `PW_VIDEO_MODE`
+  - `screenshot: only-on-failure`
+  - `trace: on-first-retry`
+  - `video`: controlled by `PW_VIDEO_MODE`
 
 Validation command:
 
@@ -45,17 +45,17 @@ yarn test:pw:headed:video
 Current behavior:
 
 - Imports:
-	- `support/world.ts`
-	- `support/hooks.ts`
-	- locale-aware step files
+  - `support/world.ts`
+  - `support/hooks.ts`
+  - locale-aware step files
 - Step discovery:
-	- `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
+  - `steps/**/${FEATURE_LOCALE}/**/*.step.ts`
 - Feature discovery:
-	- `features/**/${FEATURE_LOCALE}/**/*.feature`
+  - `features/**/${FEATURE_LOCALE}/**/*.feature`
 - Output:
-	- Pretty formatter
-	- JSON report
-	- Allure output
+  - Pretty formatter
+  - JSON report
+  - Allure output
 
 Validation command:
 
@@ -80,8 +80,8 @@ yarn test:cucumber:no-workers:headless:video
 ## 6) Common mistakes and prevention
 
 - Wrong `BASE_URL` route:
-	- Keep base at site root (`https://automationteststore.com/`), not login route
+  - Keep base at site root (`https://automationteststore.com/`), not login route
 - Locale mismatch:
-	- If using English features, set `FEATURE_LOCALE=eng`
+  - If using English features, set `FEATURE_LOCALE=eng`
 - zsh prompt interruption:
-	- `unsetopt correct correctall`
+  - `unsetopt correct correctall`

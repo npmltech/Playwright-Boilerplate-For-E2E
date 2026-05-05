@@ -55,15 +55,20 @@ Then(
   }
 );
 
-Then('the response should contain an array of films', async function (this: CustomWorld) {
-  if (!swapiResponse || !Array.isArray(swapiResponse)) {
-    this.getColorizedLog('red')('Response does not contain a valid films array');
-    throw new Error('Response does not contain a valid films array');
+Then(
+  'the response should contain an array of films',
+  async function (this: CustomWorld) {
+    if (!swapiResponse || !Array.isArray(swapiResponse)) {
+      this.getColorizedLog('red')(
+        'Response does not contain a valid films array'
+      );
+      throw new Error('Response does not contain a valid films array');
+    }
+    this.getColorizedLog('green')(
+      `Films array found with ${swapiResponse.length} films`
+    );
   }
-  this.getColorizedLog('green')(
-    `Films array found with ${swapiResponse.length} films`
-  );
-});
+);
 
 Then(
   'the array should have more than {int} films',
@@ -82,31 +87,46 @@ Then(
   }
 );
 
-Then('each film should have required properties', async function (this: CustomWorld) {
-  if (!swapiResponse) {
-    throw new Error('No films array found');
-  }
+Then(
+  'each film should have required properties',
+  async function (this: CustomWorld) {
+    if (!swapiResponse) {
+      throw new Error('No films array found');
+    }
 
-  const requiredProps = ['title', 'episode_id', 'director', 'producer', 'release_date'];
-  const missingProps = [];
+    const requiredProps = [
+      'title',
+      'episode_id',
+      'director',
+      'producer',
+      'release_date',
+    ];
+    const missingProps = [];
 
-  for (const film of swapiResponse) {
-    for (const prop of requiredProps) {
-      if (!(prop in film) || film[prop] === null || film[prop] === undefined) {
-        missingProps.push(`${film.title || 'Unknown'}.${prop}`);
+    for (const film of swapiResponse) {
+      for (const prop of requiredProps) {
+        if (
+          !(prop in film) ||
+          film[prop] === null ||
+          film[prop] === undefined
+        ) {
+          missingProps.push(`${film.title || 'Unknown'}.${prop}`);
+        }
       }
     }
-  }
 
-  if (missingProps.length > 0) {
-    this.getColorizedLog('red')(
-      `Missing required properties: ${missingProps.join(', ')}`
-    );
-    throw new Error(`Missing required properties: ${missingProps.join(', ')}`);
-  }
+    if (missingProps.length > 0) {
+      this.getColorizedLog('red')(
+        `Missing required properties: ${missingProps.join(', ')}`
+      );
+      throw new Error(
+        `Missing required properties: ${missingProps.join(', ')}`
+      );
+    }
 
-  this.getColorizedLog('green')('All films have required properties');
-});
+    this.getColorizedLog('green')('All films have required properties');
+  }
+);
 
 Then(
   'the first film should have property {string}',
@@ -171,4 +191,3 @@ Then(
     );
   }
 );
-
