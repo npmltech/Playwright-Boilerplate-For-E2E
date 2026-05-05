@@ -83,7 +83,9 @@ export class MyJourneyPage {
   }
 
   async validateMainTitle() {
-    await expect(this.page.locator(myJourneyLocator.mainTitle).first()).toBeVisible();
+    await expect(
+      this.page.locator(myJourneyLocator.mainTitle).first()
+    ).toBeVisible();
   }
 }
 ```
