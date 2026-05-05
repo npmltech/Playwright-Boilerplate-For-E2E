@@ -5,6 +5,7 @@ import { routes } from '../config/routes';
 import { BasePage } from './base.page';
 
 export class LoginPage extends BasePage {
+  private loginForm = this.page.locator(loginLocator.loginForm);
   private accountMenuLink = this.page.locator(loginLocator.accountMenuLink);
   private loginMenuLink = this.page.locator(loginLocator.loginMenuLink);
   private usernameInput = this.page.locator(loginLocator.usernameInput);
@@ -37,7 +38,21 @@ export class LoginPage extends BasePage {
     await this.openLoginPage();
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
-    await this.submitButton.click();
+
+    // Use layered submit strategy to reduce browser-specific flakiness.
+    await this.submitButton.first().click({ force: true });
+    await this.page.waitForTimeout(250);
+
+    if (this.page.url().includes('rt=account/login')) {
+      await this.passwordInput.press('Enter');
+      await this.page.waitForTimeout(250);
+    }
+
+    if (this.page.url().includes('rt=account/login')) {
+      await this.loginForm.evaluate((form: HTMLFormElement) => form.submit());
+    }
+
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async loginWithEmptyCredentials() {
@@ -45,7 +60,8 @@ export class LoginPage extends BasePage {
     await this.openLoginPage();
     await this.usernameInput.fill('');
     await this.passwordInput.fill('');
-    await this.submitButton.click();
+    await this.submitButton.first().click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async goToForgotPasswordPage() {

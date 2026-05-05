@@ -32,7 +32,7 @@ export class HooksHelper {
   static readonly botBypassUserAgent =
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36';
   static readonly defaultBaseUrl =
-    'https://automationteststore.com/index.php?rt=account/login';
+    'https://automationteststore.com/';
 
   static colorize(text: string, color: keyof typeof ANSI): string {
     return colorize(text, color);
