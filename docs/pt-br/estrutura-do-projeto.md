@@ -3,19 +3,53 @@
 ```text
 Playwright-Boilerplate-For-E2E/
 ├── config/
-│   ├── playwright.config.ts
 │   ├── cucumber.config.cjs
 │   ├── cucumber.config.js.deprecated
-│   ├── routes.ts
 │   ├── environments/
+│   │   ├── production.ts
+│   │   └── staging.ts
 │   ├── kill-port.js
 │   ├── patch-playwright-websocket.js
+│   ├── playwright.config.ts
+│   ├── routes.ts
 │   └── start-server-if-free.js
 ├── data/
 │   └── users.ts
 ├── docs/
-│   ├── eng/                               # Documentação em inglês
-│   └── pt-br/                             # Documentação em português
+│   ├── eng/
+│   │   ├── about-automation-test-store.md
+│   │   ├── api-swapi-tests.md
+│   │   ├── api-testing.md
+│   │   ├── changelog.md
+│   │   ├── configuration.md
+│   │   ├── how-to-implement-api-tests-from-scratch.md
+│   │   ├── how-to-implement-web-browser-tests-from-scratch.md
+│   │   ├── installation.md
+│   │   ├── mcp-workflow.md
+│   │   ├── prerequisites.md
+│   │   ├── project-structure.md
+│   │   ├── reporting.md
+│   │   ├── running-tests.md
+│   │   ├── step-file-convention.md
+│   │   ├── tagging-strategy.md
+│   │   └── troubleshooting.md
+│   └── pt-br/
+│       ├── changelog.md
+│       ├── como-implementar-testes-api-do-zero.md
+│       ├── como-implementar-testes-web-browser-do-zero.md
+│       ├── configuracao.md
+│       ├── convencao-de-steps.md
+│       ├── detalhes-api-swapi.md
+│       ├── estrategia-de-tags.md
+│       ├── estrutura-do-projeto.md
+│       ├── executando-testes.md
+│       ├── fluxo-mcp.md
+│       ├── instalacao.md
+│       ├── pre-requisitos.md
+│       ├── relatorios.md
+│       ├── sobre-automation-test-store.md
+│       ├── solucao-de-problemas.md
+│       └── testes-de-api.md
 ├── features/
 │   ├── api/
 │   │   ├── eng/
@@ -63,20 +97,39 @@ Playwright-Boilerplate-For-E2E/
 │   │       └── api-swapi.step.ts
 │   └── web/
 │       ├── eng/
+│       │   ├── checkout.step.ts
+│       │   ├── login.step.ts
+│       │   ├── products.step.ts
+│       │   └── register.step.ts
 │       └── pt-br/
+│           ├── checkout.step.ts
+│           ├── login.step.ts
+│           ├── products.step.ts
+│           └── register.step.ts
 ├── support/
 │   ├── hooks.ts
-│   ├── world.ts
 │   ├── helpers/
-│   └── utils/
+│   │   └── hooks-helpers.ts
+│   ├── utils/
+│   │   └── color-utils.ts
+│   └── world.ts
 ├── tests/
 │   └── e2e/
+│       └── login.spec.ts
 ├── reports/
 ├── allure-results/
 ├── allure-report/
 ├── cucumber-reports/
 ├── test-results/
 ├── .env
+├── .gitignore
+├── .prettierrc
+├── .yarn/
+├── .yarnrc.yml
+├── eslint.config.ts
+├── LICENSE
 ├── package.json
+├── tsconfig.json
+├── yarn.lock
 └── README.md
 ```

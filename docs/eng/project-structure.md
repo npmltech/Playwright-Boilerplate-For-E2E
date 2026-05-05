@@ -3,44 +3,53 @@
 ```text
 Playwright-Boilerplate-For-E2E/
 ├── config/
-│   ├── playwright.config.ts
 │   ├── cucumber.config.cjs
 │   ├── cucumber.config.js.deprecated
-│   ├── routes.ts
 │   ├── environments/
+│   │   ├── production.ts
+│   │   └── staging.ts
 │   ├── kill-port.js
 │   ├── patch-playwright-websocket.js
+│   ├── playwright.config.ts
+│   ├── routes.ts
 │   └── start-server-if-free.js
 ├── data/
 │   └── users.ts
 ├── docs/
 │   ├── eng/
-│   │   ├── prerequisites.md
-│   │   ├── installation.md
-│   │   ├── project-structure.md
-│   │   ├── configuration.md
 │   │   ├── about-automation-test-store.md
-│   │   ├── step-file-convention.md
-│   │   ├── api-testing.md
 │   │   ├── api-swapi-tests.md
-│   │   ├── running-tests.md
-│   │   ├── tagging-strategy.md
-│   │   ├── reporting.md
+│   │   ├── api-testing.md
 │   │   ├── changelog.md
+│   │   ├── configuration.md
+│   │   ├── how-to-implement-api-tests-from-scratch.md
+│   │   ├── how-to-implement-web-browser-tests-from-scratch.md
+│   │   ├── installation.md
 │   │   ├── mcp-workflow.md
+│   │   ├── prerequisites.md
+│   │   ├── project-structure.md
+│   │   ├── reporting.md
+│   │   ├── running-tests.md
+│   │   ├── step-file-convention.md
+│   │   ├── tagging-strategy.md
 │   │   └── troubleshooting.md
 │   └── pt-br/
-│       ├── pre-requisitos.md
-│       ├── instalacao.md
-│       ├── estrutura-do-projeto.md
+│       ├── changelog.md
+│       ├── como-implementar-testes-api-do-zero.md
+│       ├── como-implementar-testes-web-browser-do-zero.md
 │       ├── configuracao.md
 │       ├── convencao-de-steps.md
-│       ├── testes-de-api.md
-│       ├── executando-testes.md
+│       ├── detalhes-api-swapi.md
 │       ├── estrategia-de-tags.md
+│       ├── estrutura-do-projeto.md
+│       ├── executando-testes.md
+│       ├── fluxo-mcp.md
+│       ├── instalacao.md
+│       ├── pre-requisitos.md
 │       ├── relatorios.md
-│       ├── changelog.md
-│       └── solucao-de-problemas.md
+│       ├── sobre-automation-test-store.md
+│       ├── solucao-de-problemas.md
+│       └── testes-de-api.md
 ├── features/
 │   ├── api/
 │   │   ├── eng/
@@ -113,6 +122,14 @@ Playwright-Boilerplate-For-E2E/
 ├── cucumber-reports/
 ├── test-results/
 ├── .env
+├── .gitignore
+├── .prettierrc
+├── .yarn/
+├── .yarnrc.yml
+├── eslint.config.ts
+├── LICENSE
 ├── package.json
+├── tsconfig.json
+├── yarn.lock
 └── README.md
 ```
