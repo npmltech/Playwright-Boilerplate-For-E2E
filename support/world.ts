@@ -1,17 +1,9 @@
 import { setWorldConstructor, World } from '@cucumber/cucumber';
 import { type IWorldOptions } from '@cucumber/cucumber';
 import { type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { colorize } from './utils/color-utils';
 
-const ANSI = {
-  reset: '\x1b[0m',
-  cyan: '\x1b[36m',
-  gray: '\x1b[90m',
-} as const;
-
-const colorsEnabled =
-  process.stdout.isTTY ||
-  process.env.CUCUMBER_COLOR === '1' ||
-  process.env.FORCE_COLOR === '1';
+export { ANSI } from './utils/color-utils';
 
 export class CustomWorld extends World {
   browser!: Browser;
@@ -23,12 +15,10 @@ export class CustomWorld extends World {
   }
 
   public getColorizedLog(
-    color: 'cyan' | 'gray' = 'gray'
+    color: 'blue' | 'cyan' | 'gray' | 'green' | 'red' | 'yellow' = 'gray'
   ): (message: string) => void {
     return (message: string) => {
-      console.log(
-        colorsEnabled ? `${ANSI[color]}${message}${ANSI.reset}` : message
-      );
+      console.log(colorize(message, color));
     };
   }
 }

@@ -1,134 +1,125 @@
 import { Before, BeforeStep, AfterStep, After } from '@cucumber/cucumber';
 import { chromium } from '@playwright/test';
-import type { CustomWorld } from './world';
-import dotenv from 'dotenv';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { type CustomWorld } from './world';
+import { HooksHelper } from './helpers/hooks-helpers';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const isHeadless = process.env.CUCUMBER_HEADLESS !== '0';
+const shouldRecordVideo = process.env.CUCUMBER_VIDEO !== '0';
+const cucumberVideoDir =
+  process.env.CUCUMBER_VIDEO_DIR || 'test-results/videos/cucumber';
 
-dotenv.config({ path: resolve(__dirname, '../.env'), quiet: true });
-
-const isVerbose = process.env.CUCUMBER_VERBOSE === '1';
-const forceColor =
-  process.env.CUCUMBER_COLOR === '1' ||
-  (process.env.FORCE_COLOR !== undefined && process.env.FORCE_COLOR !== '0');
-const colorsEnabled =
-  process.env.NO_COLOR === undefined && (process.stdout.isTTY || forceColor);
-
-const ANSI = {
-  reset: '\x1b[0m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  green: '\x1b[32m',
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-} as const;
-
-function colorize(text: string, color: keyof typeof ANSI): string {
-  if (!colorsEnabled) return text;
-  return `${ANSI[color]}${text}${ANSI.reset}`;
-}
-
-interface GherkinDocumentLike {
-  feature?: {
-    children?: ReadonlyArray<{
-      scenario?: {
-        steps?: ReadonlyArray<{ id?: string; keyword?: string }>;
-      };
-    }>;
-  };
-}
-
-interface PickleStepLike {
-  astNodeIds?: ReadonlyArray<string>;
-  text: string;
-}
-
-function getStepKeyword(
-  gherkinDocument: GherkinDocumentLike,
-  pickleStep: PickleStepLike
-): string {
-  const astNodeIds = pickleStep?.astNodeIds ?? [];
-  const children = gherkinDocument?.feature?.children ?? [];
-
-  for (const child of children) {
-    const scenario = child?.scenario;
-    const steps = scenario?.steps ?? [];
-
-    for (const step of steps) {
-      if (step?.id !== undefined && astNodeIds.includes(step.id)) {
-        return (step?.keyword ?? '').trim();
-      }
+Before(
+  { timeout: HooksHelper.cucumberTimeoutMs },
+  async function (this: CustomWorld, { pickle }) {
+    if (HooksHelper.isVerbose) {
+      console.log(
+        `\n${HooksHelper.colorize(`📋 Cenário: ${pickle.name}`, 'cyan')}`
+      );
     }
+
+    const isApiScenario = pickle.tags.some((t) => t.name === '@api');
+    if (isApiScenario) return;
+
+    this.browser = await chromium.launch({
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--ozone-platform=x11',
+      ],
+      env: {
+        ...process.env,
+        OZONE_PLATFORM: 'x11',
+        WAYLAND_DISPLAY: '',
+      },
+      headless: isHeadless,
+    });
+    this.context = await this.browser.newContext({
+      baseURL: process.env.BASE_URL || HooksHelper.defaultBaseUrl,
+      ...(shouldRecordVideo ? { recordVideo: { dir: cucumberVideoDir } } : {}),
+      userAgent: HooksHelper.botBypassUserAgent,
+    });
+    this.page = await this.context.newPage();
   }
-
-  return '';
-}
-
-function formatException(exception: unknown): string {
-  if (exception && typeof exception === 'object') {
-    const record = exception as { stack?: unknown; message?: unknown };
-    if (typeof record.stack === 'string' && record.stack.length > 0) {
-      return record.stack;
-    }
-    if (typeof record.message === 'string' && record.message.length > 0) {
-      return record.message;
-    }
-  }
-
-  return String(exception);
-}
-
-Before(async function (this: CustomWorld, { pickle }) {
-  if (isVerbose) {
-    console.log(`\n${colorize(`📋 Cenário: ${pickle.name}`, 'cyan')}`);
-  }
-
-  this.browser = await chromium.launch({ headless: true });
-  this.context = await this.browser.newContext({
-    baseURL: process.env.BASE_URL,
-  });
-  this.page = await this.context.newPage();
-});
+);
 
 BeforeStep(function ({ pickleStep, gherkinDocument }) {
-  if (!isVerbose) return;
+  if (!HooksHelper.isVerbose) return;
 
-  const keyword = getStepKeyword(gherkinDocument, pickleStep);
+  const keyword = HooksHelper.getStepKeyword(gherkinDocument, pickleStep);
   const stepLine = `${keyword} ${pickleStep.text}`.trim();
-  console.log(`\n${colorize(stepLine, 'blue')}`);
+  console.log(`\n${HooksHelper.colorize(stepLine, 'blue')}`);
 });
 
-AfterStep(function ({ pickleStep, gherkinDocument, result }) {
-  if (!isVerbose) return;
-
-  const keyword = getStepKeyword(gherkinDocument, pickleStep);
+AfterStep(async function (
+  this: CustomWorld,
+  { pickleStep, gherkinDocument, result }
+) {
+  const keyword = HooksHelper.getStepKeyword(gherkinDocument, pickleStep);
   const stepLine = `${keyword} ${pickleStep.text}`.trim();
+
+  if (this.page) {
+    const currentUrl = this.page.url();
+    const hasNavigated = currentUrl !== 'about:blank' && currentUrl !== '';
+
+    if (hasNavigated) {
+      await this.page.waitForLoadState('load');
+      await this.page.waitForFunction(() => {
+        const hasVisibleElement = Array.from(
+          document.body?.querySelectorAll('*') ?? []
+        ).some((el) => {
+          const style = window.getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+          return (
+            style.visibility !== 'hidden' &&
+            style.display !== 'none' &&
+            rect.width > 0 &&
+            rect.height > 0
+          );
+        });
+
+        return (
+          document.readyState === 'complete' &&
+          document.styleSheets.length > 0 &&
+          hasVisibleElement
+        );
+      });
+    }
+
+    const screenshot = await this.page.screenshot({ fullPage: false });
+    await this.attach(screenshot, 'image/png');
+  }
+
+  if (!HooksHelper.isVerbose) return;
+
   const status = String(result?.status ?? 'UNKNOWN');
 
   if (status === 'PASSED') {
-    console.log(colorize(`✔ ${stepLine}`, 'green'));
+    console.log(HooksHelper.colorize(`✔ ${stepLine}`, 'green'));
   } else if (status === 'SKIPPED') {
-    console.log(colorize(`? ${stepLine}`, 'yellow'));
+    console.log(HooksHelper.colorize(`? ${stepLine}`, 'yellow'));
   } else if (status === 'PENDING' || status === 'UNDEFINED') {
-    console.log(colorize(`! ${status}: ${stepLine}`, 'yellow'));
+    console.log(HooksHelper.colorize(`! ${status}: ${stepLine}`, 'yellow'));
   }
 
   if (result?.exception) {
-    console.error(`\n${colorize(`❌ STEP ERROR: ${stepLine}`, 'red')}`);
-    console.error(formatException(result.exception));
+    console.error(
+      `\n${HooksHelper.colorize(`❌ STEP ERROR: ${stepLine}`, 'red')}`
+    );
+    console.error(HooksHelper.formatException(result.exception));
   }
 });
 
-After(async function (this: CustomWorld, { pickle, result }) {
-  if (isVerbose && result?.exception) {
-    console.error(`\n${colorize(`❌ SCENARIO ERROR: ${pickle.name}`, 'red')}`);
-    console.error(formatException(result.exception));
-  }
+After(
+  { timeout: HooksHelper.cucumberTimeoutMs },
+  async function (this: CustomWorld, { pickle, result }) {
+    if (HooksHelper.isVerbose && result?.exception) {
+      console.error(
+        `\n${HooksHelper.colorize(`❌ SCENARIO ERROR: ${pickle.name}`, 'red')}`
+      );
+      console.error(HooksHelper.formatException(result.exception));
+    }
 
-  await this.page.close();
-  await this.context.close();
-  await this.browser.close();
-});
+    await this.page?.close();
+    await this.context?.close();
+    await this.browser?.close();
+  }
+);

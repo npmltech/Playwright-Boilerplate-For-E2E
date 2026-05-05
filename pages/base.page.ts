@@ -9,8 +9,9 @@ export class BasePage {
 
   async navigate(path: string) {
     const base =
-      process.env.BASE_URL || 'https://testerbud.com/practice-login-form';
-    const url = path === '/' ? base : `${base}${path}`;
+      process.env.BASE_URL ||
+      'https://automationteststore.com/index.php?rt=account/login';
+    const url = new URL(path, base).toString();
     const logger =
       this.world?.getColorizedLog('cyan') ??
       ((message: string) => {
