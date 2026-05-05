@@ -44,10 +44,17 @@ Playwright-Boilerplate-For-E2E/
 │   └── login.page.ts
 ├── scripts/
 │   ├── cucumber-runner.sh
-│   ├── run-cucumber-features-parallel.mjs
+│   ├── cucumber/
+│   │   ├── run-features-parallel.mjs
+│   │   └── parallel/
+│   │       ├── feature-runner.mjs
+│   │       ├── file-discovery.mjs
+│   │       ├── import-args-builder.mjs
+│   │       ├── parallel-feature-executor.mjs
+│   │       └── report-directory-manager.mjs
 │   ├── exclude-some-artifacts.sh
 │   ├── clean-artifacts.sh
-│   └── parallel_exec/
+│   └── open-maximized.sh
 ├── steps/
 │   ├── api/
 │   │   ├── eng/
