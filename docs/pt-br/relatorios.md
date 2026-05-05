@@ -14,9 +14,11 @@ Este comando gera o relatório HTML Allure e o abre em um servidor Allure na por
 
 ```bash
 yarn allure:generate    # Gera relatório a partir de allure-results/
-yarn allure:open        # Abre relatório no browser padrão
+yarn allure:open        # Abre relatório no browser padrão, maximizado
 yarn allure:serve       # Serve relatório em localhost:8080 (sem auto-abertura)
 ```
+
+`allure:open` e `allure:serve` usam `scripts/open-maximized.sh` como launcher do browser, portanto o relatório abre em janela maximizada. O script detecta o browser disponível (Chrome → Chromium → Firefox → fallback xdg-open) e passa `--start-maximized` (ou `--maximized` para Firefox).
 
 ### Linux / ambientes headless
 
@@ -26,7 +28,7 @@ Em ambientes Linux sem sessão desktop, use `allure:serve` que não tenta abrir 
 yarn allure:serve
 ```
 
-Os scripts do pacote forçam X11 para operações Allure e reduzem falhas de inicialização Wayland no Linux.
+`allure:serve` e `allure:open` filtram o ruído comum de warnings do Wayland na saída, preservando falhas reais do comando.
 
 ## Capturas de tela por step
 

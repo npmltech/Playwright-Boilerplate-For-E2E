@@ -2,6 +2,57 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-05-05 (parte 6)
+
+### Adicionado
+
+- Adicionado `scripts/open-maximized.sh`: detecta o browser instalado (Chrome → Chromium → Firefox → fallback xdg-open) e abre URLs maximizadas via `--start-maximized` / `--maximized`.
+
+### Alterado
+
+- `allure:open` e `allure:serve` agora definem `BROWSER='bash scripts/open-maximized.sh'` para que o relatório Allure abra em browser maximizado.
+- Forçamento X11 do Chromium movido de variáveis de ambiente shell para args de launch no `playwright.config.ts` (`--ozone-platform=x11`).
+- Removidos `OZONE_PLATFORM=x11` e `WAYLAND_DISPLAY=` dos scripts de testes headed (`test:pw:headed:video`, `test:cucumber:headed:video`, `test:cucumber:workers:headed:video`): Firefox usa Wayland nativamente; Chromium é forçado ao X11 via arg na config.
+- Scripts do `package.json` reordenados alfabeticamente.
+
+### Corrigido
+
+- Corrigida falha de launch headed do Chromium: `--ozone-platform=x11` precisa estar nos `args` de launch, não no ambiente shell.
+- Corrigida falha de launch headed do Firefox: limpar `WAYLAND_DISPLAY` no shell quebrava o XWayland (`:1` depende do compositor Wayland); Firefox agora usa suporte Wayland nativo.
+
+### Documentação
+
+- Atualizada documentação de relatórios (EN/PT-BR) para documentar comportamento de browser maximizado.
+- Atualizada documentação de configuração (EN/PT-BR) para mencionar `--ozone-platform=x11` nos args de launch do Chromium.
+- Adicionada entrada de troubleshooting #14 (EN/PT-BR): falhas de launch headed do Chromium e Firefox no Wayland.
+
+## 2026-05-05 (parte 5)
+
+### Adicionado
+
+- Adicionados scripts de suíte completa com vídeo e saída verbosa:
+  - `test:all:video:prompt`
+  - `test:all:headless:video:prompt`
+  - `test:all:video` (alias)
+
+### Alterado
+
+- `allure:serve` atualizado para filtrar ruído recorrente de warnings do Wayland, alinhando o comportamento já usado em `allure:open`.
+- Argumento específico de Chromium (`--disable-blink-features=AutomationControlled`) movido para o projeto Chromium apenas.
+
+### Corrigido
+
+- Corrigidas falhas intermitentes de login no Firefox causadas por comportamento não determinístico no submit do formulário.
+- Fluxo de login reforçado com fallback em camadas para submit e assertions mais robustas para URL de conta e alertas de erro.
+
+### Documentação
+
+- Atualizadas as documentações de execução de testes e troubleshooting em inglês e português para incluir:
+  - comandos de suíte completa
+  - workaround para autocorreção do zsh
+  - notas de estabilidade do login no Firefox
+  - notas sobre comportamento Allure com Wayland/X11
+
 ## 2026-05-05 (parte 4)
 
 ### Adicionado
@@ -222,7 +273,7 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
 - Alvo de testes migrado para o Automation Test Store.
 - `BASE_URL` atualizada para:
-  - `https://automationteststore.com/index.php?rt=account/login`
+  - `https://automationteststore.com/`
 - Credenciais atualizadas nos dados padrão de ambiente e usuário:
   - `USERNAME=tester_champion`
   - `PASSWORD=123123`

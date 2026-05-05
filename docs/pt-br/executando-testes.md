@@ -14,6 +14,32 @@ yarn test:pw:headed:video
 yarn test:pw:headless:video
 ```
 
+## Executar todos os testes (Playwright + Cucumber, com vídeo e saída detalhada)
+
+**Modo headed (recomendado para validação local):**
+
+```bash
+yarn test:all:video:prompt
+```
+
+**Modo headless (ideal para CI):**
+
+```bash
+yarn test:all:headless:video:prompt
+```
+
+**Alias:**
+
+```bash
+yarn test:all:video
+```
+
+Se o zsh pedir autocorreção de test -> tests, execute com:
+
+```bash
+unsetopt correct correctall && yarn test:all:video:prompt
+```
+
 ## Testes Cucumber (com vídeo, output sempre impresso)
 
 ### Sem workers (execução serial)

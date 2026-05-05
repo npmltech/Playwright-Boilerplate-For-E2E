@@ -2,6 +2,57 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-05-05 (part 6)
+
+### Added
+
+- Added `scripts/open-maximized.sh`: detects installed browser (Chrome → Chromium → Firefox → xdg-open fallback) and opens URLs maximized via `--start-maximized` / `--maximized`.
+
+### Changed
+
+- `allure:open` and `allure:serve` now set `BROWSER='bash scripts/open-maximized.sh'` so the Allure report opens in a maximized browser window.
+- Moved Chromium X11 enforcement from shell env vars to `playwright.config.ts` project launch args (`--ozone-platform=x11`).
+- Removed `OZONE_PLATFORM=x11` and `WAYLAND_DISPLAY=` from headed test scripts (`test:pw:headed:video`, `test:cucumber:headed:video`, `test:cucumber:workers:headed:video`): Firefox uses Wayland natively; Chromium is forced to X11 via the config arg.
+- Reordered `package.json` scripts alphabetically.
+
+### Fixed
+
+- Fixed Chromium headed launch failure: `--ozone-platform=x11` must be in launch `args`, not the shell environment.
+- Fixed Firefox headed launch failure: clearing `WAYLAND_DISPLAY` in the shell broke XWayland (`:1` depends on the Wayland compositor); Firefox now runs via its native Wayland support.
+
+### Documentation
+
+- Updated reporting docs (EN/PT-BR) to document maximized browser behavior.
+- Updated configuration docs (EN/PT-BR) to mention `--ozone-platform=x11` in Chromium launch args.
+- Added troubleshooting entry #14 (EN/PT-BR): headed Chromium and Firefox browser launch failures on Wayland.
+
+## 2026-05-05 (part 5)
+
+### Added
+
+- Added full-suite scripts with video and verbose output:
+  - `test:all:video:prompt`
+  - `test:all:headless:video:prompt`
+  - `test:all:video` (alias)
+
+### Changed
+
+- Updated `allure:serve` to filter recurring Wayland warning noise, matching the behavior already used in `allure:open`.
+- Moved Chromium-specific launch argument (`--disable-blink-features=AutomationControlled`) to the Chromium project only.
+
+### Fixed
+
+- Fixed intermittent Firefox login failures caused by non-deterministic submit behavior on the login form.
+- Hardened login flow with layered submit fallback and stronger assertions for account URL and error alerts.
+
+### Documentation
+
+- Updated running-tests and troubleshooting documentation in English and Portuguese to include:
+  - full-suite test commands
+  - zsh autocorrect workaround
+  - Firefox login stability notes
+  - Allure Wayland/X11 behavior notes
+
 ## 2026-05-05 (part 4)
 
 ### Added
@@ -220,7 +271,7 @@ All notable changes to this project are documented in this file.
 
 - Migrated test target to Automation Test Store.
 - Updated BASE_URL to:
-  - https://automationteststore.com/index.php?rt=account/login
+  - https://automationteststore.com/
 - Updated credentials in environment and user data defaults:
   - USERNAME=tester_champion
   - PASSWORD=123123
