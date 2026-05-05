@@ -8,25 +8,33 @@ mkdir -p cucumber-reports
 EXTRA_ARGS=""
 STDOUT_FORMAT="--format @cucumber/pretty-formatter"
 VERBOSE_ENV=""
-if [ "$1" = "verbose" ]; then
+FEATURE_LOCALE="${FEATURE_LOCALE:-pt-br}"
+MODE="$1"
+if [ "$MODE" = "verbose" ]; then
+  shift
   # Pretty formatter prints each scenario/step; summary + backtrace shows clear failure details.
   STDOUT_FORMAT="--format @cucumber/pretty-formatter --format summary"
   EXTRA_ARGS="--backtrace"
   VERBOSE_ENV="CUCUMBER_VERBOSE=1 CUCUMBER_COLOR=1 FORCE_COLOR=1"
-elif [ "$1" = "quiet" ]; then
+elif [ "$MODE" = "quiet" ]; then
+  shift
   # CI-friendly mode: only summary, no step-by-step output.
   STDOUT_FORMAT="--format summary"
   EXTRA_ARGS="--backtrace"
 fi
+
+FILTER_ARGS=("$@")
+STEP_IMPORT_GLOB="steps/**/${FEATURE_LOCALE}/**/*.step.ts"
   
   env $VERBOSE_ENV NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
     --import support/world.ts \
     --import support/hooks.ts \
-    --import steps/login.step.ts \
+    --import "$STEP_IMPORT_GLOB" \
     $STDOUT_FORMAT \
     --format html:cucumber-reports/cucumber-report.html \
     --format json:cucumber-reports/cucumber-report.json \
     --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js \
     --format-options '{"resultsDir":"./allure-results"}' \
+    "${FILTER_ARGS[@]}" \
     $EXTRA_ARGS \
-    features/**/*.feature 2>&1 | tee cucumber-reports/cucumber.log
+    "features/**/${FEATURE_LOCALE}/**/*.feature" 2>&1 | tee cucumber-reports/cucumber.log
