@@ -2,11 +2,11 @@
 
 import path from 'path';
 
-import { FeatureRunner } from './parallel_exec/feature-runner.mjs';
-import { FileDiscovery } from './parallel_exec/file-discovery.mjs';
-import { ImportArgsBuilder } from './parallel_exec/import-args-builder.mjs';
-import { ParallelFeatureExecutor } from './parallel_exec/parallel-feature-executor.mjs';
-import { ReportDirectoryManager } from './parallel_exec/report-directory-manager.mjs';
+import { FeatureRunner } from './parallel/feature-runner.mjs';
+import { FileDiscovery } from './parallel/file-discovery.mjs';
+import { ImportArgsBuilder } from './parallel/import-args-builder.mjs';
+import { ParallelFeatureExecutor } from './parallel/parallel-feature-executor.mjs';
+import { ReportDirectoryManager } from './parallel/report-directory-manager.mjs';
 
 const rootDir = process.cwd();
 const featureLocale = process.env.FEATURE_LOCALE ?? 'pt-br';

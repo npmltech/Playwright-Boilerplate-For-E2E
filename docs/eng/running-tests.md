@@ -106,10 +106,10 @@ yarn test:report
 
 ## Environment variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `FEATURE_LOCALE` | `pt-br` | Selects feature and step locale (`pt-br` or `eng`) |
-| `CUCUMBER_VIDEO` | `1` | Enable (`1`) or disable (`0`) video recording |
-| `CUCUMBER_HEADLESS` | `1` | Run headless (`1`) or headed (`0`) |
-| `CUCUMBER_PARALLEL` | `4` | Number of parallel workers |
-| `PW_VIDEO_MODE` | — | Playwright video mode (`on`, `off`, `retain-on-failure`) |
+| Variable            | Default | Description                                              |
+| ------------------- | ------- | -------------------------------------------------------- |
+| `FEATURE_LOCALE`    | `pt-br` | Selects feature and step locale (`pt-br` or `eng`)       |
+| `CUCUMBER_VIDEO`    | `1`     | Enable (`1`) or disable (`0`) video recording            |
+| `CUCUMBER_HEADLESS` | `1`     | Run headless (`1`) or headed (`0`)                       |
+| `CUCUMBER_PARALLEL` | `4`     | Number of parallel workers                               |
+| `PW_VIDEO_MODE`     | —       | Playwright video mode (`on`, `off`, `retain-on-failure`) |

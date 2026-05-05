@@ -5,7 +5,7 @@
 O projeto inclui testes de API para a Star Wars API (https://swapi.info).
 
 Para documentação completa incluindo detalhes do endpoint, schema de resposta e validação AJV:
-→ [API SWAPI Tests — guia detalhado (inglês)](../eng/api-swapi-tests.md)
+→ [Detalhes da API SWAPI — guia detalhado (pt-br)](./detalhes-api-swapi.md)
 
 ### Arquivos de feature
 
