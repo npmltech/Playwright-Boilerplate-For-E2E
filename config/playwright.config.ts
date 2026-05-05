@@ -7,8 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-const defaultBaseUrl =
-  'https://automationteststore.com/';
+const defaultBaseUrl = 'https://automationteststore.com/';
 const baseURL = process.env.BASE_URL || defaultBaseUrl;
 const videoMode = process.env.PW_VIDEO_MODE || 'retain-on-failure';
 const shouldUseWebServer = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(
@@ -20,7 +19,10 @@ const projects = [
     use: {
       ...devices['Desktop Chrome'],
       launchOptions: {
-        args: ['--disable-blink-features=AutomationControlled', '--ozone-platform=x11'],
+        args: [
+          '--disable-blink-features=AutomationControlled',
+          '--ozone-platform=x11',
+        ],
       },
     },
   },

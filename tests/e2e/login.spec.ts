@@ -14,9 +14,11 @@ test.describe('Login', () => {
     await loginPage.waitForElementVisible();
 
     await expect(page).toHaveURL(routePatterns.account, { timeout: 15_000 });
-    await expect(page.locator(loginLocator.logoutMenuLink).first()).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.locator(loginLocator.logoutMenuLink).first()).toBeVisible(
+      {
+        timeout: 15_000,
+      }
+    );
   });
 
   test('should show error with wrong credentials', async ({ page }) => {

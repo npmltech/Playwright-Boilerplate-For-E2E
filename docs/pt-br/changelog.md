@@ -2,6 +2,19 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-05-05 (parte 7)
+
+### Alterado
+
+- Refatorada a estrutura dos scripts de paralelismo por feature do Cucumber para explicitar os limites de orquestração:
+  - `scripts/run-cucumber-features-parallel.mjs` -> `scripts/cucumber/run-features-parallel.mjs`
+  - `scripts/parallel_exec/*` -> `scripts/cucumber/parallel/*`
+- Imports internos do entrypoint de execução paralela atualizados para a nova estrutura de pastas.
+
+### Documentação
+
+- Documentação da estrutura do projeto (EN/PT-BR) atualizada para refletir o novo layout `scripts/cucumber/parallel`.
+
 ## 2026-05-05 (parte 6)
 
 ### Adicionado

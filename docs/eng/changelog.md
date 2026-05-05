@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-05-05 (part 7)
+
+### Changed
+
+- Refactored Cucumber feature-parallel script layout to clarify orchestration boundaries:
+  - `scripts/run-cucumber-features-parallel.mjs` -> `scripts/cucumber/run-features-parallel.mjs`
+  - `scripts/parallel_exec/*` -> `scripts/cucumber/parallel/*`
+- Updated internal imports in the feature-parallel entrypoint to match the new folder structure.
+
+### Documentation
+
+- Updated project structure docs (EN/PT-BR) to reflect the new `scripts/cucumber/parallel` layout.
+
 ## 2026-05-05 (part 6)
 
 ### Added

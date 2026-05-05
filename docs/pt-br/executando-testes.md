@@ -106,10 +106,10 @@ yarn test:report
 
 ## Variáveis de ambiente
 
-| Variável | Padrão | Descrição |
-|----------|--------|-----------|
-| `FEATURE_LOCALE` | `pt-br` | Seleciona locale de features e steps (`pt-br` ou `eng`) |
-| `CUCUMBER_VIDEO` | `1` | Habilitar (`1`) ou desabilitar (`0`) gravação de vídeo |
-| `CUCUMBER_HEADLESS` | `1` | Executar headless (`1`) ou headed (`0`) |
-| `CUCUMBER_PARALLEL` | `4` | Número de workers paralelos |
-| `PW_VIDEO_MODE` | — | Modo de vídeo Playwright (`on`, `off`, `retain-on-failure`) |
+| Variável            | Padrão  | Descrição                                                   |
+| ------------------- | ------- | ----------------------------------------------------------- |
+| `FEATURE_LOCALE`    | `pt-br` | Seleciona locale de features e steps (`pt-br` ou `eng`)     |
+| `CUCUMBER_VIDEO`    | `1`     | Habilitar (`1`) ou desabilitar (`0`) gravação de vídeo      |
+| `CUCUMBER_HEADLESS` | `1`     | Executar headless (`1`) ou headed (`0`)                     |
+| `CUCUMBER_PARALLEL` | `4`     | Número de workers paralelos                                 |
+| `PW_VIDEO_MODE`     | —       | Modo de vídeo Playwright (`on`, `off`, `retain-on-failure`) |

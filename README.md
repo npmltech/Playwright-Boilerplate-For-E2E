@@ -34,19 +34,21 @@ yarn test:all:video:prompt
 
 ## Documentation / Documentação
 
-| Topic | English | Português |
-|-------|---------|-----------|
-| Prerequisites | [Prerequisites](docs/eng/prerequisites.md) | [Pré-requisitos](docs/pt-br/pre-requisitos.md) |
-| Installation | [Installation](docs/eng/installation.md) | [Instalação](docs/pt-br/instalacao.md) |
-| Project Structure | [Project Structure](docs/eng/project-structure.md) | [Estrutura do Projeto](docs/pt-br/estrutura-do-projeto.md) |
-| Configuration | [Configuration](docs/eng/configuration.md) | [Configuração](docs/pt-br/configuracao.md) |
-| About Test Store | [About Automation Test Store](docs/eng/about-automation-test-store.md) | — |
-| Step File Convention | [Step File Convention](docs/eng/step-file-convention.md) | [Convenção de Steps](docs/pt-br/convencao-de-steps.md) |
-| API Testing | [API Testing](docs/eng/api-testing.md) | [Testes de API](docs/pt-br/testes-de-api.md) |
-| API SWAPI Details | [API SWAPI Tests](docs/eng/api-swapi-tests.md) | — |
-| Running Tests | [Running Tests](docs/eng/running-tests.md) | [Executando Testes](docs/pt-br/executando-testes.md) |
-| Tagging Strategy | [Tagging Strategy](docs/eng/tagging-strategy.md) | [Estratégia de Tags](docs/pt-br/estrategia-de-tags.md) |
-| Reporting | [Reporting](docs/eng/reporting.md) | [Relatórios](docs/pt-br/relatorios.md) |
-| Changelog | [Changelog](docs/eng/changelog.md) | [Changelog](docs/pt-br/changelog.md) |
-| MCP Workflow Notes | [MCP Workflow Notes](docs/eng/mcp-workflow.md) | — |
-| Troubleshooting | [Troubleshooting](docs/eng/troubleshooting.md) | [Solução de Problemas](docs/pt-br/solucao-de-problemas.md) |
+| Topic                            | English                                                                                                        | Português                                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Prerequisites                    | [Prerequisites](docs/eng/prerequisites.md)                                                                     | [Pré-requisitos](docs/pt-br/pre-requisitos.md)                                                           |
+| Installation                     | [Installation](docs/eng/installation.md)                                                                       | [Instalação](docs/pt-br/instalacao.md)                                                                   |
+| Project Structure                | [Project Structure](docs/eng/project-structure.md)                                                             | [Estrutura do Projeto](docs/pt-br/estrutura-do-projeto.md)                                               |
+| Configuration                    | [Configuration](docs/eng/configuration.md)                                                                     | [Configuração](docs/pt-br/configuracao.md)                                                               |
+| About Test Store                 | [About Automation Test Store](docs/eng/about-automation-test-store.md)                                         | [Sobre a Automation Test Store](docs/pt-br/sobre-automation-test-store.md)                               |
+| Step File Convention             | [Step File Convention](docs/eng/step-file-convention.md)                                                       | [Convenção de Steps](docs/pt-br/convencao-de-steps.md)                                                   |
+| API Testing                      | [API Testing](docs/eng/api-testing.md)                                                                         | [Testes de API](docs/pt-br/testes-de-api.md)                                                             |
+| API SWAPI Details                | [API SWAPI Tests](docs/eng/api-swapi-tests.md)                                                                 | [Detalhes da API SWAPI](docs/pt-br/detalhes-api-swapi.md)                                                |
+| Implement API Tests from Scratch | [How to Implement API Tests from Scratch](docs/eng/how-to-implement-api-tests-from-scratch.md)                 | [Como Implementar Testes de API do Zero](docs/pt-br/como-implementar-testes-api-do-zero.md)              |
+| Implement Web Tests from Scratch | [How to Implement Web/Browser Tests from Scratch](docs/eng/how-to-implement-web-browser-tests-from-scratch.md) | [Como Implementar Testes Web/Browser do Zero](docs/pt-br/como-implementar-testes-web-browser-do-zero.md) |
+| Running Tests                    | [Running Tests](docs/eng/running-tests.md)                                                                     | [Executando Testes](docs/pt-br/executando-testes.md)                                                     |
+| Tagging Strategy                 | [Tagging Strategy](docs/eng/tagging-strategy.md)                                                               | [Estratégia de Tags](docs/pt-br/estrategia-de-tags.md)                                                   |
+| Reporting                        | [Reporting](docs/eng/reporting.md)                                                                             | [Relatórios](docs/pt-br/relatorios.md)                                                                   |
+| Changelog                        | [Changelog](docs/eng/changelog.md)                                                                             | [Changelog](docs/pt-br/changelog.md)                                                                     |
+| MCP Workflow Notes               | [MCP Workflow Notes](docs/eng/mcp-workflow.md)                                                                 | [Notas do Fluxo MCP](docs/pt-br/fluxo-mcp.md)                                                            |
+| Troubleshooting                  | [Troubleshooting](docs/eng/troubleshooting.md)                                                                 | [Solução de Problemas](docs/pt-br/solucao-de-problemas.md)                                               |
