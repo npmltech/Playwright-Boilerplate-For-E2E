@@ -251,9 +251,66 @@ Verification:
 - Cucumber login feature passing
 - Playwright login spec passing
 
+## 12) Firefox login scenarios intermittently fail in all-tests run
+
+Symptom:
+
+- Firefox fails on login scenarios while Chromium passes
+- URL remains on login page after filling valid credentials
+
+Observed cause:
+
+- Login form submit can be flaky in Firefox with a single submit strategy
+
+Fix applied:
+
+- Hardened login submit in page object with layered fallback:
+  - click submit button
+  - press Enter on password field
+  - native form submit fallback
+- Increased login assertion robustness with centralized route patterns and explicit timeout
+
+## 13) zsh prompt asks to autocorrect test -> tests
+
+Symptom:
+
+- Command waits for interactive prompt: correct 'test' to 'tests' [nyae]?
+
+Observed cause:
+
+- zsh autocorrect option intercepts command tokens and prompts for confirmation
+
+Fix applied:
+
+- Disable correction for current shell before running test scripts:
+  - unsetopt correct correctall
+
+## 14) Chromium and Firefox headed launch failure on Wayland
+
+Symptom:
+
+- Chromium: `Failed to connect to Wayland display` → `The platform failed to initialize. Exiting.`
+- Firefox: `Error: no DISPLAY environment variable specified` or `cannot open display: :1`
+
+Observed cause:
+
+- Setting `OZONE_PLATFORM=x11` as a shell env var is not forwarded to the browser process by Playwright; Chromium still tries Wayland and fails.
+- Setting `WAYLAND_DISPLAY=` (empty) in the shell causes XWayland (`:1`) to lose its backing compositor, so Firefox also fails to open the X11 display.
+
+Fix applied:
+
+- Added `--ozone-platform=x11` to Chromium's `launchOptions.args` in `config/playwright.config.ts` — Playwright passes this directly to the browser process.
+- Removed `OZONE_PLATFORM=x11` and `WAYLAND_DISPLAY=` from all headed test scripts — Firefox uses its native Wayland support and no longer needs this override.
+
+Verification:
+
+- `yarn test:pw:headed:video` — all 4 tests pass across Chromium and Firefox.
+
 ## Useful commands
 
 ```bash
+yarn test:all:video:prompt
+yarn test:all:headless:video:prompt
 yarn test:cucumber:no-workers:headed:video
 yarn test:cucumber:no-workers:headless:video
 yarn test:cucumber:workers:headed:video

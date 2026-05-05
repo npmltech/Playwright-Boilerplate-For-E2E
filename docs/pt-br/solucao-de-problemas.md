@@ -251,9 +251,66 @@ Verificação:
 - Feature de login Cucumber passando
 - Spec de login Playwright passando
 
+## 12) Cenários de login no Firefox falham de forma intermitente
+
+Sintoma:
+
+- Firefox falha nos cenários de login enquanto Chromium passa
+- URL permanece na página de login após preencher credenciais válidas
+
+Causa observada:
+
+- Submit do formulário de login pode ser instável no Firefox com uma única estratégia de envio
+
+Correção aplicada:
+
+- Submit de login reforçado no page object com fallback em camadas:
+  - clique no botão de login
+  - Enter no campo de senha
+  - fallback com submit nativo do formulário
+- Robustez de assertions de login aumentada com route patterns centralizados e timeout explícito
+
+## 13) zsh pede autocorreção de test -> tests
+
+Sintoma:
+
+- Comando fica aguardando prompt interativo: correct 'test' to 'tests' [nyae]?
+
+Causa observada:
+
+- Opção de autocorreção do zsh intercepta tokens do comando e pede confirmação
+
+Correção aplicada:
+
+- Desabilitar correção no shell atual antes de rodar scripts de teste:
+  - unsetopt correct correctall
+
+## 14) Falha de launch headed do Chromium e Firefox no Wayland
+
+Sintoma:
+
+- Chromium: `Failed to connect to Wayland display` → `The platform failed to initialize. Exiting.`
+- Firefox: `Error: no DISPLAY environment variable specified` ou `cannot open display: :1`
+
+Causa observada:
+
+- Definir `OZONE_PLATFORM=x11` como variável de ambiente shell não é propagado para o processo do browser pelo Playwright; o Chromium ainda tenta Wayland e falha.
+- Definir `WAYLAND_DISPLAY=` (vazio) no shell faz o XWayland (`:1`) perder o compositor Wayland como backend, causando falha no Firefox ao tentar abrir o display X11.
+
+Correção aplicada:
+
+- Adicionado `--ozone-platform=x11` aos `launchOptions.args` do Chromium em `config/playwright.config.ts` — o Playwright passa isso diretamente ao processo do browser.
+- Removidos `OZONE_PLATFORM=x11` e `WAYLAND_DISPLAY=` de todos os scripts de testes headed — o Firefox usa suporte Wayland nativo e não precisa mais desse override.
+
+Verificação:
+
+- `yarn test:pw:headed:video` — todos os 4 testes passam no Chromium e Firefox.
+
 ## Comandos úteis
 
 ```bash
+yarn test:all:video:prompt
+yarn test:all:headless:video:prompt
 yarn test:cucumber:no-workers:headed:video
 yarn test:cucumber:no-workers:headless:video
 yarn test:cucumber:workers:headed:video

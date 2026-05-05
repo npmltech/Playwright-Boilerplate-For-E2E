@@ -3,7 +3,7 @@
 ## Environment Variables
 
 ```properties
-BASE_URL=https://automationteststore.com/index.php?rt=account/login
+BASE_URL=https://automationteststore.com/
 USERNAME=tester_champion
 PASSWORD=123123
 ```
@@ -14,6 +14,7 @@ Current setup in `config/playwright.config.ts`:
 
 - Uses `BASE_URL` from `.env`
 - Runs Chromium and Firefox projects
+- Applies Chromium-only launch args (`--disable-blink-features=AutomationControlled`, `--ozone-platform=x11`) only to Chromium project
 - Collects screenshot, trace, and video on failures/retries
 - Uses local webServer only when `BASE_URL` points to localhost
 
