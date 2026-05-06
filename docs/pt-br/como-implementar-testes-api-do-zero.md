@@ -110,6 +110,18 @@ Rodar API em pt-br:
 yarn test:api:pt-br
 ```
 
+Rodar API em inglês com workers:
+
+```bash
+yarn test:cucumber:workers:headless:video:eng --tags "@api"
+```
+
+Rodar API em todos os locales com workers:
+
+```bash
+yarn test:cucumber:workers:headless:video:all --tags "@api"
+```
+
 Filtrar por tag específica:
 
 ```bash
