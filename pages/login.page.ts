@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import type { CustomWorld } from '../support/world';
-import { loginLocator } from '../locators/login.locator';
+import { loginLocator } from '../locators/web-elements/login.locator';
 import { routes } from '../config/routes';
 import { BasePage } from './base.page';
 

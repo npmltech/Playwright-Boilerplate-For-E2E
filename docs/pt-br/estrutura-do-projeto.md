@@ -68,11 +68,13 @@ Playwright-Boilerplate-For-E2E/
 │           ├── products.feature
 │           └── checkout.feature
 ├── locators/
-│   ├── login.locator.ts
-│   ├── register.locator.ts
-│   ├── products.locator.ts
-│   ├── checkout.locator.ts
-│   └── api-swapi.locator.ts
+│   ├── web-elements/
+│   │   ├── login.locator.ts
+│   │   ├── register.locator.ts
+│   │   ├── products.locator.ts
+│   │   └── checkout.locator.ts
+│   └── endpoints/
+│       └── api-swapi.locator.ts
 ├── pages/
 │   ├── base.page.ts
 │   └── login.page.ts

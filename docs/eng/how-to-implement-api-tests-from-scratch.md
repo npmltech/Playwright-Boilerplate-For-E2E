@@ -8,7 +8,7 @@ For API tests, this boilerplate uses:
 
 - Features by locale in `features/api/<locale>/`
 - Steps by locale in `steps/api/<locale>/`
-- Centralized endpoints in `locators/`
+- Centralized endpoints in `locators/endpoints/`
 
 Locale examples:
 
@@ -30,7 +30,7 @@ API_BASE_URL=https://your-api.com
 2. Centralize endpoint definitions in an API locator (or create a new one):
 
 ```ts
-// locators/my-api.locator.ts
+// locators/endpoints/my-api.locator.ts
 export const myApiLocator = {
   baseUrl: process.env.API_BASE_URL ?? 'https://your-api.com',
   endpoints: {
@@ -71,7 +71,7 @@ Create `steps/api/eng/my-api.step.ts`:
 ```ts
 import { Given, When, Then } from '@cucumber/cucumber';
 import { strict as assert } from 'assert';
-import { myApiLocator } from '../../../locators/my-api.locator';
+import { myApiLocator } from '../../../locators/endpoints/my-api.locator';
 
 let response: Response | undefined;
 let url = '';
@@ -135,6 +135,6 @@ Recommended pattern:
 - Feature created in `features/api/<locale>/`
 - Steps created in `steps/api/<locale>/`
 - Base URL defined in `.env`
-- Endpoint centralized in `locators/`
+- Endpoint centralized in `locators/endpoints/`
 - Tags added for filtering
 - Execution validated with API command

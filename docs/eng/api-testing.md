@@ -19,7 +19,7 @@ For full documentation including endpoint details, response schema, and AJV vali
 
 ### Locators & endpoints
 
-- `locators/api-swapi.locator.ts` — Centralized API endpoints and response properties
+- `locators/endpoints/api-swapi.locator.ts` — Centralized API endpoints and response properties
 
 ### Test scenarios
 

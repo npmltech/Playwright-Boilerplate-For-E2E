@@ -2,6 +2,24 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-05-05 (parte 8)
+
+### Alterado
+
+- Refatorada a pasta `locators/` para separar por tipo de artefato:
+  - Seletores de UI browser movidos para `locators/web-elements/` (checkout, login, products, register)
+  - Endpoints de API movidos para `locators/endpoints/` (api-swapi)
+- Atualizados todos os imports nos arquivos afetados:
+  - `steps/web/{eng,pt-br}/*.step.ts` (checkout, login, products, register)
+  - `pages/login.page.ts`
+  - `tests/e2e/login.spec.ts`
+
+### Documentação
+
+- Documentação da estrutura do projeto (EN/PT-BR) atualizada para refletir o novo layout `locators/web-elements/` e `locators/endpoints/`.
+- Guias how-to (EN/PT-BR) atualizados com os novos caminhos de subpasta de locators em exemplos de código e checklists.
+- Documentação de testes de API (EN/PT-BR) atualizada para referenciar `locators/endpoints/api-swapi.locator.ts`.
+
 ## 2026-05-05 (parte 7)
 
 ### Alterado
