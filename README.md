@@ -5,9 +5,11 @@
 # Playwright BDD Boilerplate for E2E Testing
 
 ### eng
+
 A complete boilerplate project for end-to-end testing with Playwright, Cucumber BDD, TypeScript, Allure, and robust reporting.
 
 ### pt-br
+
 Um projeto boilerplate completo para testes end-to-end com Playwright, Cucumber BDD, TypeScript, Allure e relatórios robustos.
 
 ## Quick Start
@@ -22,9 +24,11 @@ yarn playwright install
 ```
 
 ### eng
+
 Then create a `.env` file (see [Installation](docs/eng/installation.md)) and run:
 
 ### pt-br
+
 Em seguida, crie o arquivo `.env` (veja [Instalação](docs/pt-br/instalacao.md)) e execute:
 
 ```bash
@@ -32,11 +36,12 @@ yarn test:api
 ```
 
 ### eng
+
 To run the full suite with video and verbose output:
 
 ### pt-br
-Para executar a suíte completa com vídeo e output declarativo:
 
+Para executar a suíte completa com vídeo e output declarativo:
 
 ```bash
 yarn test:all:video:prompt
@@ -46,6 +51,8 @@ yarn test:all:video:prompt
 
 | Topic                            | English                                                                                                        | Português                                                                                                |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Languages & Libraries            | [Languages and Libraries](docs/eng/languages-and-libraries.md)                                                 | [Linguagens e Bibliotecas](docs/pt-br/linguagens-e-bibliotecas.md)                                       |
+| Commands Reference               | [Commands Reference](docs/eng/commands.md)                                                                     | [Referência de Comandos](docs/pt-br/comandos.md)                                                         |
 | Prerequisites                    | [Prerequisites](docs/eng/prerequisites.md)                                                                     | [Pré-requisitos](docs/pt-br/pre-requisitos.md)                                                           |
 | Installation                     | [Installation](docs/eng/installation.md)                                                                       | [Instalação](docs/pt-br/instalacao.md)                                                                   |
 | Project Structure                | [Project Structure](docs/eng/project-structure.md)                                                             | [Estrutura do Projeto](docs/pt-br/estrutura-do-projeto.md)                                               |

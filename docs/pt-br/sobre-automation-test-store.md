@@ -1,8 +1,8 @@
 # Sobre a Automation Test Store
 
-## O que e
+## O que é
 
-Automation Test Store e um site publico de e-commerce projetado para pratica de QA e automacao.
+Automation Test Store é um site público de e-commerce projetado para prática de QA e automação.
 
 URL principal usada neste projeto:
 
@@ -10,28 +10,28 @@ URL principal usada neste projeto:
 
 ## Por que este alvo combina com o projeto
 
-- Publico e estavel o suficiente para execucoes repetidas de login
+- Público e estável o suficiente para execuções repetidas de login
 - Fluxo realista de conta/login
-- Util para validar padroes de page object e cenarios BDD
+- Útil para validar padrões de page object e cenários BDD
 
-## Area de login mapeada neste projeto
+## Área de login mapeada neste projeto
 
-Formulario de cliente recorrente:
+Formulário de cliente recorrente:
 
-- Id do formulario: loginFrm
-- Campo de usuario: #loginFrm_loginname
+- Id do formulário: loginFrm
+- Campo de usuário: #loginFrm_loginname
 - Campo de senha: #loginFrm_password
-- Botao de envio: #loginFrm button[title="Login"]
+- Botão de envio: #loginFrm button[title="Login"]
 
-Indicadores de sucesso apos login:
+Indicadores de sucesso após login:
 
-- URL contem: index.php?rt=account/account
-- Link de logout visivel: a[href*="rt=account/logout"]:visible
+- URL contém: index.php?rt=account/account
+- Link de logout visível: a[href*="rt=account/logout"]:visible
 
 Indicadores de falha no login:
 
 - Banner de erro: .alert.alert-error ou .alert.alert-danger
-- Texto de erro contem termos como incorrect / no match / error
+- Texto de erro contém termos como incorrect / no match / error
 
 ## Credenciais usadas no setup atual
 
@@ -40,8 +40,8 @@ Configuradas no .env:
 - USERNAME=tester_champion
 - PASSWORD=123123
 
-## Dicas praticas
+## Dicas práticas
 
-- Aguarde os controles de login ficarem visiveis antes de preencher os campos
-- Mantenha locators presos a ids estaveis ou fragmentos de href explicitos
-- Valide sucesso usando URL e um elemento autenticado visivel
+- Aguarde os controles de login ficarem visíveis antes de preencher os campos
+- Mantenha locators presos a ids estáveis ou fragmentos de href explícitos
+- Valide sucesso usando URL e um elemento autenticado visível
