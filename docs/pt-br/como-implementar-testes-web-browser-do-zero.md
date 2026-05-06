@@ -1,6 +1,6 @@
 # Como Implementar Testes Web/Browser do Zero
 
-Este guia mostra como criar um teste web completo neste projeto: Feature, Steps e configuracao de URL.
+Este guia mostra como criar um teste web completo neste projeto: Feature, Steps e configuração de URL.
 
 ## 1. Entenda a estrutura usada no projeto
 
@@ -13,7 +13,7 @@ Para testes web/browser, este boilerplate usa:
 
 ## 2. Configure a URL base do sistema
 
-A URL principal e definida por variavel de ambiente.
+A URL principal é definida por variável de ambiente.
 
 1. Crie/atualize `.env`:
 
@@ -21,9 +21,9 @@ A URL principal e definida por variavel de ambiente.
 BASE_URL=https://seu-site.com/
 ```
 
-2. O Playwright ja consome `BASE_URL` em `config/playwright.config.ts`.
+2. O Playwright já consome `BASE_URL` em `config/playwright.config.ts`.
 
-3. Nos steps/pages, navegue usando rotas relativas quando possivel.
+3. Nos steps/pages, navegue usando rotas relativas quando possível.
 
 Exemplo:
 
@@ -31,7 +31,7 @@ Exemplo:
 await page.goto('/minha-rota');
 ```
 
-Isso evita repetir dominio e facilita troca de ambiente.
+Isso evita repetir domínio e facilita troca de ambiente.
 
 ## 3. Crie a Feature (BDD)
 
@@ -44,16 +44,16 @@ Crie `features/web/pt-br/minha-jornada.feature`:
 @minha_jornada
 Funcionalidade: Minha jornada web
 
-  Cenario: Acessar pagina inicial e validar elemento principal
-    Dado que eu acesso a pagina inicial
-    Entao devo ver o titulo principal da pagina
+  Cenário: Acessar página inicial e validar elemento principal
+    Dado que eu acesso a página inicial
+    Então devo ver o título principal da página
 ```
 
-Boas praticas:
+Boas práticas:
 
-- Cenarios orientados a comportamento (nao a implementacao)
-- Tags para execucao seletiva
-- Linguagem de negocio clara
+- Cenários orientados a comportamento (não à implementação)
+- Tags para execução seletiva
+- Linguagem de negócio clara
 
 ## 4. Crie locators e page object
 
@@ -99,13 +99,13 @@ import { Given, Then } from '@cucumber/cucumber';
 import { MinhaJornadaPage } from '../../../pages/minha-jornada.page';
 import type { CustomWorld } from '../../../support/world';
 
-Given('que eu acesso a pagina inicial', async function (this: CustomWorld) {
+Given('que eu acesso a página inicial', async function (this: CustomWorld) {
   const pagina = new MinhaJornadaPage(this.page);
   await pagina.abrirPaginaInicial();
 });
 
 Then(
-  'devo ver o titulo principal da pagina',
+  'devo ver o título principal da página',
   async function (this: CustomWorld) {
     const pagina = new MinhaJornadaPage(this.page);
     await pagina.validarTituloPrincipal();
@@ -113,21 +113,21 @@ Then(
 );
 ```
 
-Boas praticas:
+Boas práticas:
 
-- Steps com logica minima (delegar para page object)
+- Steps com lógica mínima (delegar para page object)
 - Locators fora do step (arquivo dedicado)
-- Assertions no page object para manter padrao
+- Assertions no page object para manter padrão
 
 ## 6. Execute os testes
 
-Rodar suite Cucumber web+api:
+Rodar suíte Cucumber web+api:
 
 ```bash
 yarn test:cucumber:no-workers:headed:video
 ```
 
-Rodar apenas seu cenario por tag:
+Rodar apenas seu cenário por tag:
 
 ```bash
 yarn test:cucumber:no-workers:headed:video --tags "@minha_jornada"
@@ -139,11 +139,11 @@ Rodar em headless:
 yarn test:cucumber:no-workers:headless:video --tags "@minha_jornada"
 ```
 
-## 7. Checklist rapido
+## 7. Checklist rápido
 
 - Feature criada em `features/web/<locale>/`
 - Step criado em `steps/web/<locale>/`
 - URL base configurada em `.env` (`BASE_URL`)
 - Locators centralizados em `locators/web-elements/`
 - Page object criado em `pages/`
-- Tags adicionadas para execucao seletiva
+- Tags adicionadas para execução seletiva

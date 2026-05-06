@@ -1,49 +1,49 @@
 # Notas do Fluxo MCP
 
-Este repositorio foi desenvolvido com um fluxo agentico com orquestracao de ferramentas no estilo MCP:
+Este repositório foi desenvolvido com um fluxo agêntico com orquestração de ferramentas no estilo MCP:
 
 ## Descoberta de contexto
 
 - Busca de arquivos e leituras direcionadas de config, pages, steps e docs
 
-## Ciclo seguro de mudanca
+## Ciclo seguro de mudança
 
-- Edicoes pequenas com patch e diagnostico apos cada atualizacao
+- Edições pequenas com patch e diagnóstico após cada atualização
 
-## Verificacao em runtime
+## Verificação em runtime
 
-- Execucao de testes focada em cenarios/specs impactados
+- Execução de testes focada em cenários/specs impactados
 
 ## Remapeamento de seletores
 
-- Inspecao da pagina-alvo para mapear locators estaveis no novo site
+- Inspeção da página-alvo para mapear locators estáveis no novo site
 
 ## Fortalecimento de estabilidade
 
-- Inclusao de esperas explicitas e checks de page-ready antes de screenshots/assertions
+- Inclusão de esperas explícitas e checks de page-ready antes de screenshots/assertions
 
-Esse processo esta refletido no codigo final e no guia de troubleshooting em [solucao-de-problemas.md](./solucao-de-problemas.md).
+Esse processo está refletido no código final e no guia de troubleshooting em [solucao-de-problemas.md](./solucao-de-problemas.md).
 
 ## Como utilizar este fluxo
 
-Use esta sequencia sempre que precisar implementar ou estabilizar uma mudanca:
+Use esta sequência sempre que precisar implementar ou estabilizar uma mudança:
 
 1. Descubra o contexto primeiro:
    - Identifique arquivos impactados (config, scripts, pages, steps, docs)
-   - Leia apenas os trechos necessarios para a tarefa atual
-2. Aplique edicoes focadas:
-   - Prefira mudancas pequenas e de baixo risco
-   - Mantenha seletores e assertions explicitos e estaveis
+   - Leia apenas os trechos necessários para a tarefa atual
+2. Aplique edições focadas:
+   - Prefira mudanças pequenas e de baixo risco
+   - Mantenha seletores e assertions explícitos e estáveis
 3. Valide rapidamente:
    - Rode primeiro apenas os testes impactados
-   - Expanda para suites maiores depois da validacao local
-4. Documente e comite:
-   - Atualize docs/changelog para mudancas de comportamento
-   - Use commits semanticos agrupados por assunto
+   - Expanda para suítes maiores depois da validação local
+4. Documente e commite:
+   - Atualize docs/changelog para mudanças de comportamento
+   - Use commits semânticos agrupados por assunto
 
-## Comandos praticos
+## Comandos práticos
 
-### Contexto e diagnostico
+### Contexto e diagnóstico
 
 ```bash
 git status --short
@@ -51,7 +51,7 @@ rg "padrao_a_buscar" .
 yarn lint
 ```
 
-### Validacao em runtime
+### Validação em runtime
 
 ```bash
 yarn test:pw:headed:video
@@ -59,7 +59,7 @@ yarn test:cucumber:no-workers:headless:video
 yarn test:api
 ```
 
-### Relatorios
+### Relatórios
 
 ```bash
 yarn allure:generate
@@ -71,13 +71,13 @@ yarn allure:server:report
 
 ```bash
 git add -A
-git commit -m "type(scope): mensagem semantica concisa"
+git commit -m "type(scope): mensagem semântica concisa"
 ```
 
-## Beneficios e aplicabilidade
+## Benefícios e aplicabilidade
 
-- Ciclos de debug mais rapidos ao validar primeiro apenas o comportamento impactado
-- Menor risco de regressao com mudancas pequenas e isoladas
-- Melhor rastreabilidade com commits semanticos e docs sincronizados
-- Onboarding mais facil porque as decisoes do fluxo ficam explicitas e repetiveis
-- Funciona muito bem em suites mistas UI + API, onde seletores, hooks e relatorios sao interdependentes
+- Ciclos de debug mais rápidos ao validar primeiro apenas o comportamento impactado
+- Menor risco de regressão com mudanças pequenas e isoladas
+- Melhor rastreabilidade com commits semânticos e docs sincronizados
+- Onboarding mais fácil porque as decisões do fluxo ficam explícitas e repetíveis
+- Funciona muito bem em suítes mistas UI + API, onde seletores, hooks e relatórios são interdependentes

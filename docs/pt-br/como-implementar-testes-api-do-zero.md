@@ -1,6 +1,6 @@
 # Como Implementar Testes de API do Zero
 
-Este guia mostra como criar um teste de API completo neste projeto: Feature, Steps e configuracao de URL.
+Este guia mostra como criar um teste de API completo neste projeto: Feature, Steps e configuração de URL.
 
 ## 1. Entenda a estrutura usada no projeto
 
@@ -12,16 +12,16 @@ Para testes de API, este boilerplate usa:
 
 Exemplo de locale:
 
-- `pt-br` (padrao)
+- `pt-br` (padrão)
 - `eng`
 
 ## 2. Configure a URL da API
 
-Escolha onde sua API base sera definida.
+Escolha onde sua API base será definida.
 
-Opcao recomendada neste projeto:
+Opção recomendada neste projeto:
 
-1. Crie/atualize variavel no `.env`:
+1. Crie/atualize variável no `.env`:
 
 ```properties
 API_BASE_URL=https://sua-api.com
@@ -52,17 +52,17 @@ Crie o arquivo em `features/api/pt-br/minha-api.feature`:
 @minha_api
 Funcionalidade: API Minha API
 
-  Cenario: Consultar health da API com sucesso
-    Dado que eu preparo a requisicao para o endpoint de health
-    Quando eu envio a requisicao GET
-    Entao o status da resposta deve ser 200
+  Cenário: Consultar health da API com sucesso
+    Dado que eu preparo a requisição para o endpoint de health
+    Quando eu envio a requisição GET
+    Então o status da resposta deve ser 200
 ```
 
-Boas praticas:
+Boas práticas:
 
 - Use tags para filtro (`@api`, `@smoke`, `@minha_api`)
-- Mantenha cenarios pequenos e objetivos
-- Nomeie cenario com comportamento esperado
+- Mantenha cenários pequenos e objetivos
+- Nomeie o cenário com o comportamento esperado
 
 ## 4. Crie os Steps
 
@@ -76,25 +76,25 @@ import { minhaApiLocator } from '../../../locators/endpoints/minha-api.locator';
 let response: Response | undefined;
 let url = '';
 
-Given('que eu preparo a requisicao para o endpoint de health', function () {
+Given('que eu preparo a requisição para o endpoint de health', function () {
   url = `${minhaApiLocator.baseUrl}${minhaApiLocator.endpoints.health}`;
 });
 
-When('eu envio a requisicao GET', async function () {
+When('eu envio a requisição GET', async function () {
   response = await fetch(url, { method: 'GET' });
 });
 
 Then('o status da resposta deve ser {int}', function (statusEsperado: number) {
-  assert.ok(response, 'Resposta nao foi recebida');
+  assert.ok(response, 'Resposta não foi recebida');
   assert.equal(response.status, statusEsperado);
 });
 ```
 
-Boas praticas:
+Boas práticas:
 
 - Sempre validar se houve resposta antes de usar `response.status`
 - Centralizar URL e endpoints em locator/config
-- Evitar logica de negocio dentro da Feature
+- Evitar lógica de negócio dentro da Feature
 
 ## 5. Execute os testes
 
@@ -110,31 +110,31 @@ Rodar API em pt-br:
 yarn test:api:pt-br
 ```
 
-Filtrar por tag especifica:
+Filtrar por tag específica:
 
 ```bash
 yarn test:cucumber:no-workers:headless:video --tags "@minha_api"
 ```
 
-## 6. Expandir para validacao de payload
+## 6. Expandir para validação de payload
 
 Depois de validar status code, adicione:
 
-- Validacao de campos obrigatorios
-- Validacao de tipos
-- Validacao por JSON Schema com AJV
+- Validação de campos obrigatórios
+- Validação de tipos
+- Validação por JSON Schema com AJV
 
-Padrao recomendado:
+Padrão recomendado:
 
 1. Ler `await response.json()`
-2. Validar shape basico
-3. Validar contrato com AJV para evitar regressao silenciosa
+2. Validar shape básico
+3. Validar contrato com AJV para evitar regressão silenciosa
 
-## 7. Checklist rapido
+## 7. Checklist rápido
 
 - Feature criada em `features/api/<locale>/`
 - Steps criados em `steps/api/<locale>/`
 - URL base em `.env`
 - Endpoint centralizado em `locators/endpoints/`
 - Tags adicionadas para filtro
-- Execucao validada com comando de API
+- Execução validada com comando de API
