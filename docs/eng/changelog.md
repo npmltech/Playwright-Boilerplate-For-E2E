@@ -6,25 +6,22 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
-- Added new shortcut scripts to run Cucumber workers in English locale and across all locales:
-  - `test:cucumber:workers:headless:video:eng`
-  - `test:cucumber:workers:headless:video:all`
-
-### Changed
-
-- Reordered `package.json` script entries to preserve alphabetical consistency (including the new locale commands).
+- New script `test:cucumber:workers:headless:video:pt-br` in `package.json`: runs the Cucumber suite with workers in headless mode with video restricted to the `pt-br` locale (explicit).
+- Three locale shortcuts now available:
+  - `test:cucumber:workers:headless:video:pt-br` — Brazilian Portuguese only
+  - `test:cucumber:workers:headless:video:eng` — English only
+  - `test:cucumber:workers:headless:video:all` — all locales in sequence
 
 ### Documentation
 
-- Updated EN changelog to consolidate past changes (new locale scripts) and the new change (manifest ordering).
-- Updated command and execution documentation in PT-BR/EN to include the new locale shortcuts:
-  - `docs/pt-br/comandos.md` and `docs/eng/commands.md`
-  - `docs/pt-br/executando-testes.md` and `docs/eng/running-tests.md`
-  - `docs/pt-br/solucao-de-problemas.md` and `docs/eng/troubleshooting.md`
-  - `docs/pt-br/testes-de-api.md` and `docs/eng/api-testing.md`
-  - `docs/pt-br/detalhes-api-swapi.md` and `docs/eng/api-swapi-tests.md`
-  - `docs/pt-br/como-implementar-testes-api-do-zero.md` and `docs/eng/how-to-implement-api-tests-from-scratch.md`
-  - `README.md`
+- Full documentation audit (PT-BR and EN) to ensure all three locale shortcuts are present everywhere relevant:
+  - `docs/eng/commands.md` and `docs/pt-br/comandos.md`: new sections for `:all`, `:eng`, and `:pt-br`.
+  - `docs/eng/running-tests.md` and `docs/pt-br/executando-testes.md`: locale shortcuts block restored and expanded.
+  - `docs/eng/troubleshooting.md` and `docs/pt-br/solucao-de-problemas.md`: three new commands added to useful commands list.
+  - `docs/eng/api-testing.md` and `docs/pt-br/testes-de-api.md`: worker+locale examples added.
+  - `docs/eng/api-swapi-tests.md` and `docs/pt-br/detalhes-api-swapi.md`: per-locale worker variants added.
+  - `docs/eng/how-to-implement-api-tests-from-scratch.md` and `docs/pt-br/como-implementar-testes-api-do-zero.md`: worker+locale examples included.
+  - `README.md`: locale shortcuts added to Quick Start (EN and PT-BR).
 
 ## 2026-05-05 (part 8)
 

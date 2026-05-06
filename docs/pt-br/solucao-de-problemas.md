@@ -315,6 +315,7 @@ yarn test:cucumber:no-workers:headed:video
 yarn test:cucumber:no-workers:headless:video
 yarn test:cucumber:workers:headed:video
 yarn test:cucumber:workers:headless:video
+yarn test:cucumber:workers:headless:video:pt-br
 yarn test:cucumber:workers:headless:video:eng
 yarn test:cucumber:workers:headless:video:all
 yarn test:api

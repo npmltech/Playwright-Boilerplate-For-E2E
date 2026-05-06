@@ -80,6 +80,9 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Locale shortcuts (headless + workers):
 
   ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:workers:headless:video:pt-br
+
   # English only
   yarn test:cucumber:workers:headless:video:eng
 

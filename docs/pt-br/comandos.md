@@ -230,6 +230,14 @@ Executa a suíte Cucumber com workers em modo **headless** com vídeo apenas no 
 yarn test:cucumber:workers:headless:video:eng
 ```
 
+### `yarn test:cucumber:workers:headless:video:pt-br`
+
+Executa a suíte Cucumber com workers em modo **headless** com vídeo apenas no locale em português do Brasil (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:workers:headless:video:pt-br
+```
+
 ---
 
 ## Testes — Playwright
