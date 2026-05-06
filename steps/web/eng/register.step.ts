@@ -2,7 +2,7 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
 import { BasePage } from '../../../pages/base.page';
-import { registerLocator } from '../../../locators/register.locator';
+import { registerLocator } from '../../../locators/web-elements/register.locator';
 import { routes, routePatterns } from '../../../config/routes';
 
 const notRegisteredEmail = 'nao-cadastrado-e2e@example.com';

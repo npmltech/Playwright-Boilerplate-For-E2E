@@ -1,6 +1,6 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { productsLocator } from '../../../locators/products.locator';
+import { productsLocator } from '../../../locators/web-elements/products.locator';
 import { routes } from '../../../config/routes';
 import { BasePage } from '../../../pages/base.page';
 import type { CustomWorld } from '../../../support/world';

@@ -1,7 +1,7 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
-import { checkoutLocator } from '../../../locators/checkout.locator';
+import { checkoutLocator } from '../../../locators/web-elements/checkout.locator';
 import { users } from '../../../data/users';
 import { LoginPage } from '../../../pages/login.page';
 import { routes } from '../../../config/routes';

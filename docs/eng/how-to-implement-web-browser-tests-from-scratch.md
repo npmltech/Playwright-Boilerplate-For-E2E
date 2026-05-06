@@ -9,7 +9,7 @@ For web/browser tests, this boilerplate uses:
 - Features by locale in `features/web/<locale>/`
 - Steps by locale in `steps/web/<locale>/`
 - Page Objects in `pages/`
-- Centralized locators in `locators/`
+- Centralized locators in `locators/web-elements/`
 
 ## 2. Configure the application base URL
 
@@ -59,7 +59,7 @@ Best practices:
 
 ### 4.1 Locator
 
-Create `locators/my-journey.locator.ts`:
+Create `locators/web-elements/my-journey.locator.ts`:
 
 ```ts
 export const myJourneyLocator = {
@@ -73,7 +73,7 @@ Create `pages/my-journey.page.ts`:
 
 ```ts
 import { expect, type Page } from '@playwright/test';
-import { myJourneyLocator } from '../locators/my-journey.locator';
+import { myJourneyLocator } from '../locators/web-elements/my-journey.locator';
 
 export class MyJourneyPage {
   constructor(private readonly page: Page) {}
@@ -141,6 +141,6 @@ yarn test:cucumber:no-workers:headless:video --tags "@my_journey"
 - Feature created in `features/web/<locale>/`
 - Step file created in `steps/web/<locale>/`
 - Base URL configured in `.env` (`BASE_URL`)
-- Locators centralized in `locators/`
+- Locators centralized in `locators/web-elements/`
 - Page object created in `pages/`
 - Tags added for selective execution
