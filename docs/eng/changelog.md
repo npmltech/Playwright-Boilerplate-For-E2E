@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-05-05 (part 8)
+
+### Changed
+
+- Refactored `locators/` directory to separate concerns by type:
+  - Browser UI selectors moved to `locators/web-elements/` (checkout, login, products, register)
+  - API endpoints moved to `locators/endpoints/` (api-swapi)
+- Updated all import statements across:
+  - `steps/web/{eng,pt-br}/*.step.ts` (checkout, login, products, register)
+  - `pages/login.page.ts`
+  - `tests/e2e/login.spec.ts`
+
+### Documentation
+
+- Updated project structure docs (EN/PT-BR) to reflect new `locators/web-elements/` and `locators/endpoints/` layout.
+- Updated how-to guides (EN/PT-BR) with new locator subdirectory paths in code examples and checklists.
+- Updated API testing docs (EN/PT-BR) to reference `locators/endpoints/api-swapi.locator.ts`.
+
 ## 2026-05-05 (part 7)
 
 ### Changed

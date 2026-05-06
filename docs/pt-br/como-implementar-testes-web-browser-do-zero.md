@@ -9,7 +9,7 @@ Para testes web/browser, este boilerplate usa:
 - Features por idioma em `features/web/<locale>/`
 - Steps por idioma em `steps/web/<locale>/`
 - Page Objects em `pages/`
-- Locators centralizados em `locators/`
+- Locators centralizados em `locators/web-elements/`
 
 ## 2. Configure a URL base do sistema
 
@@ -59,7 +59,7 @@ Boas praticas:
 
 ### 4.1 Locator
 
-Crie `locators/minha-jornada.locator.ts`:
+Crie `locators/web-elements/minha-jornada.locator.ts`:
 
 ```ts
 export const minhaJornadaLocator = {
@@ -73,7 +73,7 @@ Crie `pages/minha-jornada.page.ts`:
 
 ```ts
 import { expect, type Page } from '@playwright/test';
-import { minhaJornadaLocator } from '../locators/minha-jornada.locator';
+import { minhaJornadaLocator } from '../locators/web-elements/minha-jornada.locator';
 
 export class MinhaJornadaPage {
   constructor(private readonly page: Page) {}
@@ -144,6 +144,6 @@ yarn test:cucumber:no-workers:headless:video --tags "@minha_jornada"
 - Feature criada em `features/web/<locale>/`
 - Step criado em `steps/web/<locale>/`
 - URL base configurada em `.env` (`BASE_URL`)
-- Locators centralizados em `locators/`
+- Locators centralizados em `locators/web-elements/`
 - Page object criado em `pages/`
 - Tags adicionadas para execucao seletiva
