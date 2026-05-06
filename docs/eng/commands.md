@@ -214,6 +214,30 @@ yarn test:cucumber:workers:headless:video
 CUCUMBER_PARALLEL=8 yarn test:cucumber:workers:headless:video
 ```
 
+### `yarn test:cucumber:workers:headless:video:all`
+
+Runs the Cucumber suite with workers in **headless** mode with video for **all supported locales**, in sequence (`pt-br` then `eng`).
+
+```bash
+yarn test:cucumber:workers:headless:video:all
+```
+
+### `yarn test:cucumber:workers:headless:video:eng`
+
+Runs the Cucumber suite with workers in **headless** mode with video only for the English locale (`FEATURE_LOCALE=eng`).
+
+```bash
+yarn test:cucumber:workers:headless:video:eng
+```
+
+### `yarn test:cucumber:workers:headless:video:pt-br`
+
+Runs the Cucumber suite with workers in **headless** mode with video only for the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:workers:headless:video:pt-br
+```
+
 ---
 
 ## Tests — Playwright

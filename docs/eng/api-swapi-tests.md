@@ -126,6 +126,15 @@ yarn test:cucumber:no-workers:headless:video --tags "@swapi"
 # With parallel workers
 yarn test:cucumber:workers:headless:video --tags "@swapi"
 CUCUMBER_PARALLEL=4 yarn test:cucumber:workers:headless:video --tags "@swapi"
+
+# With parallel workers (Portuguese locale)
+yarn test:cucumber:workers:headless:video:pt-br --tags "@swapi"
+
+# With parallel workers (English locale)
+yarn test:cucumber:workers:headless:video:eng --tags "@swapi"
+
+# With parallel workers (all locales)
+yarn test:cucumber:workers:headless:video:all --tags "@swapi"
 ```
 
 ## API Endpoint

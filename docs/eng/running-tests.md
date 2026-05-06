@@ -77,6 +77,19 @@ unsetopt correct correctall && yarn test:all:video:prompt
   CUCUMBER_PARALLEL=6 yarn test:cucumber:workers:headless:video
   ```
 
+- Locale shortcuts (headless + workers):
+
+  ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:workers:headless:video:pt-br
+
+  # English only
+  yarn test:cucumber:workers:headless:video:eng
+
+  # All locales (pt-br + eng)
+  yarn test:cucumber:workers:headless:video:all
+  ```
+
 ## API tests only
 
 ```bash
