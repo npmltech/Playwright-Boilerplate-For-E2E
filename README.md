@@ -47,6 +47,24 @@ Para executar a suíte completa com vídeo e output declarativo:
 yarn test:all:video:prompt
 ```
 
+### eng
+
+Locale-specific worker shortcuts:
+
+```bash
+yarn test:cucumber:workers:headless:video:eng
+yarn test:cucumber:workers:headless:video:all
+```
+
+### pt-br
+
+Atalhos de workers por locale:
+
+```bash
+yarn test:cucumber:workers:headless:video:eng
+yarn test:cucumber:workers:headless:video:all
+```
+
 ## Documentation / Documentação
 
 | Topic                            | English                                                                                                        | Português                                                                                                |

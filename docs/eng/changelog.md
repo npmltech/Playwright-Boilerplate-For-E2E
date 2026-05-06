@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-05-06
+
+### Added
+
+- Added new shortcut scripts to run Cucumber workers in English locale and across all locales:
+  - `test:cucumber:workers:headless:video:eng`
+  - `test:cucumber:workers:headless:video:all`
+
+### Changed
+
+- Reordered `package.json` script entries to preserve alphabetical consistency (including the new locale commands).
+
+### Documentation
+
+- Updated EN changelog to consolidate past changes (new locale scripts) and the new change (manifest ordering).
+- Updated command and execution documentation in PT-BR/EN to include the new locale shortcuts:
+  - `docs/pt-br/comandos.md` and `docs/eng/commands.md`
+  - `docs/pt-br/executando-testes.md` and `docs/eng/running-tests.md`
+  - `docs/pt-br/solucao-de-problemas.md` and `docs/eng/troubleshooting.md`
+  - `docs/pt-br/testes-de-api.md` and `docs/eng/api-testing.md`
+  - `docs/pt-br/detalhes-api-swapi.md` and `docs/eng/api-swapi-tests.md`
+  - `docs/pt-br/como-implementar-testes-api-do-zero.md` and `docs/eng/how-to-implement-api-tests-from-scratch.md`
+  - `README.md`
+
 ## 2026-05-05 (part 8)
 
 ### Changed

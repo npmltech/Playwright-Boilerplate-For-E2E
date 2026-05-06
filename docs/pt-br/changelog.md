@@ -2,6 +2,30 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-05-06
+
+### Adicionado
+
+- Novos atalhos para execução de testes Cucumber com workers no locale em inglês e em todos os locales:
+  - `test:cucumber:workers:headless:video:eng`
+  - `test:cucumber:workers:headless:video:all`
+
+### Alterado
+
+- `package.json` ordenado para manter consistência alfabética nos scripts (incluindo os novos comandos de locale).
+
+### Documentação
+
+- Changelog PT-BR atualizado para consolidar mudanças passadas (adição de comandos por locale) e a mudança nova (ordenação do manifesto).
+- Atualizada a documentação de comandos e execução em PT-BR/EN para incluir os novos atalhos:
+  - `docs/pt-br/comandos.md` e `docs/eng/commands.md`
+  - `docs/pt-br/executando-testes.md` e `docs/eng/running-tests.md`
+  - `docs/pt-br/solucao-de-problemas.md` e `docs/eng/troubleshooting.md`
+  - `docs/pt-br/testes-de-api.md` e `docs/eng/api-testing.md`
+  - `docs/pt-br/detalhes-api-swapi.md` e `docs/eng/api-swapi-tests.md`
+  - `docs/pt-br/como-implementar-testes-api-do-zero.md` e `docs/eng/how-to-implement-api-tests-from-scratch.md`
+  - `README.md`
+
 ## 2026-05-05 (parte 8)
 
 ### Alterado
