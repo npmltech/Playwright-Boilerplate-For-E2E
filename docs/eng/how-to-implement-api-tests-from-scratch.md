@@ -110,6 +110,18 @@ Run API tests in English locale:
 yarn test:api:eng
 ```
 
+Run API tests in English locale with workers:
+
+```bash
+yarn test:cucumber:workers:headless:video:eng --tags "@api"
+```
+
+Run API tests in all locales with workers:
+
+```bash
+yarn test:cucumber:workers:headless:video:all --tags "@api"
+```
+
 Filter by a specific tag:
 
 ```bash
