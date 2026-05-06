@@ -48,9 +48,12 @@ yarn test:api:pt-br
 # API only in English
 yarn test:api:eng
 
-# API in English with workers
+# API with parallel workers (Portuguese)
+yarn test:cucumber:workers:headless:video:pt-br --tags "@api"
+
+# API with parallel workers (English)
 yarn test:cucumber:workers:headless:video:eng --tags "@api"
 
-# API in all locales with workers
+# API with parallel workers (all locales)
 yarn test:cucumber:workers:headless:video:all --tags "@api"
 ```

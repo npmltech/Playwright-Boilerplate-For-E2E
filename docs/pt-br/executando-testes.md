@@ -80,6 +80,9 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Atalhos por locale (headless + workers):
 
   ```bash
+  # Português do Brasil
+  yarn test:cucumber:workers:headless:video:pt-br
+
   # Apenas inglês
   yarn test:cucumber:workers:headless:video:eng
 

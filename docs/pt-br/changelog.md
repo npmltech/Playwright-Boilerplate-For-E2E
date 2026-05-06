@@ -6,25 +6,22 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
 ### Adicionado
 
-- Novos atalhos para execução de testes Cucumber com workers no locale em inglês e em todos os locales:
-  - `test:cucumber:workers:headless:video:eng`
-  - `test:cucumber:workers:headless:video:all`
-
-### Alterado
-
-- `package.json` ordenado para manter consistência alfabética nos scripts (incluindo os novos comandos de locale).
+- Novo script `test:cucumber:workers:headless:video:pt-br` em `package.json`: executa a suíte Cucumber com workers em modo headless com vídeo apenas no locale `pt-br` (explícito).
+- Três atalhos de locale agora disponibilizados:
+  - `test:cucumber:workers:headless:video:pt-br` — apenas português do Brasil
+  - `test:cucumber:workers:headless:video:eng` — apenas inglês
+  - `test:cucumber:workers:headless:video:all` — todos os locales em sequência
 
 ### Documentação
 
-- Changelog PT-BR atualizado para consolidar mudanças passadas (adição de comandos por locale) e a mudança nova (ordenação do manifesto).
-- Atualizada a documentação de comandos e execução em PT-BR/EN para incluir os novos atalhos:
-  - `docs/pt-br/comandos.md` e `docs/eng/commands.md`
-  - `docs/pt-br/executando-testes.md` e `docs/eng/running-tests.md`
-  - `docs/pt-br/solucao-de-problemas.md` e `docs/eng/troubleshooting.md`
-  - `docs/pt-br/testes-de-api.md` e `docs/eng/api-testing.md`
-  - `docs/pt-br/detalhes-api-swapi.md` e `docs/eng/api-swapi-tests.md`
-  - `docs/pt-br/como-implementar-testes-api-do-zero.md` e `docs/eng/how-to-implement-api-tests-from-scratch.md`
-  - `README.md`
+- Auditoria completa de toda a documentação (PT-BR e EN) para garantir que os três atalhos de locale estão presentes em todos os locais relevantes:
+  - `docs/pt-br/comandos.md` e `docs/eng/commands.md`: novas seções para `:all`, `:eng` e `:pt-br`.
+  - `docs/pt-br/executando-testes.md` e `docs/eng/running-tests.md`: bloco de atalhos por locale restaurado e expandido.
+  - `docs/pt-br/solucao-de-problemas.md` e `docs/eng/troubleshooting.md`: três novos comandos na lista de comandos úteis.
+  - `docs/pt-br/testes-de-api.md` e `docs/eng/api-testing.md`: exemplos com workers por locale adicionados.
+  - `docs/pt-br/detalhes-api-swapi.md` e `docs/eng/api-swapi-tests.md`: variantes de workers por locale adicionadas.
+  - `docs/pt-br/como-implementar-testes-api-do-zero.md` e `docs/eng/how-to-implement-api-tests-from-scratch.md`: exemplos com workers por locale incluídos.
+  - `README.md`: atalhos por locale adicionados ao Quick Start (PT-BR e EN).
 
 ## 2026-05-05 (parte 8)
 

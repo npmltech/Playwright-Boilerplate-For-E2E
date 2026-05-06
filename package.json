@@ -28,6 +28,7 @@
     "test:cucumber:workers:headless:video": "CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel \"${CUCUMBER_PARALLEL:-4}\"",
     "test:cucumber:workers:headless:video:all": "FEATURE_LOCALE=pt-br yarn test:cucumber:workers:headless:video && FEATURE_LOCALE=eng yarn test:cucumber:workers:headless:video",
     "test:cucumber:workers:headless:video:eng": "FEATURE_LOCALE=eng yarn test:cucumber:workers:headless:video",
+    "test:cucumber:workers:headless:video:pt-br": "FEATURE_LOCALE=pt-br yarn test:cucumber:workers:headless:video",
     "test:debug": "playwright test --config=config/playwright.config.ts --debug",
     "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed --reporter=list",
     "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --reporter=list",

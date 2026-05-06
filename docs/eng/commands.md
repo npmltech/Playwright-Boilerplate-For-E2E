@@ -230,6 +230,14 @@ Runs the Cucumber suite with workers in **headless** mode with video only for th
 yarn test:cucumber:workers:headless:video:eng
 ```
 
+### `yarn test:cucumber:workers:headless:video:pt-br`
+
+Runs the Cucumber suite with workers in **headless** mode with video only for the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:workers:headless:video:pt-br
+```
+
 ---
 
 ## Tests — Playwright
