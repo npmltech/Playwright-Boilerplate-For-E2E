@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
 import { LoginPage } from '../../../pages/login.page';
 import { users } from '../../../data/users';
-import { loginLocator } from '../../../locators/login.locator';
+import { loginLocator } from '../../../locators/web-elements/login.locator';
 import { routePatterns } from '../../../config/routes';
 
 const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
