@@ -9,6 +9,8 @@ export class CustomWorld extends World {
   browser!: Browser;
   context!: BrowserContext;
   page!: Page;
+  apiResponse?: unknown;
+  apiStatus?: number;
 
   constructor(options: IWorldOptions) {
     super(options);

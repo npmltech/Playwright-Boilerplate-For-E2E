@@ -3,7 +3,7 @@ dotenv.config();
 
 export const users = {
   standard: {
-    username: process.env.USERNAME || 'tester_champion',
-    password: process.env.PASSWORD || '123123',
+    username: process.env.TEST_USERNAME || 'tester_champion',
+    password: process.env.TEST_PASSWORD || '123123',
   },
 };

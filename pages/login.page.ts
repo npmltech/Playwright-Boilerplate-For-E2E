@@ -41,11 +41,15 @@ export class LoginPage extends BasePage {
 
     // Use layered submit strategy to reduce browser-specific flakiness.
     await this.submitButton.first().click({ force: true });
-    await this.page.waitForTimeout(250);
+    await this.page
+      .waitForURL(/rt=account\/account/, { timeout: 5000 })
+      .catch(() => {});
 
     if (this.page.url().includes('rt=account/login')) {
       await this.passwordInput.press('Enter');
-      await this.page.waitForTimeout(250);
+      await this.page
+        .waitForURL(/rt=account\/account/, { timeout: 5000 })
+        .catch(() => {});
     }
 
     if (this.page.url().includes('rt=account/login')) {
