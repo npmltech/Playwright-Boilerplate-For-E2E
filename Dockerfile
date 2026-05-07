@@ -18,7 +18,6 @@ RUN yarn install --immutable
 # Copy project files
 COPY . .
 
-# Use non-root user provided by the Playwright image
-USER pwuser
-
+# Entrypoint fixes output dir permissions then drops to pwuser
+ENTRYPOINT ["scripts/docker-entrypoint.sh"]
 CMD ["yarn", "test:pw:headless:video"]

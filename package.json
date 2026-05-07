@@ -32,7 +32,7 @@
     "test:debug": "playwright test --config=config/playwright.config.ts --debug",
     "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed --reporter=list",
     "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --reporter=list",
-    "test:report": "playwright show-report reports --port 9324"
+    "test:report": "playwright show-report reports/playwright --port 9324"
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.7.0",
