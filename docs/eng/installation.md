@@ -46,15 +46,15 @@ Create or update `.env` at project root:
 
 ```properties
 BASE_URL=https://automationteststore.com/
-USERNAME=tester_champion
-PASSWORD=123123
+TEST_USERNAME=tester_champion
+TEST_PASSWORD=123123
 FEATURE_LOCALE=pt-br
 ```
 
 What each variable controls:
 
 - `BASE_URL`: base application URL used by Playwright and hooks
-- `USERNAME` / `PASSWORD`: login test credentials
+- `TEST_USERNAME` / `TEST_PASSWORD`: login test credentials
 - `FEATURE_LOCALE`: locale used by Cucumber feature/step discovery (`pt-br` or `eng`)
 
 ## 5) Understand runtime behavior (already configured)

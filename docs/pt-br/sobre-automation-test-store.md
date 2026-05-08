@@ -37,8 +37,8 @@ Indicadores de falha no login:
 
 Configuradas no .env:
 
-- USERNAME=tester_champion
-- PASSWORD=123123
+- TEST_USERNAME=tester_champion
+- TEST_PASSWORD=123123
 
 ## Dicas práticas
 

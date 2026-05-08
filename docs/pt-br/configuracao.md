@@ -8,15 +8,15 @@ Baseline recomendado:
 
 ```properties
 BASE_URL=https://automationteststore.com/
-USERNAME=tester_champion
-PASSWORD=123123
+TEST_USERNAME=tester_champion
+TEST_PASSWORD=123123
 FEATURE_LOCALE=pt-br
 ```
 
 Significado:
 
 - `BASE_URL`: URL base da aplicação para navegação Playwright/helpers
-- `USERNAME` / `PASSWORD`: credenciais usadas nos cenários de login
+- `TEST_USERNAME` / `TEST_PASSWORD`: credenciais usadas nos cenários de login
 - `FEATURE_LOCALE`: locale para carga de feature/step (`pt-br` ou `eng`)
 
 ## 2) Configuração do Playwright (`config/playwright.config.ts`)
