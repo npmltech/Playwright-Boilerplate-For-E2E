@@ -32,6 +32,7 @@ services:
     volumes:
       - ./test-results:/app/test-results
       - ./allure-results:/app/allure-results
+      - ./cucumber-reports:/app/cucumber-reports
 
   api:
     build: .
@@ -46,3 +47,4 @@ services:
     command: ["yarn", "test:api"]
     volumes:
       - ./allure-results:/app/allure-results
+      - ./cucumber-reports:/app/cucumber-reports
