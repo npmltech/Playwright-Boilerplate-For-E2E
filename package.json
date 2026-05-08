@@ -30,8 +30,8 @@
     "test:cucumber:workers:headless:video:eng": "FEATURE_LOCALE=eng yarn test:cucumber:workers:headless:video",
     "test:cucumber:workers:headless:video:pt-br": "FEATURE_LOCALE=pt-br yarn test:cucumber:workers:headless:video",
     "test:debug": "playwright test --config=config/playwright.config.ts --debug",
-    "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed --reporter=list",
-    "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --reporter=list",
+    "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed",
+    "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts",
     "test:report": "playwright show-report reports/playwright --port 9324"
   },
   "devDependencies": {
