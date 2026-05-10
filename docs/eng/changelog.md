@@ -8,6 +8,7 @@ All notable changes to this project are documented in this file.
 
 - Docker command shortcuts in `package.json`:
   - `docker:build` — build container images
+  - `docker:clean` — remove generated Docker artifacts safely through a temporary cleanup container
   - `docker:up` — start all containers
   - `docker:down` — stop and remove containers
   - `docker:logs` — view live container logs
@@ -24,12 +25,15 @@ All notable changes to this project are documented in this file.
   - Moved `scripts/docker-entrypoint.sh` to `container/docker-entrypoint.sh`
   - Updated Dockerfile entrypoint path to reference new location
   - Added `network: host` to compose build config to improve build reliability
+  - Added `network_mode: host` to compose runtime to avoid bridge networking failures
+  - Updated Docker entrypoint behavior to prepare writable artifact directories for bind mounts
 
 ### Documentation
 
 - Updated `docs/eng/project-structure.md` to reflect `container/` folder structure
 - Updated `README.md` with Docker commands section (EN and PT-BR)
 - Added Docker usage examples to Quick Start section
+- Updated Docker guide, command reference, and troubleshooting docs to cover `docker:clean`, host networking, and artifact permission recovery
 
 ## 2026-05-06
 

@@ -8,6 +8,7 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
 - Atalhos de comando Docker em `package.json`:
   - `docker:build` — construir imagens do container
+  - `docker:clean` — remover artefatos Docker com segurança por meio de um container temporário de limpeza
   - `docker:up` — iniciar todos os containers
   - `docker:down` — parar e remover containers
   - `docker:logs` — visualizar logs dos containers em tempo real
@@ -24,12 +25,15 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
   - Movido `scripts/docker-entrypoint.sh` para `container/docker-entrypoint.sh`
   - Atualizado o path do entrypoint no Dockerfile para referenciar a nova localização
   - Adicionado `network: host` na configuração de build do compose para melhorar confiabilidade
+  - Adicionado `network_mode: host` no runtime do compose para evitar falhas de bridge networking
+  - Atualizado o comportamento do entrypoint Docker para preparar diretórios de artefatos graváveis em bind mounts
 
 ### Documentação
 
 - Atualizado `docs/pt-br/estrutura-do-projeto.md` para refletir a estrutura da pasta `container/`
 - Atualizado `README.md` com seção de comandos Docker (EN e PT-BR)
 - Adicionados exemplos de uso de Docker na seção Quick Start
+- Atualizados o guia de Docker, a referência de comandos e a solução de problemas para cobrir `docker:clean`, host networking e recuperação de permissões dos artefatos
 
 ## 2026-05-06
 

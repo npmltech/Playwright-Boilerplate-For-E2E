@@ -5,6 +5,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     shm_size: '2gb'
     tty: true
     env_file:
@@ -25,6 +27,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     shm_size: '2gb'
     tty: true
     env_file:
@@ -46,6 +50,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     tty: true
     env_file:
       - path: ../.env

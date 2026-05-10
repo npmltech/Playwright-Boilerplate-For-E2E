@@ -78,7 +78,7 @@ COPY . .
 ENTRYPOINT ["container/docker-entrypoint.sh"]
 CMD ["yarn", "test:pw:headless:video"]
 ```
-- Sets the entrypoint script (fixes permissions and drops to unprivileged user)
+- Sets the entrypoint script (prepares writable output directories)
 - Default command (can be overridden by `docker compose run`)
 
 ### 2. **docker-compose.yml**
@@ -97,6 +97,13 @@ services:
 - `context: ..` means the build context is the repository root
 - `dockerfile: container/Dockerfile` specifies the path to the Dockerfile
 - `network: host` improves build reliability in some environments
+
+```yaml
+    network_mode: host
+    user: root
+```
+- `network_mode: host` avoids bridge-network creation issues in restricted Docker environments
+- `user: root` ensures the entrypoint can prepare output directories and permissions before the test command runs
 
 ```yaml
     environment:
@@ -139,17 +146,15 @@ done
 - Ensures directories are ready for volume mounts
 
 ```bash
-chown -R pwuser:pwuser allure-results cucumber-reports reports test-results
+chmod -R 777 allure-results cucumber-reports reports test-results
 ```
-- Changes ownership of output directories to the non-root user (`pwuser`)
-- Docker base image runs tests as unprivileged user for security
-- Without this, volumes would be owned by `root` on your host
+- Ensures output directories stay writable even when the Docker base image maps execution to `pwuser` (`uid=1001`)
+- This is a pragmatic workaround for bind-mounted artifact folders in restricted Linux environments
 
 ```bash
-exec runuser -u pwuser -- "$@"
+exec "$@"
 ```
-- Drops from root to unprivileged user before running the test command
-- Ensures outputs are readable/writable on your host system
+- Runs the configured command after preparing the output directories
 
 ## Basic Docker Commands
 
@@ -166,6 +171,14 @@ docker compose -f container/docker-compose.yml build
 
 Builds (or rebuilds) images for all services. Run this after updating `package.json` or the Dockerfile.
 
+### Clean Generated Artifacts
+
+```bash
+yarn docker:clean
+```
+
+Runs the repository cleanup script through a temporary Docker container with `--network host`. This is useful when old artifacts were created with Docker ownership and are difficult to delete directly from the host.
+
 ### Run Tests with Video Evidence
 
 **Playwright tests:**
@@ -175,6 +188,11 @@ yarn docker:test:pw:video
 
 Videos saved to `./reports/playwright/`
 
+This shortcut runs:
+```bash
+docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
+```
+
 **Cucumber tests:**
 ```bash
 yarn docker:test:cucumber:video
@@ -182,12 +200,22 @@ yarn docker:test:cucumber:video
 
 Videos and reports saved to `./test-results/` and `./cucumber-reports/`
 
+This shortcut runs:
+```bash
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'
+```
+
 **API tests:**
 ```bash
 yarn docker:test:api:video
 ```
 
 Reports saved to `./allure-results/`
+
+This shortcut runs:
+```bash
+docker compose -f container/docker-compose.yml run --rm api sh -lc 'yarn test:api'
+```
 
 ### Interactive Container Execution
 
@@ -238,6 +266,9 @@ yarn docker:compose run api bash       # Run a different command in api service
 ```bash
 # Build images (this caches layers, so it's fast next time)
 yarn docker:build
+
+# Clean previous generated artifacts when needed
+yarn docker:clean
 
 # Run Cucumber tests with video
 yarn docker:test:cucumber:video
@@ -296,6 +327,23 @@ sudo usermod -aG docker $USER
 Rebuild images:
 ```bash
 yarn docker:build
+```
+
+If the Docker daemon in your environment cannot create bridge interfaces, prefer the existing project scripts and compose file as-is; they already use host networking for build and runtime.
+
+### "permission denied" when removing files from `allure-results/`, `test-results/`, or `cucumber-reports`
+
+This usually means previous container runs created bind-mounted artifacts with Docker-managed ownership.
+
+Use the cleanup helper:
+```bash
+yarn docker:clean
+```
+
+If you still need a manual fallback:
+```bash
+sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports
+sudo chmod -R u+rwX allure-results test-results cucumber-reports reports
 ```
 
 ### Videos or reports not appearing on host

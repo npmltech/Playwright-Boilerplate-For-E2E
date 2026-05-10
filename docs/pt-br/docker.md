@@ -78,7 +78,7 @@ COPY . .
 ENTRYPOINT ["container/docker-entrypoint.sh"]
 CMD ["yarn", "test:pw:headless:video"]
 ```
-- Define o script entrypoint (corrige permissões e descarta para usuário não-privilegiado)
+- Define o script entrypoint (prepara diretórios de saída graváveis)
 - Comando padrão (pode ser sobrescrito por `docker compose run`)
 
 ### 2. **docker-compose.yml**
@@ -97,6 +97,13 @@ services:
 - `context: ..` significa que o contexto de build é a raiz do repositório
 - `dockerfile: container/Dockerfile` especifica o caminho para o Dockerfile
 - `network: host` melhora confiabilidade de build em alguns ambientes
+
+```yaml
+    network_mode: host
+    user: root
+```
+- `network_mode: host` evita problemas de criação de bridge network em ambientes Docker mais restritos
+- `user: root` garante que o entrypoint consiga preparar diretórios de saída e permissões antes de rodar o comando de teste
 
 ```yaml
     environment:
@@ -139,17 +146,15 @@ done
 - Garante que diretórios estejam prontos para mounts de volume
 
 ```bash
-chown -R pwuser:pwuser allure-results cucumber-reports reports test-results
+chmod -R 777 allure-results cucumber-reports reports test-results
 ```
-- Muda propriedade dos diretórios de output para o usuário não-root (`pwuser`)
-- A imagem base de Docker roda testes como usuário não-privilegiado por segurança
-- Sem isso, volumes seriam owned por `root` na sua máquina host
+- Garante que os diretórios de output permaneçam graváveis mesmo quando a imagem base do Docker mapeia a execução para `pwuser` (`uid=1001`)
+- É um contorno pragmático para pastas de artefato bind-mounted em ambientes Linux mais restritos
 
 ```bash
-exec runuser -u pwuser -- "$@"
+exec "$@"
 ```
-- Descarta de root para usuário não-privilegiado antes de rodar o comando de teste
-- Garante que outputs sejam legíveis/escrevíveis na sua máquina host
+- Executa o comando configurado depois de preparar os diretórios de saída
 
 ## Comandos de Docker Básicos
 
@@ -166,6 +171,14 @@ docker compose -f container/docker-compose.yml build
 
 Constrói (ou reconstrói) imagens para todos os serviços. Execute após atualizar `package.json` ou o Dockerfile.
 
+### Limpar Artefatos Gerados
+
+```bash
+yarn docker:clean
+```
+
+Executa o script de limpeza do repositório por meio de um container Docker temporário com `--network host`. Isso é útil quando artefatos antigos foram criados com ownership do Docker e ficaram difíceis de apagar diretamente no host.
+
 ### Rodar Testes com Evidência em Vídeo
 
 **Testes Playwright:**
@@ -175,6 +188,11 @@ yarn docker:test:pw:video
 
 Vídeos salvos em `./reports/playwright/`
 
+Esse atalho executa:
+```bash
+docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
+```
+
 **Testes Cucumber:**
 ```bash
 yarn docker:test:cucumber:video
@@ -182,12 +200,22 @@ yarn docker:test:cucumber:video
 
 Vídeos e relatórios salvos em `./test-results/` e `./cucumber-reports/`
 
+Esse atalho executa:
+```bash
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'
+```
+
 **Testes de API:**
 ```bash
 yarn docker:test:api:video
 ```
 
 Relatórios salvos em `./allure-results/`
+
+Esse atalho executa:
+```bash
+docker compose -f container/docker-compose.yml run --rm api sh -lc 'yarn test:api'
+```
 
 ### Execução Interativa de Container
 
@@ -238,6 +266,9 @@ yarn docker:compose run api bash       # Execute um comando diferente no serviç
 ```bash
 # Construir imagens (isso cacheia camadas, então é rápido próxima vez)
 yarn docker:build
+
+# Limpar artefatos gerados anteriormente quando necessário
+yarn docker:clean
 
 # Rodar testes Cucumber com vídeo
 yarn docker:test:cucumber:video
@@ -296,6 +327,23 @@ sudo usermod -aG docker $USER
 Reconstrua imagens:
 ```bash
 yarn docker:build
+```
+
+Se o daemon Docker do seu ambiente não conseguir criar interfaces bridge, prefira os scripts e o compose já configurados no projeto; eles já usam host networking para build e runtime.
+
+### "Permission denied" ao remover arquivos em `allure-results/`, `test-results` ou `cucumber-reports`
+
+Isso normalmente indica que execuções anteriores do container criaram artefatos bind-mounted com ownership controlado pelo Docker.
+
+Use o helper de limpeza:
+```bash
+yarn docker:clean
+```
+
+Se ainda precisar de fallback manual:
+```bash
+sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports
+sudo chmod -R u+rwX allure-results test-results cucumber-reports reports
 ```
 
 ### Vídeos ou relatórios não aparecem no host
