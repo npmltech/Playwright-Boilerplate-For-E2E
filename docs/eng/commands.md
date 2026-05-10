@@ -336,12 +336,20 @@ Runs Playwright tests inside Docker with video recording enabled. Executes the t
 yarn docker:test:pw:video
 ```
 
-### `yarn docker:test:cucumber:video`
+### `yarn docker:test:cucumber:video:pt-br`
 
-Runs Cucumber tests inside Docker with video recording enabled. Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos and reports are saved to `./test-results/` and `./cucumber-reports/`.
+Runs Cucumber tests inside Docker with video recording enabled for Brazilian Portuguese (`FEATURE_LOCALE=pt-br`). Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos and reports are saved to `./test-results/` and `./cucumber-reports/`.
 
 ```bash
-yarn docker:test:cucumber:video
+yarn docker:test:cucumber:video:pt-br
+```
+
+### `yarn docker:test:cucumber:video:eng`
+
+Runs Cucumber tests inside Docker with video recording enabled for English (`FEATURE_LOCALE=eng`). Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos and reports are saved to `./test-results/` and `./cucumber-reports/`.
+
+```bash
+yarn docker:test:cucumber:video:eng
 ```
 
 ### `yarn docker:test:api:video`

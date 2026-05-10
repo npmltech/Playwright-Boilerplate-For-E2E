@@ -88,8 +88,11 @@ yarn docker:test:all:video
 # Run Playwright tests in Docker with video
 yarn docker:test:pw:video
 
-# Run Cucumber tests in Docker with video
-yarn docker:test:cucumber:video
+# Run Cucumber tests in Docker with video (PT-BR)
+yarn docker:test:cucumber:video:pt-br
+
+# Run Cucumber tests in Docker with video (ENG)
+yarn docker:test:cucumber:video:eng
 
 # Run API tests in Docker
 yarn docker:test:api:video
@@ -122,8 +125,11 @@ yarn docker:test:all:video
 # Executar testes Playwright no Docker com vídeo
 yarn docker:test:pw:video
 
-# Executar testes Cucumber no Docker com vídeo
-yarn docker:test:cucumber:video
+# Executar testes Cucumber no Docker com vídeo (PT-BR)
+yarn docker:test:cucumber:video:pt-br
+
+# Executar testes Cucumber no Docker com vídeo (ENG)
+yarn docker:test:cucumber:video:eng
 
 # Executar testes de API no Docker
 yarn docker:test:api:video

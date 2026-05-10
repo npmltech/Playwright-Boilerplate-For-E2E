@@ -14,7 +14,8 @@ All notable changes to this project are documented in this file.
   - `docker:logs` — view live container logs
   - `docker:compose` — generic docker-compose command wrapper
   - `docker:test:pw:video` — run Playwright tests in Docker with video evidence
-  - `docker:test:cucumber:video` — run Cucumber tests in Docker with video evidence
+  - `docker:test:cucumber:video:pt-br` — run Cucumber tests in Docker with video evidence for Brazilian Portuguese
+  - `docker:test:cucumber:video:eng` — run Cucumber tests in Docker with video evidence for English
   - `docker:test:api:video` — run API tests in Docker
   - `docker:test:all:video` — run full Docker suite (Playwright + Cucumber for `pt-br` and `eng`) with video evidence
 
@@ -34,7 +35,7 @@ All notable changes to this project are documented in this file.
 - Updated `docs/eng/project-structure.md` to reflect `container/` folder structure
 - Updated `README.md` with Docker commands section (EN and PT-BR)
 - Added Docker usage examples to Quick Start section
-- Updated Docker guide, command reference, README, and troubleshooting docs to cover `docker:clean`, `docker:test:all:video`, host networking, and artifact permission recovery
+- Updated Docker guide, command reference, README, and troubleshooting docs to cover `docker:clean`, `docker:test:cucumber:video:pt-br`, `docker:test:cucumber:video:eng`, `docker:test:all:video`, host networking, and artifact permission recovery
 
 ## 2026-05-06
 

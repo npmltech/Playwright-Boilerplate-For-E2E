@@ -224,10 +224,10 @@ Esse atalho executa:
 docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
 ```
 
-**Testes Cucumber:**
+**Testes Cucumber (PT-BR):**
 
 ```bash
-yarn docker:test:cucumber:video
+yarn docker:test:cucumber:video:pt-br
 ```
 
 Vídeos e relatórios salvos em `./test-results/` e `./cucumber-reports/`
@@ -235,7 +235,21 @@ Vídeos e relatórios salvos em `./test-results/` e `./cucumber-reports/`
 Esse atalho executa:
 
 ```bash
-docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber sh -lc 'yarn test:cucumber:headless:video'
+```
+
+**Testes Cucumber (ENG):**
+
+```bash
+yarn docker:test:cucumber:video:eng
+```
+
+Vídeos e relatórios salvos em `./test-results/` e `./cucumber-reports/`
+
+Esse atalho executa:
+
+```bash
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber sh -lc 'yarn test:cucumber:headless:video'
 ```
 
 **Testes de API:**
@@ -311,8 +325,8 @@ yarn docker:clean
 # Rodar suíte completa (Playwright + Cucumber pt-br + eng)
 yarn docker:test:all:video
 
-# Rodar testes Cucumber com vídeo
-yarn docker:test:cucumber:video
+# Rodar testes Cucumber com vídeo (PT-BR)
+yarn docker:test:cucumber:video:pt-br
 
 # Vídeos aparecem em ./test-results/ e ./cucumber-reports/
 ```
@@ -323,7 +337,7 @@ Modifique seus feature files ou definições de steps localmente, depois:
 
 ```bash
 # Rodar testes novamente (usa imagem em cache, mais rápido)
-yarn docker:test:cucumber:video
+yarn docker:test:cucumber:video:pt-br
 
 # Cheque vídeos para falhas
 ls test-results/
@@ -348,7 +362,7 @@ yarn test:cucumber:headless:video --tags "@login"
 ### 4. Execução Paralela (CI/CD)
 
 ```bash
-yarn docker:test:cucumber:video --tags "@web" --parallel 4
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber sh -lc 'yarn test:cucumber:workers:headless:video --tags "@web" --parallel 4'
 ```
 
 Docker lida com paralelismo dentro do container.
