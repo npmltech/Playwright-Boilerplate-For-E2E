@@ -237,6 +237,57 @@ Fix applied:
 - Added cleanup script to remove generated artifacts:
   - scripts/clean-artifacts.sh
 
+## 10.1) Permission denied when removing Docker-generated artifacts
+
+Symptom:
+
+- `rm: cannot remove 'allure-results/...': Permission denied`
+- Similar errors for `test-results/` or `cucumber-reports/`
+
+Observed cause:
+
+- Some Docker runs write bind-mounted artifact files with the image user mapping (`uid=1001` / `pwuser`)
+- On the host, those files may not be removable directly by the local user
+
+Fix applied:
+
+- Added a Docker-aware cleanup path to `scripts/clean-artifacts.sh`
+- Added `yarn docker:clean` to run cleanup through a temporary container with `--network host`
+
+Verification:
+
+- Run `yarn docker:clean`
+- Confirm `allure-results/`, `test-results/`, `cucumber-reports/`, and `reports/` are recreated under the host user
+
+Fallback:
+
+- If the environment still requires manual intervention:
+  - `sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports`
+  - `sudo chmod -R u+rwX allure-results test-results cucumber-reports reports`
+
+## 10.2) Docker bridge networking not supported in local daemon
+
+Symptom:
+
+- `failed to create endpoint ... on network bridge`
+- `operation not supported` when building or running containers
+
+Observed cause:
+
+- The local Docker daemon cannot create the default bridge/veth interfaces in the current environment
+
+Fix applied:
+
+- Docker build uses host networking in compose build configuration
+- Docker runtime uses `network_mode: host`
+- Cleanup helper container also uses `--network host`
+
+Verification:
+
+- `yarn docker:build`
+- `yarn docker:test:cucumber:video`
+- `yarn docker:clean`
+
 ## 11) Target migration to Automation Test Store
 
 Changes applied:

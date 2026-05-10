@@ -237,6 +237,57 @@ Correção aplicada:
 - Adicionado script de limpeza para remover artefatos gerados:
   - `scripts/clean-artifacts.sh`
 
+## 10.1) Permission denied ao remover artefatos gerados pelo Docker
+
+Sintoma:
+
+- `rm: cannot remove 'allure-results/...': Permission denied`
+- Erros semelhantes em `test-results/` ou `cucumber-reports/`
+
+Causa observada:
+
+- Algumas execuções do Docker escrevem arquivos bind-mounted de artefato com o mapeamento de usuário da imagem (`uid=1001` / `pwuser`)
+- No host, esses arquivos podem não ser removíveis diretamente pelo usuário local
+
+Correção aplicada:
+
+- Adicionado um fluxo de limpeza compatível com Docker em `scripts/clean-artifacts.sh`
+- Adicionado `yarn docker:clean` para executar a limpeza por meio de um container temporário com `--network host`
+
+Verificação:
+
+- Execute `yarn docker:clean`
+- Confirme que `allure-results/`, `test-results/`, `cucumber-reports/` e `reports/` foram recriados sob o usuário do host
+
+Fallback:
+
+- Se o ambiente ainda exigir intervenção manual:
+  - `sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports`
+  - `sudo chmod -R u+rwX allure-results test-results cucumber-reports reports`
+
+## 10.2) Bridge networking do Docker não suportado no daemon local
+
+Sintoma:
+
+- `failed to create endpoint ... on network bridge`
+- `operation not supported` ao construir ou rodar containers
+
+Causa observada:
+
+- O daemon Docker local não consegue criar as interfaces bridge/veth padrão no ambiente atual
+
+Correção aplicada:
+
+- O build do Docker usa host networking na configuração de build do compose
+- O runtime do Docker usa `network_mode: host`
+- O container helper de limpeza também usa `--network host`
+
+Verificação:
+
+- `yarn docker:build`
+- `yarn docker:test:cucumber:video`
+- `yarn docker:clean`
+
 ## 11) Migração de target para Automation Test Store
 
 Mudanças aplicadas:

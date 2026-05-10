@@ -288,6 +288,14 @@ Constrói (ou reconstrói) imagens de container Docker para todos os serviços (
 yarn docker:build
 ```
 
+### `yarn docker:clean`
+
+Remove com segurança os artefatos gerados via um container temporário de limpeza. Use quando execuções anteriores tiverem criado arquivos difíceis de apagar no host por causa de ownership do Docker.
+
+```bash
+yarn docker:clean
+```
+
 ### `yarn docker:up`
 
 Inicia todos os containers em modo interativo. Os containers permanecem rodando até você pressionar `Ctrl+C` ou executar `docker down`.
@@ -314,7 +322,7 @@ yarn docker:logs
 
 ### `yarn docker:test:pw:video`
 
-Executa testes Playwright dentro do Docker com gravação de vídeo habilitada. Vídeos são salvos em `./reports/playwright/`.
+Executa testes Playwright dentro do Docker com gravação de vídeo habilitada. Executa o comando de teste explicitamente com `docker compose run --rm ... sh -lc ...`. Vídeos são salvos em `./reports/playwright/`.
 
 ```bash
 yarn docker:test:pw:video
@@ -322,7 +330,7 @@ yarn docker:test:pw:video
 
 ### `yarn docker:test:cucumber:video`
 
-Executa testes Cucumber dentro do Docker com gravação de vídeo habilitada. Vídeos e relatórios são salvos em `./test-results/` e `./cucumber-reports/`.
+Executa testes Cucumber dentro do Docker com gravação de vídeo habilitada. Executa o comando de teste explicitamente com `docker compose run --rm ... sh -lc ...`. Vídeos e relatórios são salvos em `./test-results/` e `./cucumber-reports/`.
 
 ```bash
 yarn docker:test:cucumber:video
@@ -330,7 +338,7 @@ yarn docker:test:cucumber:video
 
 ### `yarn docker:test:api:video`
 
-Executa testes de API dentro do Docker. Relatórios são salvos em `./allure-results/`.
+Executa testes de API dentro do Docker. Executa o comando de teste explicitamente com `docker compose run --rm ... sh -lc ...`. Relatórios são salvos em `./allure-results/`.
 
 ```bash
 yarn docker:test:api:video
