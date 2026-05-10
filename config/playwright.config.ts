@@ -32,8 +32,12 @@ const projects = [
 console.log('BASE_URL:', baseURL);
 
 export default defineConfig({
+  outputDir: '../test-results/playwright',
   projects,
-  reporter: [['html', { outputFolder: '../reports' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never', outputFolder: '../reports/playwright' }],
+  ],
   retries: process.env.CI ? 2 : 0,
   testDir: '../tests/e2e',
   timeout: 30_000,

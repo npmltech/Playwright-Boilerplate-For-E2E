@@ -276,6 +276,83 @@ yarn test:report
 
 ---
 
+## Docker
+
+Execução de testes baseada em container. Para informações detalhadas, veja [Guia de Docker](docker.md).
+
+### `yarn docker:build`
+
+Constrói (ou reconstrói) imagens de container Docker para todos os serviços (playwright, cucumber, api). Execute após atualizar `package.json` ou o Dockerfile.
+
+```bash
+yarn docker:build
+```
+
+### `yarn docker:up`
+
+Inicia todos os containers em modo interativo. Os containers permanecem rodando até você pressionar `Ctrl+C` ou executar `docker down`.
+
+```bash
+yarn docker:up
+```
+
+### `yarn docker:down`
+
+Para e remove todos os containers e redes associadas.
+
+```bash
+yarn docker:down
+```
+
+### `yarn docker:logs`
+
+Faz stream de logs ao vivo de todos os containers rodando. Pressione `Ctrl+C` para sair.
+
+```bash
+yarn docker:logs
+```
+
+### `yarn docker:test:pw:video`
+
+Executa testes Playwright dentro do Docker com gravação de vídeo habilitada. Vídeos são salvos em `./reports/playwright/`.
+
+```bash
+yarn docker:test:pw:video
+```
+
+### `yarn docker:test:cucumber:video`
+
+Executa testes Cucumber dentro do Docker com gravação de vídeo habilitada. Vídeos e relatórios são salvos em `./test-results/` e `./cucumber-reports/`.
+
+```bash
+yarn docker:test:cucumber:video
+```
+
+### `yarn docker:test:api:video`
+
+Executa testes de API dentro do Docker. Relatórios são salvos em `./allure-results/`.
+
+```bash
+yarn docker:test:api:video
+```
+
+### `yarn docker:compose`
+
+Wrapper genérico para comandos `docker compose`. Útil para operações avançadas.
+
+```bash
+# Listar containers rodando
+yarn docker:compose ps
+
+# Executar um comando dentro de um container rodando
+yarn docker:compose exec playwright /bin/sh
+
+# Visualizar logs de um serviço específico
+yarn docker:compose logs cucumber
+```
+
+---
+
 ## Filtro por Tags
 
 Qualquer comando Cucumber aceita `--tags` para filtrar cenários. Exemplos:

@@ -11,8 +11,9 @@ interface SwapiFilm {
   [key: string]: unknown;
 }
 
-let swapiResponse: SwapiFilm[] | null = null;
-let responseStatus: number | null = null;
+function getApiResponse(world: CustomWorld): SwapiFilm[] | null {
+  return (world.apiResponse as SwapiFilm[] | null) ?? null;
+}
 
 Given('I access the SWAPI films API', async function (this: CustomWorld) {
   this.getColorizedLog('cyan')('Accessing the SWAPI films API...');
@@ -27,11 +28,11 @@ When(
 
     try {
       const response = await fetch(`https://swapi.info${endpoint}`);
-      responseStatus = response.status;
-      swapiResponse = (await response.json()) as SwapiFilm[];
+      this.apiStatus = response.status;
+      this.apiResponse = (await response.json()) as SwapiFilm[];
 
       this.getColorizedLog('green')(
-        `Response received with status ${responseStatus}`
+        `Response received with status ${this.apiStatus}`
       );
     } catch (error) {
       this.getColorizedLog('red')(`Request error: ${error}`);
@@ -43,12 +44,12 @@ When(
 Then(
   'the response should have status {int}',
   async function (this: CustomWorld, expectedStatus: number) {
-    if (responseStatus !== expectedStatus) {
+    if (this.apiStatus !== expectedStatus) {
       this.getColorizedLog('red')(
-        `Expected status: ${expectedStatus}, but got: ${responseStatus}`
+        `Expected status: ${expectedStatus}, but got: ${this.apiStatus}`
       );
       throw new Error(
-        `Status mismatch: expected ${expectedStatus}, got ${responseStatus}`
+        `Status mismatch: expected ${expectedStatus}, got ${this.apiStatus}`
       );
     }
     this.getColorizedLog('green')(`Status ${expectedStatus} confirmed`);
@@ -58,6 +59,7 @@ Then(
 Then(
   'the response should contain an array of films',
   async function (this: CustomWorld) {
+    const swapiResponse = getApiResponse(this);
     if (!swapiResponse || !Array.isArray(swapiResponse)) {
       this.getColorizedLog('red')(
         'Response does not contain a valid films array'
@@ -73,6 +75,7 @@ Then(
 Then(
   'the array should have more than {int} films',
   async function (this: CustomWorld, minCount: number) {
+    const swapiResponse = getApiResponse(this);
     if (!swapiResponse || swapiResponse.length <= minCount) {
       this.getColorizedLog('red')(
         `Expected more than ${minCount} films, but found ${swapiResponse?.length ?? 0}`
@@ -90,6 +93,7 @@ Then(
 Then(
   'each film should have required properties',
   async function (this: CustomWorld) {
+    const swapiResponse = getApiResponse(this);
     if (!swapiResponse) {
       throw new Error('No films array found');
     }
@@ -131,6 +135,7 @@ Then(
 Then(
   'the first film should have property {string}',
   async function (this: CustomWorld, property: string) {
+    const swapiResponse = getApiResponse(this);
     const firstFilm = swapiResponse?.[0];
     const value = firstFilm?.[property];
     if (value === null || value === undefined || value === '') {
@@ -172,6 +177,7 @@ const swapiFilmSchema = {
 Then(
   'the response should match the SWAPI films JSON Schema',
   async function (this: CustomWorld) {
+    const swapiResponse = getApiResponse(this);
     if (!swapiResponse) {
       throw new Error('No response available to validate');
     }

@@ -13,6 +13,10 @@ Playwright-Boilerplate-For-E2E/
 │   ├── playwright.config.ts
 │   ├── routes.ts
 │   └── start-server-if-free.js
+├── container/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── docker-entrypoint.sh
 ├── data/
 │   └── users.ts
 ├── docs/

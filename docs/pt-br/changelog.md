@@ -2,6 +2,35 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-05-10
+
+### Adicionado
+
+- Atalhos de comando Docker em `package.json`:
+  - `docker:build` — construir imagens do container
+  - `docker:up` — iniciar todos os containers
+  - `docker:down` — parar e remover containers
+  - `docker:logs` — visualizar logs dos containers em tempo real
+  - `docker:compose` — wrapper genérico para comandos docker-compose
+  - `docker:test:pw:video` — executar testes Playwright no Docker com vídeo de evidência
+  - `docker:test:cucumber:video` — executar testes Cucumber no Docker com vídeo de evidência
+  - `docker:test:api:video` — executar testes de API no Docker
+
+### Alterado
+
+- **Reorganizados artefatos de Docker** em uma pasta dedicada `container/`:
+  - Movido `Dockerfile` para `container/Dockerfile`
+  - Movido `docker-compose.yml` para `container/docker-compose.yml`
+  - Movido `scripts/docker-entrypoint.sh` para `container/docker-entrypoint.sh`
+  - Atualizado o path do entrypoint no Dockerfile para referenciar a nova localização
+  - Adicionado `network: host` na configuração de build do compose para melhorar confiabilidade
+
+### Documentação
+
+- Atualizado `docs/pt-br/estrutura-do-projeto.md` para refletir a estrutura da pasta `container/`
+- Atualizado `README.md` com seção de comandos Docker (EN e PT-BR)
+- Adicionados exemplos de uso de Docker na seção Quick Start
+
 ## 2026-05-06
 
 ### Adicionado

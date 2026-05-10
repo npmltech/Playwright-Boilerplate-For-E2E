@@ -1,0 +1,59 @@
+services:
+  playwright:
+    build:
+      context: ..
+      dockerfile: container/Dockerfile
+      network: host
+    init: true
+    shm_size: '2gb'
+    tty: true
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      - CI=true
+      - CUCUMBER_HEADLESS=1
+      - CUCUMBER_VIDEO=0
+    volumes:
+      - ../reports:/app/reports
+      - ../test-results:/app/test-results
+      - ../allure-results:/app/allure-results
+
+  cucumber:
+    build:
+      context: ..
+      dockerfile: container/Dockerfile
+      network: host
+    init: true
+    shm_size: '2gb'
+    tty: true
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      - CI=true
+      - CUCUMBER_HEADLESS=1
+      - CUCUMBER_VIDEO=0
+    command: ["yarn", "test:cucumber:headless:video"]
+    volumes:
+      - ../test-results:/app/test-results
+      - ../allure-results:/app/allure-results
+      - ../cucumber-reports:/app/cucumber-reports
+
+  api:
+    build:
+      context: ..
+      dockerfile: container/Dockerfile
+      network: host
+    init: true
+    tty: true
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      - CI=true
+      - CUCUMBER_VIDEO=0
+    command: ["yarn", "test:api"]
+    volumes:
+      - ../allure-results:/app/allure-results
+      - ../cucumber-reports:/app/cucumber-reports

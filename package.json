@@ -7,6 +7,14 @@
     "allure:open": "OZONE_PLATFORM=x11 WAYLAND_DISPLAY= BROWSER='bash scripts/open-maximized.sh' node node_modules/allure-commandline/bin/allure open allure-report 2>&1 | sed '/Wayland Proxy/d;/WaylandProxy::SetupWaylandDisplays/d;/Failed to open Wayland display/d'",
     "allure:serve": "OZONE_PLATFORM=x11 WAYLAND_DISPLAY= BROWSER='bash scripts/open-maximized.sh' node node_modules/allure-commandline/bin/allure serve allure-results 2>&1 | sed '/Wayland Proxy/d;/WaylandProxy::SetupWaylandDisplays/d;/Failed to open Wayland display/d'",
     "allure:server:report": "yarn allure:generate && yarn allure:serve",
+    "docker:build": "docker compose -f container/docker-compose.yml build",
+    "docker:compose": "docker compose -f container/docker-compose.yml",
+    "docker:down": "docker compose -f container/docker-compose.yml down",
+    "docker:logs": "docker compose -f container/docker-compose.yml logs -f",
+    "docker:test:api:video": "docker compose -f container/docker-compose.yml run api",
+    "docker:test:cucumber:video": "docker compose -f container/docker-compose.yml run -e CUCUMBER_VIDEO=1 cucumber",
+    "docker:test:pw:video": "docker compose -f container/docker-compose.yml run -e PW_VIDEO_MODE=on playwright",
+    "docker:up": "docker compose -f container/docker-compose.yml up",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:features": "prettier --write \"features/**/*.feature\"",
@@ -30,9 +38,9 @@
     "test:cucumber:workers:headless:video:eng": "FEATURE_LOCALE=eng yarn test:cucumber:workers:headless:video",
     "test:cucumber:workers:headless:video:pt-br": "FEATURE_LOCALE=pt-br yarn test:cucumber:workers:headless:video",
     "test:debug": "playwright test --config=config/playwright.config.ts --debug",
-    "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed --reporter=list",
-    "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --reporter=list",
-    "test:report": "playwright show-report reports --port 9324"
+    "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed",
+    "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts",
+    "test:report": "playwright show-report reports/playwright --port 9324"
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.7.0",

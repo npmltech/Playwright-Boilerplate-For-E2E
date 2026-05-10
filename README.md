@@ -73,6 +73,62 @@ yarn test:cucumber:workers:headless:video:eng
 yarn test:cucumber:workers:headless:video:all
 ```
 
+### eng — Docker commands (with video evidence)
+
+```bash
+# Build container images
+yarn docker:build
+
+# Run Playwright tests in Docker with video
+yarn docker:test:pw:video
+
+# Run Cucumber tests in Docker with video
+yarn docker:test:cucumber:video
+
+# Run API tests in Docker
+yarn docker:test:api:video
+
+# Start all containers (interactive)
+yarn docker:up
+
+# Stop and remove containers
+yarn docker:down
+
+# View live logs
+yarn docker:logs
+
+# Run any docker-compose command
+yarn docker:compose ps
+```
+
+### pt-br — Comandos Docker (com vídeos de evidência)
+
+```bash
+# Construir imagens do container
+yarn docker:build
+
+# Executar testes Playwright no Docker com vídeo
+yarn docker:test:pw:video
+
+# Executar testes Cucumber no Docker com vídeo
+yarn docker:test:cucumber:video
+
+# Executar testes de API no Docker
+yarn docker:test:api:video
+
+# Iniciar todos os containers (interativo)
+yarn docker:up
+
+# Parar e remover containers
+yarn docker:down
+
+# Ver logs em tempo real
+yarn docker:logs
+
+# Executar qualquer comando docker-compose
+yarn docker:compose ps
+```
+
 ## Documentation / Documentação
 
 | Topic                            | English                                                                                                        | Português                                                                                                |
@@ -83,6 +139,7 @@ yarn test:cucumber:workers:headless:video:all
 | Installation                     | [Installation](docs/eng/installation.md)                                                                       | [Instalação](docs/pt-br/instalacao.md)                                                                   |
 | Project Structure                | [Project Structure](docs/eng/project-structure.md)                                                             | [Estrutura do Projeto](docs/pt-br/estrutura-do-projeto.md)                                               |
 | Configuration                    | [Configuration](docs/eng/configuration.md)                                                                     | [Configuração](docs/pt-br/configuracao.md)                                                               |
+| Docker                           | [Docker Guide](docs/eng/docker.md)                                                                             | [Guia de Docker](docs/pt-br/docker.md)                                                                   |
 | About Test Store                 | [About Automation Test Store](docs/eng/about-automation-test-store.md)                                         | [Sobre a Automation Test Store](docs/pt-br/sobre-automation-test-store.md)                               |
 | Step File Convention             | [Step File Convention](docs/eng/step-file-convention.md)                                                       | [Convenção de Steps](docs/pt-br/convencao-de-steps.md)                                                   |
 | API Testing                      | [API Testing](docs/eng/api-testing.md)                                                                         | [Testes de API](docs/pt-br/testes-de-api.md)                                                             |
