@@ -12,6 +12,7 @@
     "docker:compose": "docker compose -f container/docker-compose.yml",
     "docker:down": "docker compose -f container/docker-compose.yml down",
     "docker:logs": "docker compose -f container/docker-compose.yml logs -f",
+    "docker:test:all:video": "echo '=== [1/2] Running Playwright (headless + video) ===' && yarn docker:test:pw:video && echo '=== [2/2] Running Cucumber (headless + video | PT-BR + ENG) ===' && docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:workers:headless:video:all'",
     "docker:test:api:video": "docker compose -f container/docker-compose.yml run --rm api sh -lc 'yarn test:api'",
     "docker:test:cucumber:video": "docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'",
     "docker:test:pw:video": "docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'",
