@@ -32,7 +32,15 @@
     "test:debug": "playwright test --config=config/playwright.config.ts --debug",
     "test:pw:headed:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts --headed",
     "test:pw:headless:video": "PW_VIDEO_MODE=on playwright test --config=config/playwright.config.ts",
-    "test:report": "playwright show-report reports/playwright --port 9324"
+    "test:report": "playwright show-report reports/playwright --port 9324",
+    "docker:build": "docker compose -f container/docker-compose.yml build",
+    "docker:up": "docker compose -f container/docker-compose.yml up",
+    "docker:down": "docker compose -f container/docker-compose.yml down",
+    "docker:logs": "docker compose -f container/docker-compose.yml logs -f",
+    "docker:compose": "docker compose -f container/docker-compose.yml",
+    "docker:test:pw:video": "docker compose -f container/docker-compose.yml run -e PW_VIDEO_MODE=on playwright",
+    "docker:test:cucumber:video": "docker compose -f container/docker-compose.yml run -e CUCUMBER_VIDEO=1 cucumber",
+    "docker:test:api:video": "docker compose -f container/docker-compose.yml run api"
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.7.0",
