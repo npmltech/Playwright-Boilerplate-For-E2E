@@ -202,6 +202,14 @@ Executa o script de limpeza do repositório por meio de um container Docker temp
 
 ### Rodar Testes com Evidência em Vídeo
 
+**Suíte completa (Playwright + Cucumber pt-br + eng):**
+
+```bash
+yarn docker:test:all:video
+```
+
+Esse atalho executa primeiro o Playwright e depois o Cucumber para todos os locales suportados em sequência (`pt-br` e depois `eng`).
+
 **Testes Playwright:**
 
 ```bash
@@ -299,6 +307,9 @@ yarn docker:build
 
 # Limpar artefatos gerados anteriormente quando necessário
 yarn docker:clean
+
+# Rodar suíte completa (Playwright + Cucumber pt-br + eng)
+yarn docker:test:all:video
 
 # Rodar testes Cucumber com vídeo
 yarn docker:test:cucumber:video

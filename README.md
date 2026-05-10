@@ -82,6 +82,9 @@ yarn docker:build
 # Clean generated artifacts safely
 yarn docker:clean
 
+# Run full suite in Docker (Playwright + Cucumber PT-BR + ENG)
+yarn docker:test:all:video
+
 # Run Playwright tests in Docker with video
 yarn docker:test:pw:video
 
@@ -112,6 +115,9 @@ yarn docker:build
 
 # Limpar artefatos gerados com segurança
 yarn docker:clean
+
+# Executar suíte completa no Docker (Playwright + Cucumber PT-BR + ENG)
+yarn docker:test:all:video
 
 # Executar testes Playwright no Docker com vídeo
 yarn docker:test:pw:video

@@ -286,6 +286,7 @@ Verification:
 
 - `yarn docker:build`
 - `yarn docker:test:cucumber:video`
+- `yarn docker:test:all:video`
 - `yarn docker:clean`
 
 ## 11) Target migration to Automation Test Store
