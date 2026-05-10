@@ -320,6 +320,14 @@ Streams live logs from all running containers. Press `Ctrl+C` to exit.
 yarn docker:logs
 ```
 
+### `yarn docker:test:all:video`
+
+Runs the full Docker test flow in sequence with video evidence: Playwright first, then Cucumber workers for all locales (`pt-br` and `eng`).
+
+```bash
+yarn docker:test:all:video
+```
+
 ### `yarn docker:test:pw:video`
 
 Runs Playwright tests inside Docker with video recording enabled. Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos are saved to `./reports/playwright/`.

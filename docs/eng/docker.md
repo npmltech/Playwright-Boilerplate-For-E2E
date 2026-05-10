@@ -202,6 +202,14 @@ Runs the repository cleanup script through a temporary Docker container with `--
 
 ### Run Tests with Video Evidence
 
+**Full suite (Playwright + Cucumber pt-br + eng):**
+
+```bash
+yarn docker:test:all:video
+```
+
+This shortcut runs Playwright first and then Cucumber for all supported locales in sequence (`pt-br` then `eng`).
+
 **Playwright tests:**
 
 ```bash
@@ -299,6 +307,9 @@ yarn docker:build
 
 # Clean previous generated artifacts when needed
 yarn docker:clean
+
+# Run full suite (Playwright + Cucumber pt-br + eng)
+yarn docker:test:all:video
 
 # Run Cucumber tests with video
 yarn docker:test:cucumber:video
