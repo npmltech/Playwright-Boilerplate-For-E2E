@@ -38,7 +38,7 @@ services:
       - CI=true
       - CUCUMBER_HEADLESS=1
       - CUCUMBER_VIDEO=0
-    command: ["yarn", "test:cucumber:headless:video"]
+    command: ['yarn', 'test:cucumber:headless:video']
     volumes:
       - ../test-results:/app/test-results
       - ../allure-results:/app/allure-results
@@ -59,7 +59,7 @@ services:
     environment:
       - CI=true
       - CUCUMBER_VIDEO=0
-    command: ["yarn", "test:api"]
+    command: ['yarn', 'test:api']
     volumes:
       - ../allure-results:/app/allure-results
       - ../cucumber-reports:/app/cucumber-reports
