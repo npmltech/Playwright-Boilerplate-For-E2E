@@ -5,6 +5,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     shm_size: '2gb'
     tty: true
     env_file:
@@ -25,6 +27,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     shm_size: '2gb'
     tty: true
     env_file:
@@ -34,7 +38,7 @@ services:
       - CI=true
       - CUCUMBER_HEADLESS=1
       - CUCUMBER_VIDEO=0
-    command: ["yarn", "test:cucumber:headless:video"]
+    command: ['yarn', 'test:cucumber:headless:video']
     volumes:
       - ../test-results:/app/test-results
       - ../allure-results:/app/allure-results
@@ -46,6 +50,8 @@ services:
       dockerfile: container/Dockerfile
       network: host
     init: true
+    network_mode: host
+    user: root
     tty: true
     env_file:
       - path: ../.env
@@ -53,7 +59,7 @@ services:
     environment:
       - CI=true
       - CUCUMBER_VIDEO=0
-    command: ["yarn", "test:api"]
+    command: ['yarn', 'test:api']
     volumes:
       - ../allure-results:/app/allure-results
       - ../cucumber-reports:/app/cucumber-reports

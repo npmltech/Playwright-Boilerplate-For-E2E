@@ -5,32 +5,38 @@
 Docker é uma plataforma de containerização que empacota sua aplicação inteira—incluindo dependências, runtime e configurações—em uma unidade portável e isolada chamada **container**. Um container é como uma máquina virtual leve que garante que seus testes rodarem consistentemente em diferentes máquinas: laptop, pipeline de CI/CD ou servidor em nuvem.
 
 Pense assim:
+
 - **Sem Docker**: "Funciona na minha máquina" — diferentes ambientes têm diferentes versões de Node, Playwright, bibliotecas do sistema, etc.
 - **Com Docker**: "Funciona num container" — o container carrega tudo que precisa; funciona da mesma forma em qualquer lugar.
 
 ## Benefícios do Uso de Docker
 
 ### 1. **Consistência de Ambiente**
+
 - Todos os membros da equipe e pipelines de CI rodam testes em ambientes idênticos
 - Sem problemas de "mas funciona na minha máquina"
 - Elimina conflitos de versão (Node, Yarn, Playwright, browsers)
 
 ### 2. **Execução Isolada**
+
 - Testes rodam isolados; não interferem no seu sistema host
 - Sem necessidade de instalar browsers e dependências localmente
 - Mantém seu ambiente de desenvolvimento limpo
 
 ### 3. **Integração Fácil com CI/CD**
+
 - Containers pré-construídos com todas as dependências prontas
 - Execução de pipeline mais rápida (camadas em cache significam builds mais rápidos)
 - Resultados de teste reproduzíveis em todos os ambientes
 
 ### 4. **Captura de Evidência**
+
 - Vídeos, screenshots e relatórios são coletados automaticamente
 - Volumes mapeiam outputs do container de volta para sua máquina host
 - Perfeito para debugar testes flaky ou coletar evidência
 
 ### 5. **Escalabilidade**
+
 - Execute múltiplas instâncias de teste em paralelo em containers
 - Prepare-se para futuro de execução distribuída de testes
 - Fundação para estratégias de teste cross-browser
@@ -44,6 +50,7 @@ O Dockerfile é o blueprint para construir sua imagem de container de testes.
 ```dockerfile
 FROM mcr.microsoft.com/playwright:v1.59.0-noble
 ```
+
 - Começa com uma imagem pré-construída que inclui Playwright, Node e browsers
 - Economiza tempo e garante compatibilidade de browsers
 
@@ -52,6 +59,7 @@ ENV CI=true \
     CUCUMBER_HEADLESS=1 \
     CUCUMBER_VIDEO=0
 ```
+
 - Define variáveis de ambiente para o container
 - `CI=true` sinaliza que estamos em um ambiente de CI
 - `CUCUMBER_VIDEO=0` desabilita vídeo por padrão (pode sobrescrever via CLI)
@@ -59,18 +67,21 @@ ENV CI=true \
 ```dockerfile
 RUN corepack enable
 ```
+
 - Habilita Corepack para gerenciar Yarn (necessário para Yarn 4.x)
 
 ```dockerfile
 COPY package.json .yarnrc.yml yarn.lock ./
 RUN yarn install --immutable
 ```
+
 - Copia arquivos de dependência e instala com lockfile congelado
 - Garante installs reproduzíveis; sem atualizações inesperadas
 
 ```dockerfile
 COPY . .
 ```
+
 - Copia seu projeto inteiro para dentro do container
 - Tudo que é necessário para os testes agora está dentro
 
@@ -78,7 +89,8 @@ COPY . .
 ENTRYPOINT ["container/docker-entrypoint.sh"]
 CMD ["yarn", "test:pw:headless:video"]
 ```
-- Define o script entrypoint (corrige permissões e descarta para usuário não-privilegiado)
+
+- Define o script entrypoint (prepara diretórios de saída graváveis)
 - Comando padrão (pode ser sobrescrito por `docker compose run`)
 
 ### 2. **docker-compose.yml**
@@ -93,30 +105,42 @@ services:
       dockerfile: container/Dockerfile
       network: host
 ```
+
 - Serviço `playwright` constrói a partir do Dockerfile
 - `context: ..` significa que o contexto de build é a raiz do repositório
 - `dockerfile: container/Dockerfile` especifica o caminho para o Dockerfile
 - `network: host` melhora confiabilidade de build em alguns ambientes
 
 ```yaml
-    environment:
-      - CI=true
-      - CUCUMBER_HEADLESS=1
-      - CUCUMBER_VIDEO=0
+network_mode: host
+user: root
 ```
+
+- `network_mode: host` evita problemas de criação de bridge network em ambientes Docker mais restritos
+- `user: root` garante que o entrypoint consiga preparar diretórios de saída e permissões antes de rodar o comando de teste
+
+```yaml
+environment:
+  - CI=true
+  - CUCUMBER_HEADLESS=1
+  - CUCUMBER_VIDEO=0
+```
+
 - Define variáveis de ambiente de runtime para este serviço
 
 ```yaml
-    volumes:
-      - ../reports:/app/reports
-      - ../test-results:/app/test-results
-      - ../allure-results:/app/allure-results
+volumes:
+  - ../reports:/app/reports
+  - ../test-results:/app/test-results
+  - ../allure-results:/app/allure-results
 ```
+
 - Mapeia diretórios da sua máquina host para dentro do container
 - Outputs de testes fluem de volta para seu host automaticamente
 - Vídeos e relatórios terminam em `./reports/`, `./test-results/`, etc.
 
 **Três serviços são definidos:**
+
 - **playwright** — roda testes Playwright (puros)
 - **cucumber** — roda testes Cucumber BDD
 - **api** — roda testes de API
@@ -135,21 +159,22 @@ for dir in allure-results cucumber-reports reports reports/playwright test-resul
   mkdir -p "$dir"
 done
 ```
+
 - Cria diretórios de output se não existirem
 - Garante que diretórios estejam prontos para mounts de volume
 
 ```bash
-chown -R pwuser:pwuser allure-results cucumber-reports reports test-results
+chmod -R 777 allure-results cucumber-reports reports test-results
 ```
-- Muda propriedade dos diretórios de output para o usuário não-root (`pwuser`)
-- A imagem base de Docker roda testes como usuário não-privilegiado por segurança
-- Sem isso, volumes seriam owned por `root` na sua máquina host
+
+- Garante que os diretórios de output permaneçam graváveis mesmo quando a imagem base do Docker mapeia a execução para `pwuser` (`uid=1001`)
+- É um contorno pragmático para pastas de artefato bind-mounted em ambientes Linux mais restritos
 
 ```bash
-exec runuser -u pwuser -- "$@"
+exec "$@"
 ```
-- Descarta de root para usuário não-privilegiado antes de rodar o comando de teste
-- Garante que outputs sejam legíveis/escrevíveis na sua máquina host
+
+- Executa o comando configurado depois de preparar os diretórios de saída
 
 ## Comandos de Docker Básicos
 
@@ -160,34 +185,64 @@ yarn docker:build
 ```
 
 Equivalente a:
+
 ```bash
 docker compose -f container/docker-compose.yml build
 ```
 
 Constrói (ou reconstrói) imagens para todos os serviços. Execute após atualizar `package.json` ou o Dockerfile.
 
+### Limpar Artefatos Gerados
+
+```bash
+yarn docker:clean
+```
+
+Executa o script de limpeza do repositório por meio de um container Docker temporário com `--network host`. Isso é útil quando artefatos antigos foram criados com ownership do Docker e ficaram difíceis de apagar diretamente no host.
+
 ### Rodar Testes com Evidência em Vídeo
 
 **Testes Playwright:**
+
 ```bash
 yarn docker:test:pw:video
 ```
 
 Vídeos salvos em `./reports/playwright/`
 
+Esse atalho executa:
+
+```bash
+docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
+```
+
 **Testes Cucumber:**
+
 ```bash
 yarn docker:test:cucumber:video
 ```
 
 Vídeos e relatórios salvos em `./test-results/` e `./cucumber-reports/`
 
+Esse atalho executa:
+
+```bash
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'
+```
+
 **Testes de API:**
+
 ```bash
 yarn docker:test:api:video
 ```
 
 Relatórios salvos em `./allure-results/`
+
+Esse atalho executa:
+
+```bash
+docker compose -f container/docker-compose.yml run --rm api sh -lc 'yarn test:api'
+```
 
 ### Execução Interativa de Container
 
@@ -198,11 +253,13 @@ yarn docker:up
 ```
 
 Isso inicia todos os três serviços e os mantém rodando. Acesse shells de container com:
+
 ```bash
 docker exec -it container-playwright-1 /bin/sh
 ```
 
 Pare containers:
+
 ```bash
 yarn docker:down
 ```
@@ -224,6 +281,7 @@ yarn docker:compose <command>
 ```
 
 Exemplos:
+
 ```bash
 yarn docker:compose ps                 # Lista containers rodando
 yarn docker:compose exec playwright sh # Shell em um container rodando
@@ -238,6 +296,9 @@ yarn docker:compose run api bash       # Execute um comando diferente no serviç
 ```bash
 # Construir imagens (isso cacheia camadas, então é rápido próxima vez)
 yarn docker:build
+
+# Limpar artefatos gerados anteriormente quando necessário
+yarn docker:clean
 
 # Rodar testes Cucumber com vídeo
 yarn docker:test:cucumber:video
@@ -286,6 +347,7 @@ Docker lida com paralelismo dentro do container.
 ### "permission denied while trying to connect to the Docker daemon"
 
 Certifique-se que Docker está rodando e seu usuário está no grupo `docker`:
+
 ```bash
 sudo usermod -aG docker $USER
 # Faça logout e login novamente
@@ -294,18 +356,40 @@ sudo usermod -aG docker $USER
 ### "image not found" ou erros de build
 
 Reconstrua imagens:
+
 ```bash
 yarn docker:build
+```
+
+Se o daemon Docker do seu ambiente não conseguir criar interfaces bridge, prefira os scripts e o compose já configurados no projeto; eles já usam host networking para build e runtime.
+
+### "Permission denied" ao remover arquivos em `allure-results/`, `test-results` ou `cucumber-reports`
+
+Isso normalmente indica que execuções anteriores do container criaram artefatos bind-mounted com ownership controlado pelo Docker.
+
+Use o helper de limpeza:
+
+```bash
+yarn docker:clean
+```
+
+Se ainda precisar de fallback manual:
+
+```bash
+sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports
+sudo chmod -R u+rwX allure-results test-results cucumber-reports reports
 ```
 
 ### Vídeos ou relatórios não aparecem no host
 
 Cheque os mapeamentos de volume em `container/docker-compose.yml`. Vídeos devem aparecer em:
+
 - `./reports/` para Playwright
 - `./test-results/` para Cucumber
 - `./allure-results/` para relatórios Allure
 
 Se desaparecerem, cheque logs do container:
+
 ```bash
 yarn docker:logs
 ```
@@ -313,11 +397,13 @@ yarn docker:logs
 ### Container sai imediatamente
 
 Execute em modo interativo para ver o erro:
+
 ```bash
 docker compose -f container/docker-compose.yml run playwright /bin/sh
 ```
 
 Depois execute um comando manualmente para debug:
+
 ```bash
 yarn test:pw:headless:video
 ```

@@ -79,6 +79,9 @@ yarn test:cucumber:workers:headless:video:all
 # Build container images
 yarn docker:build
 
+# Clean generated artifacts safely
+yarn docker:clean
+
 # Run Playwright tests in Docker with video
 yarn docker:test:pw:video
 
@@ -106,6 +109,9 @@ yarn docker:compose ps
 ```bash
 # Construir imagens do container
 yarn docker:build
+
+# Limpar artefatos gerados com segurança
+yarn docker:clean
 
 # Executar testes Playwright no Docker com vídeo
 yarn docker:test:pw:video
