@@ -19,5 +19,4 @@ coverage/
 LICENSE
 .vscode/
 .idea/
-Dockerfile
 .dockerignore
