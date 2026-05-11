@@ -13,7 +13,7 @@ Feature: Login
   @regression
   @allure.label.severity:critical
   @allure.label.suite:Login
-  @allure.label.feature:Autenticacao
+  @allure.label.feature:Authentication
   Scenario: Successful login
     When I enter valid credentials
     Then I should be logged in successfully
@@ -21,7 +21,7 @@ Feature: Login
   @regression
   @allure.label.severity:normal
   @allure.label.suite:Login
-  @allure.label.feature:Autenticacao
+  @allure.label.feature:Authentication
   Scenario: Login failure
     When I enter invalid credentials
     Then I should see an error message
@@ -29,7 +29,7 @@ Feature: Login
   @regression
   @allure.label.severity:minor
   @allure.label.suite:Login
-  @allure.label.feature:Autenticacao
+  @allure.label.feature:Authentication
   Scenario: Navigate to password recovery
     When I click on forgot my password
     Then I should be redirected to the password recovery page
@@ -37,7 +37,7 @@ Feature: Login
   @regression
   @allure.label.severity:normal
   @allure.label.suite:Login
-  @allure.label.feature:Autenticacao
+  @allure.label.feature:Authentication
   Scenario: Login failure with empty credentials
     When I try to log in without filling credentials
     Then I should see an error message

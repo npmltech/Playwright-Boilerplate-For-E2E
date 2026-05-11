@@ -10,7 +10,7 @@ Feature: Checkout
   @regression
   @allure.label.severity:critical
   @allure.label.suite:Checkout
-  @allure.label.feature:Compras
+  @allure.label.feature:Shopping
   Scenario: Proceed to checkout
     Given that I have products in the cart
     When I access the checkout page
@@ -19,7 +19,7 @@ Feature: Checkout
   @regression
   @allure.label.severity:normal
   @allure.label.suite:Checkout
-  @allure.label.feature:Compras
+  @allure.label.feature:Shopping
   Scenario: Fill delivery address
     Given that I am on the checkout page
     When I fill the delivery address
@@ -28,7 +28,7 @@ Feature: Checkout
   @regression
   @allure.label.severity:critical
   @allure.label.suite:Checkout
-  @allure.label.feature:Compras
+  @allure.label.feature:Shopping
   Scenario: Confirm order
     Given that I am on the confirmation page
     When I confirm the order

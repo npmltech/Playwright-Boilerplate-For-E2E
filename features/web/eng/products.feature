@@ -9,8 +9,8 @@ Feature: Products
   @smoke
   @regression
   @allure.label.severity:critical
-  @allure.label.suite:Produtos
-  @allure.label.feature:Catalogo
+  @allure.label.suite:Products
+  @allure.label.feature:Catalog
   Scenario: List all products
     Given that I am on the products page
     When I view the product list
@@ -18,8 +18,8 @@ Feature: Products
 
   @regression
   @allure.label.severity:normal
-  @allure.label.suite:Produtos
-  @allure.label.feature:Catalogo
+  @allure.label.suite:Products
+  @allure.label.feature:Catalog
   Scenario: Filter products by category
     Given that I am on the products page
     When I filter by a category
@@ -27,8 +27,8 @@ Feature: Products
 
   @regression
   @allure.label.severity:normal
-  @allure.label.suite:Produtos
-  @allure.label.feature:Catalogo
+  @allure.label.suite:Products
+  @allure.label.feature:Catalog
   Scenario: Add product to cart
     Given that I am on the products page
     When I select a product and add it to the cart
