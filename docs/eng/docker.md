@@ -224,10 +224,10 @@ This shortcut runs:
 docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
 ```
 
-**Cucumber tests:**
+**Cucumber tests (PT-BR):**
 
 ```bash
-yarn docker:test:cucumber:video
+yarn docker:test:cucumber:video:pt-br
 ```
 
 Videos and reports saved to `./test-results/` and `./cucumber-reports/`
@@ -235,7 +235,21 @@ Videos and reports saved to `./test-results/` and `./cucumber-reports/`
 This shortcut runs:
 
 ```bash
-docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 cucumber sh -lc 'yarn test:cucumber:headless:video'
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber sh -lc 'yarn test:cucumber:headless:video'
+```
+
+**Cucumber tests (ENG):**
+
+```bash
+yarn docker:test:cucumber:video:eng
+```
+
+Videos and reports saved to `./test-results/` and `./cucumber-reports/`
+
+This shortcut runs:
+
+```bash
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber sh -lc 'yarn test:cucumber:headless:video'
 ```
 
 **API tests:**
@@ -311,8 +325,8 @@ yarn docker:clean
 # Run full suite (Playwright + Cucumber pt-br + eng)
 yarn docker:test:all:video
 
-# Run Cucumber tests with video
-yarn docker:test:cucumber:video
+# Run Cucumber tests with video (PT-BR)
+yarn docker:test:cucumber:video:pt-br
 
 # Videos appear in ./test-results/ and ./cucumber-reports/
 ```
@@ -323,7 +337,7 @@ Modify your feature files or step definitions locally, then:
 
 ```bash
 # Run tests again (uses cached image, faster)
-yarn docker:test:cucumber:video
+yarn docker:test:cucumber:video:pt-br
 
 # Check videos for failures
 ls test-results/
@@ -348,7 +362,7 @@ yarn test:cucumber:headless:video --tags "@login"
 ### 4. Parallel Execution (CI/CD)
 
 ```bash
-yarn docker:test:cucumber:video --tags "@web" --parallel 4
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber sh -lc 'yarn test:cucumber:workers:headless:video --tags "@web" --parallel 4'
 ```
 
 Docker handles the parallelism inside the container.

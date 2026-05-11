@@ -285,7 +285,8 @@ Correção aplicada:
 Verificação:
 
 - `yarn docker:build`
-- `yarn docker:test:cucumber:video`
+- `yarn docker:test:cucumber:video:pt-br`
+- `yarn docker:test:cucumber:video:eng`
 - `yarn docker:test:all:video`
 - `yarn docker:clean`
 

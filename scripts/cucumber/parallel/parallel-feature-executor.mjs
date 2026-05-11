@@ -43,7 +43,6 @@ export class ParallelFeatureExecutor {
 
     const queue = [...featureFiles];
     const failures = [];
-
     const workerTasks = Array.from({ length: this.workers }, (_, index) => {
       const workerId = index + 1;
 
