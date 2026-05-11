@@ -19,14 +19,15 @@ const reportsBaseDir = path.join(
   'features'
 );
 const allureResultsDir = path.join(rootDir, 'allure-results');
-
 const workers = Number(process.env.CUCUMBER_FEATURE_WORKERS ?? 4);
 
 console.log(
   'Environment variable CUCUMBER_FEATURE_WORKERS:',
   process.env.CUCUMBER_FEATURE_WORKERS
 );
+
 console.log('Workers configured:', workers);
+
 console.log('Feature locale:', featureLocale);
 
 if (!Number.isInteger(workers) || workers < 1) {
@@ -54,7 +55,6 @@ async function run() {
     reportDirectoryManager,
     featureRunner,
   });
-
   const failures = await parallelFeatureExecutor.run({
     featuresDir,
     stepsDir,
