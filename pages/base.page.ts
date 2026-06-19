@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import type { CustomWorld } from '../support/world';
 
 export class BasePage {
@@ -20,6 +20,6 @@ export class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await expect(this.page.locator('body')).toBeVisible();
   }
 }

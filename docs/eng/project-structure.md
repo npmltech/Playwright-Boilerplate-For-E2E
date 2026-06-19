@@ -94,6 +94,7 @@ Playwright-Boilerplate-For-E2E/
 │   │       └── report-directory-manager.mjs
 │   ├── exclude-some-artifacts.sh
 │   ├── clean-artifacts.sh
+│   ├── cucumber-report-summary.cjs
 │   └── open-maximized.sh
 ├── steps/
 │   ├── api/
@@ -126,6 +127,10 @@ Playwright-Boilerplate-For-E2E/
 ├── allure-results/
 ├── allure-report/
 ├── cucumber-reports/
+│   ├── cucumber-report-pt-br.json
+│   ├── cucumber-report-eng.json
+│   ├── cucumber-report-pt-br.html
+│   └── cucumber-report-eng.html
 ├── test-results/
 ├── .env
 ├── .gitignore

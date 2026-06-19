@@ -12,7 +12,7 @@ const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
 setDefaultTimeout(cucumberTimeoutMs);
 
 async function waitForPageReady(world: CustomWorld) {
-  await world.page.waitForLoadState('domcontentloaded');
+  await expect(world.page.locator('body')).toBeVisible();
 }
 
 async function ensureLoggedIn(world: CustomWorld) {

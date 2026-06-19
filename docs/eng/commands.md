@@ -38,6 +38,22 @@ Shortcut that chains `allure:generate` and then `allure:serve`. Generates the re
 yarn allure:server:report
 ```
 
+### `yarn report:cucumber:summary`
+
+Builds a concise, colorized summary from Cucumber JSON reports. By default it searches for locale files in `cucumber-reports/` (for example `cucumber-report-pt-br.json` and `cucumber-report-eng.json`) and merges totals across them.
+
+When locale files are not found, it falls back to legacy `cucumber-report.json` and prints a warning so you know totals may represent only one locale.
+
+```bash
+yarn report:cucumber:summary
+
+# Optional: summarize a specific report file
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+
+# Optional: summarize all report files from a custom directory
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/cucumber-report-summary.json
+```
+
 ---
 
 ## Code Formatting

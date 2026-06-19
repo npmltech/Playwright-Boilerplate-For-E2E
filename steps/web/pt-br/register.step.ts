@@ -12,6 +12,17 @@ function uniqueSuffix() {
   return `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
 }
 
+async function waitForZoneOptionsToLoad(world: CustomWorld) {
+  const zoneOptions = world.page.locator(`${registerLocator.zoneSelect} option`);
+
+  await expect
+    .poll(async () => zoneOptions.count(), {
+      message: 'Opcoes de zona nao carregaram apos selecionar o pais',
+      timeout: registerTimeoutMs,
+    })
+    .toBeGreaterThan(1);
+}
+
 Given(
   'que eu estou na página de recuperação de senha',
   async function (this: CustomWorld) {
@@ -67,7 +78,7 @@ When(
       .fill('Rua Teste, 123');
     await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
     await this.page.locator(registerLocator.countrySelect).selectOption('30');
-    await this.page.waitForTimeout(300);
+    await waitForZoneOptionsToLoad(this);
     await this.page
       .locator(registerLocator.zoneSelect)
       .selectOption({ index: 1 });
@@ -101,7 +112,7 @@ When(
       .fill('Avenida Teste, 456');
     await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
     await this.page.locator(registerLocator.countrySelect).selectOption('30');
-    await this.page.waitForTimeout(300);
+    await waitForZoneOptionsToLoad(this);
     await this.page
       .locator(registerLocator.zoneSelect)
       .selectOption({ index: 1 });

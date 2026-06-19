@@ -2,6 +2,38 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-06-19
+
+### Alterado
+
+- Estratégia de sincronização web refatorada para remover explicit waits e usar assertions orientadas a estado.
+- Esperas explícitas foram substituídas nos fluxos afetados (`login`, `register`, `products`, `checkout` e `hooks`) por:
+  - `expect(locator).toBeVisible()`
+  - `expect(page).toHaveURL(...)`
+  - `expect.poll(...)` para dados dinâmicos em dropdown
+- Estabilidade melhorada ao reduzir acoplamento temporal com sleeps fixos (`waitForTimeout`) e waits genéricos (`waitForLoadState`, `waitForFunction`) em steps críticos.
+
+### Adicionado
+
+- Novo comando `report:cucumber:summary` para gerar resumo consolidado e colorido do Cucumber.
+- O resumo agora inclui:
+  - contadores por status
+  - destaque de falhas
+  - timestamp `Test Run` no formato `dd.mm.aaaa hh:mm`
+  - artefato JSON de saída (`.tmp/cucumber-report-summary.json`)
+
+### Relatórios
+
+- Runner do Cucumber agora grava arquivos por locale para evitar sobrescrita entre execuções:
+  - `cucumber-report-pt-br.json` / `cucumber-report-pt-br.html`
+  - `cucumber-report-eng.json` / `cucumber-report-eng.html`
+- O comando de summary mescla por padrão todos os arquivos `cucumber-report-*.json`.
+- Fallback legado mantido: se os arquivos por locale não existirem, o comando lê `cucumber-report.json` e exibe aviso de que os totais podem refletir apenas um locale.
+
+### Documentação
+
+- README, comandos, execução de testes, relatórios, troubleshooting, estrutura do projeto e changelog foram atualizados em inglês e português.
+
 ## 2026-05-10
 
 ### Adicionado

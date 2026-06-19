@@ -31,8 +31,8 @@ STEP_IMPORT_GLOB="steps/**/${FEATURE_LOCALE}/**/*.step.ts"
     --import support/hooks.ts \
     --import "$STEP_IMPORT_GLOB" \
     $STDOUT_FORMAT \
-    --format html:cucumber-reports/cucumber-report.html \
-    --format json:cucumber-reports/cucumber-report.json \
+    --format html:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.html \
+    --format json:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.json \
     --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js \
     --format-options '{"resultsDir":"./allure-results"}' \
     "${FILTER_ARGS[@]}" \

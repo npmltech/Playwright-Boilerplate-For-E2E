@@ -117,6 +117,21 @@ yarn test:debug
 yarn test:report
 ```
 
+## Cucumber report summary
+
+After running Cucumber (one locale or multiple locales), generate a merged summary:
+
+```bash
+yarn report:cucumber:summary
+```
+
+Useful options:
+
+```bash
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summary.json
+```
+
 ## Environment variables
 
 | Variable            | Default | Description                                              |

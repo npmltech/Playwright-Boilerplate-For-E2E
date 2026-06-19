@@ -25,6 +25,7 @@
     "format:lint": "yarn lint:fix && yarn format",
     "lint": "eslint . --ext .ts,.tsx,.js",
     "lint:fix": "eslint . --ext .ts,.tsx,.js --fix",
+    "report:cucumber:summary": "node scripts/cucumber-report-summary.cjs",
     "test:all:headless:video:prompt": "echo '=== [1/2] Running Playwright (headless + video) ===' && yarn test:pw:headless:video && echo '=== [2/2] Running Cucumber (headless + video + verbose prompt) ===' && yarn test:cucumber:no-workers:headless:video",
     "test:all:video": "yarn test:all:video:prompt",
     "test:all:video:prompt": "echo '=== [1/2] Running Playwright (headed + video) ===' && yarn test:pw:headed:video && echo '=== [2/2] Running Cucumber (headed + video + verbose prompt) ===' && yarn test:cucumber:no-workers:headed:video",

@@ -318,6 +318,52 @@ Observed cause:
 Fix applied:
 
 - Hardened login submit in page object with layered fallback:
+
+## 13) Explicit waits causing flaky UI synchronization
+
+Symptom:
+
+- Instability around browser speed/network variability
+- Intermittent failures near fixed sleeps or generic page-load waits
+
+Observed cause:
+
+- Use of explicit waits such as:
+  - `page.waitForTimeout(...)`
+  - `page.waitForLoadState(...)`
+  - `page.waitForFunction(...)`
+  - direct `waitForURL(...)` in non-deterministic flow segments
+
+Fix applied:
+
+- Refactored synchronization to state-based assertions and polling:
+  - `expect(locator).toBeVisible()`
+  - `expect(page).toHaveURL(...)`
+  - `expect.poll(...)` for dynamic option loading
+- This reduced timing coupling and improved deterministic behavior across browsers.
+
+## 14) Cucumber report shows 20 scenarios while Allure shows 40
+
+Symptom:
+
+- Allure totals indicate both locales executed (for example 40 scenarios)
+- `cucumber-report.json` still shows only one locale run (for example 20 scenarios)
+
+Observed cause:
+
+- Legacy runner output wrote both locale runs to the same JSON filename, so the second run overwrote the first.
+
+Fix applied:
+
+- Runner now writes locale-specific report files:
+  - `cucumber-report-pt-br.json`
+  - `cucumber-report-eng.json`
+- Added merged summary command:
+  - `yarn report:cucumber:summary`
+
+Notes:
+
+- If locale files are not found yet, summary command falls back to legacy `cucumber-report.json` and prints a warning.
   - click submit button
   - press Enter on password field
   - native form submit fallback

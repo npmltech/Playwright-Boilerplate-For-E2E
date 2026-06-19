@@ -38,6 +38,22 @@ Atalho que encadeia `allure:generate` e depois `allure:serve`. Gera o relatório
 yarn allure:server:report
 ```
 
+### `yarn report:cucumber:summary`
+
+Gera um resumo compacto e colorido a partir dos relatórios JSON do Cucumber. Por padrão, procura arquivos por locale em `cucumber-reports/` (por exemplo `cucumber-report-pt-br.json` e `cucumber-report-eng.json`) e mescla os totais.
+
+Quando os arquivos por locale nao existem, o comando usa fallback para o legado `cucumber-report.json` e exibe aviso, indicando que os totais podem representar apenas um locale.
+
+```bash
+yarn report:cucumber:summary
+
+# Opcional: resumir um arquivo especifico
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+
+# Opcional: resumir todos os arquivos de um diretorio customizado
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/cucumber-report-summary.json
+```
+
 ---
 
 ## Formatação de Código

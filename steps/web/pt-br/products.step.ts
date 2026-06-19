@@ -12,7 +12,6 @@ setDefaultTimeout(cucumberTimeoutMs);
 Given('que eu estou na página de produtos', async function (this: CustomWorld) {
   const basePage = new BasePage(this.page, this);
   await basePage.navigate(routes.productCategory);
-  await this.page.waitForLoadState('networkidle');
   await expect(
     this.page.locator(productsLocator.productCards).first()
   ).toBeVisible({
@@ -44,7 +43,9 @@ When('eu filtro por uma categoria', async function (this: CustomWorld) {
     .first();
   await expect(categoryFilter).toBeVisible({ timeout: cucumberTimeoutMs });
   await categoryFilter.click();
-  await this.page.waitForLoadState('networkidle');
+  await expect(this.page.locator(productsLocator.productCards).first()).toBeVisible({
+    timeout: cucumberTimeoutMs,
+  });
 });
 
 Then(
@@ -64,7 +65,9 @@ When(
       .first();
     await expect(addToCartButton).toBeVisible({ timeout: cucumberTimeoutMs });
     await addToCartButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await expect(
+      this.page.locator(productsLocator.successNotification).first()
+    ).toBeVisible({ timeout: cucumberTimeoutMs });
   }
 );
 

@@ -318,6 +318,52 @@ Causa observada:
 Correção aplicada:
 
 - Submit de login reforçado no page object com fallback em camadas:
+
+## 13) Explicit waits causando instabilidade na sincronização UI
+
+Sintoma:
+
+- Instabilidade com variação de velocidade do browser/rede
+- Falhas intermitentes perto de sleeps fixos ou waits genéricos de carregamento
+
+Causa observada:
+
+- Uso de waits explícitos como:
+  - `page.waitForTimeout(...)`
+  - `page.waitForLoadState(...)`
+  - `page.waitForFunction(...)`
+  - `waitForURL(...)` direto em trechos não determinísticos
+
+Correção aplicada:
+
+- Sincronização refatorada para assertions/polling orientados a estado:
+  - `expect(locator).toBeVisible()`
+  - `expect(page).toHaveURL(...)`
+  - `expect.poll(...)` para carregamento dinâmico de opções
+- Isso reduziu acoplamento temporal e melhorou comportamento determinístico entre browsers.
+
+## 14) Cucumber mostra 20 cenários enquanto Allure mostra 40
+
+Sintoma:
+
+- Totais do Allure indicam execução dos dois locales (por exemplo 40 cenários)
+- `cucumber-report.json` mostra apenas um locale (por exemplo 20 cenários)
+
+Causa observada:
+
+- O output legado do runner escrevia os dois locales no mesmo nome de arquivo JSON, e a segunda execução sobrescrevia a primeira.
+
+Correção aplicada:
+
+- Runner agora grava arquivos por locale:
+  - `cucumber-report-pt-br.json`
+  - `cucumber-report-eng.json`
+- Adicionado comando de resumo consolidado:
+  - `yarn report:cucumber:summary`
+
+Observações:
+
+- Se os arquivos por locale ainda não existirem, o comando de summary usa fallback para `cucumber-report.json` legado e exibe aviso.
   - clique no botão de login
   - Enter no campo de senha
   - fallback com submit nativo do formulário

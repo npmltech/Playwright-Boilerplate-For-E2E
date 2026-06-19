@@ -73,6 +73,50 @@ yarn test:cucumber:workers:headless:video:eng
 yarn test:cucumber:workers:headless:video:all
 ```
 
+## Cucumber Summary / Resumo Cucumber
+
+### eng
+
+Generate a human-friendly summary from Cucumber JSON reports:
+
+```bash
+yarn report:cucumber:summary
+```
+
+The summary includes:
+
+- colored terminal output (status, counters, failures)
+- Test Run timestamp in `dd.mm.yyyy hh:mm`
+- merged totals across locale files (`cucumber-report-pt-br.json` + `cucumber-report-eng.json`)
+
+Optional input/output:
+
+```bash
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summary.json
+```
+
+### pt-br
+
+Gere um resumo amigavel dos relatórios JSON do Cucumber:
+
+```bash
+yarn report:cucumber:summary
+```
+
+O resumo inclui:
+
+- saída colorida no terminal (status, contadores, falhas)
+- timestamp de execucao em `dd.mm.aaaa hh:mm`
+- totais mesclados entre arquivos por locale (`cucumber-report-pt-br.json` + `cucumber-report-eng.json`)
+
+Entrada/saida opcionais:
+
+```bash
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summary.json
+```
+
 ### eng — Docker commands (with video evidence)
 
 ```bash
