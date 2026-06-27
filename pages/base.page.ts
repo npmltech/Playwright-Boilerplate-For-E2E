@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import type { CustomWorld } from '../support/world';
 
 export class BasePage {
@@ -16,10 +16,10 @@ export class BasePage {
         console.log(message);
       });
     logger('Navegando para: ' + url);
-    await this.page.goto(url);
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await expect(this.page.locator('body')).toBeVisible();
   }
 }

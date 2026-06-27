@@ -56,6 +56,26 @@ unsetopt correct correctall && yarn test:all:video:prompt
   yarn test:cucumber:no-workers:headless:video
   ```
 
+- Atalhos por locale (sem workers, headless):
+
+  ```bash
+  # Português do Brasil
+  yarn test:cucumber:headless:video:pt-br
+
+  # Apenas inglês
+  yarn test:cucumber:headless:video:eng
+  ```
+
+- Atalhos por locale (sem workers, headed):
+
+  ```bash
+  # Português do Brasil
+  yarn test:cucumber:headed:video:pt-br
+
+  # Apenas inglês
+  yarn test:cucumber:headed:video:eng
+  ```
+
 ### Com workers (execução paralela de cenários)
 
 - Modo headed (padrão 4 workers):
@@ -115,6 +135,21 @@ yarn test:debug
 
 ```bash
 yarn test:report
+```
+
+## Resumo de relatório Cucumber
+
+Após rodar o Cucumber (um locale ou múltiplos locales), gere um resumo consolidado:
+
+```bash
+yarn report:cucumber:summary
+```
+
+Opções úteis:
+
+```bash
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summary.json
 ```
 
 ## Variáveis de ambiente

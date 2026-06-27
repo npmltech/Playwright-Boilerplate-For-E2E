@@ -1,5 +1,5 @@
 import { Before, BeforeStep, AfterStep, After } from '@cucumber/cucumber';
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { type CustomWorld } from './world';
 import { HooksHelper } from './helpers/hooks-helpers';
 
@@ -55,42 +55,23 @@ AfterStep(async function (
 ) {
   const keyword = HooksHelper.getStepKeyword(gherkinDocument, pickleStep);
   const stepLine = `${keyword} ${pickleStep.text}`.trim();
+  const status = String(result?.status ?? 'UNKNOWN');
 
   if (this.page) {
     const currentUrl = this.page.url();
     const hasNavigated = currentUrl !== 'about:blank' && currentUrl !== '';
 
     if (hasNavigated) {
-      await this.page.waitForLoadState('load');
-      await this.page.waitForFunction(() => {
-        const hasVisibleElement = Array.from(
-          document.body?.querySelectorAll('*') ?? []
-        ).some((el) => {
-          const style = window.getComputedStyle(el);
-          const rect = el.getBoundingClientRect();
-          return (
-            style.visibility !== 'hidden' &&
-            style.display !== 'none' &&
-            rect.width > 0 &&
-            rect.height > 0
-          );
-        });
-
-        return (
-          document.readyState === 'complete' &&
-          document.styleSheets.length > 0 &&
-          hasVisibleElement
-        );
-      });
+      await expect(this.page.locator('body')).toBeVisible();
     }
 
-    const screenshot = await this.page.screenshot({ fullPage: false });
-    await this.attach(screenshot, 'image/png');
+    if (status !== 'PASSED') {
+      const screenshot = await this.page.screenshot({ fullPage: false });
+      await this.attach(screenshot, 'image/png');
+    }
   }
 
   if (!HooksHelper.isVerbose) return;
-
-  const status = String(result?.status ?? 'UNKNOWN');
 
   if (status === 'PASSED') {
     console.log(HooksHelper.colorize(`✔ ${stepLine}`, 'green'));

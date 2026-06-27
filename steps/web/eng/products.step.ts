@@ -1,22 +1,20 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { productsLocator } from '../../../locators/web-elements/products.locator';
+import { productsLocator } from '../../../ui/locators/products.locator';
 import { routes } from '../../../config/routes';
 import { BasePage } from '../../../pages/base.page';
 import type { CustomWorld } from '../../../support/world';
+import { HooksHelper } from '../../../support/helpers/hooks-helpers';
 
-const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
-
-setDefaultTimeout(cucumberTimeoutMs);
+setDefaultTimeout(HooksHelper.cucumberTimeoutMs);
 
 Given('that I am on the products page', async function (this: CustomWorld) {
   const basePage = new BasePage(this.page, this);
   await basePage.navigate(routes.productCategory);
-  await this.page.waitForLoadState('networkidle');
   await expect(
     this.page.locator(productsLocator.productCards).first()
   ).toBeVisible({
-    timeout: cucumberTimeoutMs,
+    timeout: HooksHelper.cucumberTimeoutMs,
   });
 });
 
@@ -42,9 +40,13 @@ When('I filter by a category', async function (this: CustomWorld) {
     .locator(productsLocator.categoryFilterLink)
     .filter({ visible: true })
     .first();
-  await expect(categoryFilter).toBeVisible({ timeout: cucumberTimeoutMs });
+  await expect(categoryFilter).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
   await categoryFilter.click();
-  await this.page.waitForLoadState('networkidle');
+  await expect(
+    this.page.locator(productsLocator.productCards).first()
+  ).toBeVisible({
+    timeout: HooksHelper.cucumberTimeoutMs,
+  });
 });
 
 Then(
@@ -62,9 +64,11 @@ When(
       .locator(productsLocator.addToCartButton)
       .filter({ visible: true })
       .first();
-    await expect(addToCartButton).toBeVisible({ timeout: cucumberTimeoutMs });
+    await expect(addToCartButton).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
     await addToCartButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await expect(
+      this.page.locator(productsLocator.successNotification).first()
+    ).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
   }
 );
 
