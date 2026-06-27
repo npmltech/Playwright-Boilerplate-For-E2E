@@ -2,26 +2,15 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
 import { BasePage } from '../../../pages/base.page';
-import { registerLocator } from '../../../locators/web-elements/register.locator';
+import { registerLocator } from '../../../ui/locators/register.locator';
 import { routes, routePatterns } from '../../../config/routes';
+import { HooksHelper } from '../../../support/helpers/hooks-helpers';
+import {
+  uniqueSuffix,
+  selectValidZone,
+} from '../shared/register.helpers';
 
 const notRegisteredEmail = 'nao-cadastrado-e2e@example.com';
-const registerTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
-
-function uniqueSuffix() {
-  return `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
-}
-
-async function waitForZoneOptionsToLoad(world: CustomWorld) {
-  const zoneOptions = world.page.locator(`${registerLocator.zoneSelect} option`);
-
-  await expect
-    .poll(async () => zoneOptions.count(), {
-      message: 'Opcoes de zona nao carregaram apos selecionar o pais',
-      timeout: registerTimeoutMs,
-    })
-    .toBeGreaterThan(1);
-}
 
 Given(
   'que eu estou na página de recuperação de senha',
@@ -78,10 +67,7 @@ When(
       .fill('Rua Teste, 123');
     await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
     await this.page.locator(registerLocator.countrySelect).selectOption('30');
-    await waitForZoneOptionsToLoad(this);
-    await this.page
-      .locator(registerLocator.zoneSelect)
-      .selectOption({ index: 1 });
+    await selectValidZone(this);
     await this.page.locator(registerLocator.postcodeInput).fill('01000');
     await this.page
       .locator(registerLocator.loginNameInput)
@@ -112,10 +98,7 @@ When(
       .fill('Avenida Teste, 456');
     await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
     await this.page.locator(registerLocator.countrySelect).selectOption('30');
-    await waitForZoneOptionsToLoad(this);
-    await this.page
-      .locator(registerLocator.zoneSelect)
-      .selectOption({ index: 1 });
+    await selectValidZone(this);
     await this.page.locator(registerLocator.postcodeInput).fill('02000');
     await this.page
       .locator(registerLocator.loginNameInput)
@@ -139,13 +122,38 @@ When('eu envio o formulário de cadastro', async function (this: CustomWorld) {
 Then(
   'eu devo ver uma mensagem de conta criada com sucesso',
   async function (this: CustomWorld) {
-    await expect(this.page).toHaveURL(routePatterns.registerSuccess, {
-      timeout: registerTimeoutMs,
-    });
+    await this.page.waitForFunction(
+      ({ successPattern, successFlags, errorSelector }) => {
+        const success = new RegExp(successPattern, successFlags).test(
+          window.location.href
+        );
+        const errorEl = document.querySelector(errorSelector);
+        return success || Boolean(errorEl?.textContent?.trim());
+      },
+      {
+        successPattern: routePatterns.registerSuccess.source,
+        successFlags: routePatterns.registerSuccess.flags,
+        errorSelector: registerLocator.errorAlert,
+      },
+      { timeout: HooksHelper.cucumberTimeoutMs }
+    );
+
+    const currentUrl = this.page.url();
+    if (!routePatterns.registerSuccess.test(currentUrl)) {
+      const errorText = await this.page
+        .locator(registerLocator.errorAlert)
+        .first()
+        .textContent()
+        .catch(() => null);
+      throw new Error(
+        `Cadastro nao chegou na pagina de sucesso. URL: ${currentUrl}. Alerta: ${errorText ?? 'nenhum'}`
+      );
+    }
+
     await expect(
       this.page.locator(registerLocator.mainContainer)
     ).toContainText(/your account has been created|conta criada/i, {
-      timeout: registerTimeoutMs,
+      timeout: HooksHelper.cucumberTimeoutMs,
     });
   }
 );

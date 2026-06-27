@@ -1,129 +1,16 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
-import { checkoutLocator } from '../../../locators/web-elements/checkout.locator';
-import { users } from '../../../data/users';
-import { LoginPage } from '../../../pages/login.page';
-import { routes } from '../../../config/routes';
-import { BasePage } from '@pages/base.page';
+import { checkoutLocator } from '../../../ui/locators/checkout.locator';
+import { BasePage } from '../../../pages/base.page';
+import { HooksHelper } from '../../../support/helpers/hooks-helpers';
+import {
+  ensureProductInCart,
+  openCheckoutFromCart,
+  proceedToConfirmPage,
+} from '../shared/checkout.helpers';
 
-const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
-
-setDefaultTimeout(cucumberTimeoutMs);
-
-async function waitForPageReady(world: CustomWorld) {
-  await expect(world.page.locator('body')).toBeVisible();
-}
-
-async function ensureLoggedIn(world: CustomWorld) {
-  const logoutLink = world.page
-    .locator('a[href*="rt=account/logout"]')
-    .filter({ visible: true })
-    .first();
-  if (await logoutLink.count()) {
-    return;
-  }
-
-  const loginPage = new LoginPage(world.page, world);
-  await loginPage.login(users.standard.username, users.standard.password);
-  await loginPage.waitForElementVisible();
-}
-
-async function openCheckoutFromCart(world: CustomWorld) {
-  const basePage = new BasePage(world.page, world);
-  await basePage.navigate(routes.cart);
-  await waitForPageReady(world);
-
-  const checkoutButton = world.page
-    .locator(checkoutLocator.checkoutButton)
-    .filter({ visible: true })
-    .first();
-  await expect(checkoutButton).toBeVisible({ timeout: 15000 });
-  await checkoutButton.click();
-  await waitForPageReady(world);
-
-  if (world.page.url().includes('rt=account/login')) {
-    await ensureLoggedIn(world);
-    await basePage.navigate(routes.cart);
-    await waitForPageReady(world);
-
-    const retryCheckoutButton = world.page
-      .locator(checkoutLocator.checkoutButton)
-      .filter({ visible: true })
-      .first();
-    await expect(retryCheckoutButton).toBeVisible({ timeout: 15000 });
-    await retryCheckoutButton.click();
-    await waitForPageReady(world);
-  }
-}
-
-async function proceedToConfirmPage(world: CustomWorld) {
-  for (let attempt = 0; attempt < 4; attempt += 1) {
-    const confirmButton = world.page
-      .locator(checkoutLocator.confirmButton)
-      .filter({ visible: true })
-      .first();
-    if (await confirmButton.count()) {
-      return;
-    }
-
-    const continueButton = world.page
-      .locator(checkoutLocator.checkoutContinueButton)
-      .filter({ visible: true })
-      .first();
-    if (!(await continueButton.count())) {
-      break;
-    }
-
-    await continueButton.click();
-    await waitForPageReady(world);
-  }
-}
-
-async function ensureProductInCart(world: CustomWorld) {
-  const basePage = new BasePage(world.page, world);
-  await ensureLoggedIn(world);
-
-  await basePage.navigate(routes.cart);
-  await waitForPageReady(world);
-
-  let cartItems = await world.page.locator(checkoutLocator.cartItems).count();
-  if (cartItems > 0) {
-    return;
-  }
-
-  await basePage.navigate(routes.home);
-  await waitForPageReady(world);
-
-  const categoryLink = world.page
-    .locator(checkoutLocator.categoryMenuLink)
-    .filter({ visible: true })
-    .first();
-  await expect(categoryLink).toBeVisible({ timeout: 15000 });
-  await categoryLink.click();
-  await waitForPageReady(world);
-
-  const firstProductLink = world.page
-    .locator(checkoutLocator.productLink)
-    .filter({ visible: true })
-    .first();
-  await expect(firstProductLink).toBeVisible({ timeout: 15000 });
-  await firstProductLink.click();
-  await waitForPageReady(world);
-
-  const addToCartLink = world.page
-    .locator(checkoutLocator.productAddToCartLink)
-    .filter({ visible: true })
-    .first();
-  await expect(addToCartLink).toBeVisible({ timeout: 15000 });
-  await addToCartLink.click();
-  await waitForPageReady(world);
-
-  await basePage.navigate(routes.cart);
-  await waitForPageReady(world);
-  cartItems = await world.page.locator(checkoutLocator.cartItems).count();
-  expect(cartItems).toBeGreaterThan(0);
-}
+setDefaultTimeout(HooksHelper.cucumberTimeoutMs);
 
 Given('that I have products in the cart', async function (this: CustomWorld) {
   await ensureProductInCart(this);
@@ -147,6 +34,7 @@ Given('that I am on the checkout page', async function (this: CustomWorld) {
 });
 
 When('I fill the delivery address', async function (this: CustomWorld) {
+  const basePage = new BasePage(this.page, this);
   const addressField = this.page
     .locator(checkoutLocator.addressInput)
     .filter({ visible: true })
@@ -166,7 +54,7 @@ When('I fill the delivery address', async function (this: CustomWorld) {
     .first();
   if (await continueButton.count()) {
     await continueButton.click({ timeout: 10000 });
-    await waitForPageReady(this);
+    await basePage.waitForPageLoad();
   }
 });
 
@@ -184,7 +72,7 @@ Then(
     }
 
     await expect(this.page).toHaveURL(/checkout\/(payment|confirm|shipping)/, {
-      timeout: cucumberTimeoutMs,
+      timeout: HooksHelper.cucumberTimeoutMs,
     });
   }
 );
@@ -196,13 +84,16 @@ Given('that I am on the confirmation page', async function (this: CustomWorld) {
 });
 
 When('I confirm the order', async function (this: CustomWorld) {
+  const basePage = new BasePage(this.page, this);
   const confirmButton = this.page
     .locator(checkoutLocator.confirmButton)
     .filter({ visible: true })
     .first();
-  await expect(confirmButton).toBeVisible({ timeout: cucumberTimeoutMs });
+  await expect(confirmButton).toBeVisible({
+    timeout: HooksHelper.cucumberTimeoutMs,
+  });
   await confirmButton.click();
-  await waitForPageReady(this);
+  await basePage.waitForPageLoad();
 });
 
 Then('I should receive order confirmation', async function (this: CustomWorld) {
