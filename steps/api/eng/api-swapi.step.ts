@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import Ajv from 'ajv';
 import { type CustomWorld } from '../../../support/world';
+import { SWAPI_BASE_URL } from '../../../api/endpoints/api-swapi.endpoint';
 
 interface SwapiFilm {
   title?: string;
@@ -22,12 +23,11 @@ Given('I access the SWAPI films API', async function (this: CustomWorld) {
 When(
   'I make a GET request to {string}',
   async function (this: CustomWorld, endpoint: string) {
-    this.getColorizedLog('cyan')(
-      `Making GET request to: https://swapi.info${endpoint}`
-    );
+    const requestUrl = `${SWAPI_BASE_URL}${endpoint}`;
+    this.getColorizedLog('cyan')(`Making GET request to: ${requestUrl}`);
 
     try {
-      const response = await fetch(`https://swapi.info${endpoint}`);
+      const response = await fetch(requestUrl);
       this.apiStatus = response.status;
       this.apiResponse = (await response.json()) as SwapiFilm[];
 
