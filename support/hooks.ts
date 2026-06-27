@@ -55,6 +55,7 @@ AfterStep(async function (
 ) {
   const keyword = HooksHelper.getStepKeyword(gherkinDocument, pickleStep);
   const stepLine = `${keyword} ${pickleStep.text}`.trim();
+  const status = String(result?.status ?? 'UNKNOWN');
 
   if (this.page) {
     const currentUrl = this.page.url();
@@ -64,13 +65,13 @@ AfterStep(async function (
       await expect(this.page.locator('body')).toBeVisible();
     }
 
-    const screenshot = await this.page.screenshot({ fullPage: false });
-    await this.attach(screenshot, 'image/png');
+    if (status !== 'PASSED') {
+      const screenshot = await this.page.screenshot({ fullPage: false });
+      await this.attach(screenshot, 'image/png');
+    }
   }
 
   if (!HooksHelper.isVerbose) return;
-
-  const status = String(result?.status ?? 'UNKNOWN');
 
   if (status === 'PASSED') {
     console.log(HooksHelper.colorize(`✔ ${stepLine}`, 'green'));
