@@ -2,6 +2,100 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-06-27
+
+### Adicionado
+
+- `steps/web/shared/checkout.helpers.ts`: novo módulo compartilhado centralizando todas as funções auxiliares de checkout (`ensureLoggedIn`, `openCheckoutFromCart`, `proceedToConfirmPage`, `ensureProductInCart`) — elimina mais de 120 linhas de lógica duplicadas entre os arquivos de steps de checkout pt-br e eng. Ambos os arquivos de locale agora importam desta única fonte.
+- `steps/web/shared/register.helpers.ts`: novo módulo compartilhado com `uniqueSuffix()` e `selectValidZone()` — elimina a duplicação entre os arquivos de steps de registro dos dois locales.
+
+### Alterado
+
+- **`test:all:headless:video:prompt`** e **`test:all:video:prompt`** agora executam **3 fases** em vez de 2: `[1/3] Playwright` → `[2/3] Cucumber PT-BR` → `[3/3] Cucumber ENG`. Antes, a fase Cucumber rodava apenas o locale definido em `FEATURE_LOCALE` (o que estivesse no `.env`), pulando silenciosamente o outro locale.
+- **`test:cucumber:workers:headless:video:all`** refatorado: único `test:prepare` no início, depois invoca `cucumber-runner.sh` diretamente com `;` entre os locales para que o ENG sempre rode mesmo quando o PT-BR falha, e os resultados do Allure do PT-BR não são apagados antes de o ENG rodar (antes, o wrapper `:run` do segundo locale disparava um segundo `test:prepare`, deletando o output do PT-BR).
+- **`scripts/cucumber-runner.sh`** agora escreve arquivos de relatório com o locale no nome (`cucumber-report-{FEATURE_LOCALE}.json`, `cucumber-report-{FEATURE_LOCALE}.html`, `cucumber-{FEATURE_LOCALE}.log`) em vez de um único `cucumber-report.json` e `cucumber.log` sobreescrevível. O comando `yarn report:cucumber:summary` já esperava esses nomes por locale e agora recebe o consolidado completo automaticamente.
+- **`pages/login.page.ts` — `login()`**: removido `{ force: true }` do clique no submit (o Firefox não dispara o evento de submissão do formulário em cliques forçados); `.catch(() => {})` silenciosos em `waitUntilLoggedIn()` substituídos por `waitForLoadState('domcontentloaded')` explícito após cada tentativa de fallback, seguido de um `waitUntilLoggedIn()` final que lança um erro significativo caso o login nunca tenha ocorrido.
+- **`steps/web/pt-br/login.step.ts`**, **`steps/web/eng/login.step.ts`**: removida a chamada `waitForElementVisible()` do step `When` de esqueci-a-senha — esse método assertoa `accountContainer` (widget pós-login), que não existe na página de recuperação de senha, fazendo o step sempre expirar.
+- **`steps/web/pt-br/register.step.ts`**, **`steps/web/eng/register.step.ts`**:
+  - Removida a segunda chamada redundante a `selectValidZone()` no final de cada step de preenchimento.
+  - Removidos `countrySelect.selectOption('30')` e `selectValidZone()` do step de submit — re-selecionar o país no submit disparava um evento `change` que resetava o dropdown de zona, desfazendo silenciosamente a seleção feita no step de preenchimento.
+  - Removido o `console.log` de debug esquecido no step de submit do arquivo pt-br.
+  - `waitForFunction` agora passa `successFlags` junto ao `successPattern`, reconstruindo o regex no browser como `new RegExp(successPattern, successFlags)` para preservar as flags do `routePatterns.registerSuccess` original.
+  - Ambos os arquivos agora importam `uniqueSuffix` e `selectValidZone` de `steps/web/shared/register.helpers.ts`.
+- **`support/hooks.ts` — `AfterStep`**: screenshot capturado apenas quando `status !== 'PASSED'`. Antes era tirada uma screenshot após cada step independente do resultado, gerando N anexos PNG por cenário verde e adicionando vários segundos de overhead em suítes longas.
+- **`support/helpers/hooks-helpers.ts` — `getStepKeyword()`**: agora usa um `WeakMap` para cachear o `Map<stepId, keyword>` por documento Gherkin. Antes realizava uma varredura aninhada O(filhos × steps) em cada chamada de `BeforeStep` e `AfterStep`; agora O(1) por consulta após a primeira chamada por documento.
+- Todos os arquivos de steps (`login`, `register`, `checkout`, `products` — ambos os locales): removida a expressão local `const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000)` que estava copiada em 8 arquivos; todos agora importam e referenciam `HooksHelper.cucumberTimeoutMs`.
+- **`steps/web/pt-br/checkout.step.ts`**, **`steps/web/eng/checkout.step.ts`**: reescritos para importar de `steps/web/shared/checkout.helpers.ts`; wrapper local `waitForPageReady()` removido em favor de `BasePage.waitForPageLoad()` usado dentro do módulo compartilhado.
+- **Dependências atualizadas** — 14 pacotes incrementados (mantendo `@cucumber/cucumber` em 12.7.0 aguardando migração para v13):
+
+  | Pacote | Antes | Depois |
+  |---|---|---|
+  | `@playwright/test` | ^1.59.0 | ^1.61.1 |
+  | `allure-cucumberjs` | 3.6.0 | 3.10.1 |
+  | `allure-js-commons` | 3.6.0 | 3.10.1 |
+  | `allure-commandline` | ^2.38.1 | ^2.43.0 |
+  | `prettier-plugin-gherkin` | ^3.1.3 | ^4.0.0 |
+  | `@types/node` | ^25.5.0 | ^26.0.0 |
+  | `eslint` | ^10.1.0 | ^10.5.0 |
+  | `typescript-eslint` | ^8.58.0 | ^8.62.0 |
+  | `typescript` | ^6.0.2 | ^6.0.3 |
+  | `tsx` | ^4.21.0 | ^4.22.4 |
+  | `prettier` | ^3.8.1 | ^3.8.4 |
+  | `globals` | ^17.4.0 | ^17.7.0 |
+  | `jiti` | ^2.6.1 | ^2.7.0 |
+  | `dotenv` | ^17.3.1 | ^17.4.2 |
+
+  Browsers do Playwright reinstalados (`yarn playwright install`) após o caminho binário mudar de `firefox-1490` para `firefox-1532`.
+
+### Corrigido
+
+- **Step de esqueci-a-senha sempre expirava**: `waitForElementVisible()` assertava `accountContainer` (widget pós-login) após navegar para a página de recuperação, onde esse elemento nunca existe.
+- **Dropdown de zona do registro resetava silenciosamente entre steps**: o step de submit re-selecionava o país, disparando um evento `change` que limpava a seleção de zona feita no step de preenchimento.
+- **`login()` engolia falhas reais de submissão**: `.catch(() => {})` em `waitUntilLoggedIn()` descartava erros de redirecionamento falhado, permitindo que o código continuasse tentando com um formulário potencialmente enviado duas vezes e apresentando um timeout genérico na linha errada.
+- **`waitForFunction` descartava flags do regex**: `new RegExp(source)` no contexto do browser omitia as flags do objeto `RegExp` original, podendo causar falsos negativos em URLs que só correspondem com flags como `i` (case-insensitive).
+- **`test:all:*` rodava apenas um locale**: a fase Cucumber executava com o `FEATURE_LOCALE` ativo no `.env`, pulando silenciosamente os cenários do outro locale.
+- **`test:cucumber:workers:headless:video:all` apagava os resultados Allure do PT-BR antes do ENG rodar**: o wrapper `:run` do ENG chamava `test:prepare`, que deletava `allure-results/` incluindo o output do PT-BR coletado na fase anterior.
+
+### Documentação
+
+- `docs/eng/project-structure.md`, `docs/pt-br/estrutura-do-projeto.md`: adicionado diretório `steps/web/shared/` com `checkout.helpers.ts` e `register.helpers.ts`.
+- `docs/eng/reporting.md`, `docs/pt-br/relatorios.md`: adicionada seção "Geração automática após execuções Cucumber" explicando que `cucumber-runner.sh` gera `allure-report/` automaticamente ao fim de cada execução; `yarn allure:generate` manual não é mais necessário após execuções normais.
+- `docs/eng/troubleshooting.md`, `docs/pt-br/solucao-de-problemas.md`: adicionadas entradas #15 (Firefox `force: true` impede submissão do formulário), #16 (steps do Cucumber pulados por timeout de `page.goto` em páginas lentas), #17 (`allure-results/` vazia porque `&&` bloqueava o Cucumber quando o Playwright falhava); seção "Comandos úteis" atualizada com 4 novos atalhos de locale sem workers.
+
+## 2026-06-23
+
+### Corrigido
+
+- **Steps do login sendo pulados após submit do formulário no Firefox**: `loginExpectingError()` em `pages/login.page.ts` usava `click({ force: true })` no botão de submit. O Firefox não dispara o submit do formulário quando o clique é forçado — o foco permanece no campo de senha e o POST nunca é enviado. Como a URL já correspondia a `/rt=account/login/` antes do envio, `toHaveURL` passava imediatamente e a asserção do alerta de erro expirava após 15 s. Corrigido removendo `force: true` e adicionando `waitForLoadState('domcontentloaded')` após o clique, para que o método aguarde a resposta do servidor antes de verificar o alerta.
+
+- **Steps do Cucumber sendo pulados após carregamento lento de página**: `BasePage.navigate()` chamava `page.goto(url)` sem opções, cujo comportamento padrão usa `waitUntil: 'load'`. Esse modo aguarda todos os recursos externos (imagens, scripts de CDN, analytics) antes de resolver. Em conexões lentas, o timeout de navegação do Playwright de 30 s era atingido antes do evento `load` disparar, causando exceção no step `Given` e marcando todos os steps seguintes como **skipped**. Corrigido usando `{ waitUntil: 'domcontentloaded' }`, que retorna assim que o HTML é analisado; as asserções de visibilidade em cada método de página garantem que a página está utilizável.
+
+- **Seleção de zona falhando para países que não o Reino Unido** (`register.step.ts`, PT-BR e ENG): a abordagem anterior usava um XPath apontando para a opção de Cardiff, que só existe na lista de zonas do Reino Unido. Quando o país era definido como Brasil (id `30`), nenhuma opção era encontrada, a zona permanecia sem seleção e o envio do formulário falhava silenciosamente. Substituído por um loop dinâmico sobre `select.options` que seleciona a primeira opção com valor não vazio e não nulo usando `option.selected = true` e disparo do evento `change` — funciona para qualquer país.
+
+- **Seletor `registerLocator.errorAlert` muito restrito**: correspondia apenas a `.alert.alert-error, .alert.alert-danger`, ignorando alertas com apenas a classe `.alert`. Ampliado para `.alert.alert-error, .alert.alert-danger, .alert`, consistente com `loginLocator.errorAlert`.
+
+- **`allure-results/` vazia após `test:all:headless:video:prompt`**: o script encadeava Playwright e Cucumber com `&&`. Quando algum teste do Playwright falhava (por exemplo, o teste de login no Firefox), o encadeamento parava antes de o Cucumber rodar e `allure-results/` nunca era criada. O separador entre Playwright e Cucumber foi alterado para `;` em `test:all:headless:video:prompt` e `docker:test:all:video` — o Cucumber agora sempre roda independente do exit code do Playwright.
+
+- **Geração automática de relatório Allure suprimida por exit code incorreto no `cucumber-runner.sh`**: o runner redirecionava a saída do `cucumber-js` para o `tee`, e `$?` capturava o exit code do `tee` (sempre 0), não do Cucumber. A verificação condicional `if ls allure-results/*-result.json` ainda era executada, mas o `exit` ao final reportava sucesso mesmo quando o Cucumber havia falhado. Corrigido com `PIPESTATUS[0]` para capturar o exit code do Cucumber antes do pipe e `exit $CUCUMBER_EXIT` para propagá-lo corretamente.
+
+- **Vídeo gravado nos testes de API mesmo com `CUCUMBER_VIDEO=0`**: os scripts definiam `CUCUMBER_VIDEO=0` mas chamavam `yarn test:cucumber:headless:video:run`, que substituía a variável de volta para `CUCUMBER_VIDEO=1` internamente. A verificação em `hooks.ts` (`CUCUMBER_VIDEO !== '0'`) sempre recebia `1`. Corrigido fazendo `test:api`, `test:api:pt-br` e `test:api:eng` chamarem `cucumber-runner.sh` diretamente com `CUCUMBER_VIDEO=0` no prefixo, ignorando a substituição.
+
+### Alterado
+
+- **Limpeza agora executa antes de todo script de teste**: `yarn test:prepare` (que executa `scripts/clean-artifacts.sh`) antes era chamado apenas nos scripts sem sufixo `:run` e podia ser ignorado ao executar um script `:run` diretamente. Todos os scripts `:run` agora incluem `yarn test:prepare &&` no início. Os scripts compostos `test:all:*` foram ajustados para chamar os binários do PW e do Cucumber diretamente em vez de delegar a variantes `:run`, de forma que apenas uma limpeza é feita por execução completa (evitando a exclusão de relatórios do Playwright antes de o Cucumber gerar os seus).
+
+- **Scripts do `package.json` reorganizados** em grupos semânticos com ordenação consistente: Qualidade de Código → Infraestrutura → Playwright → Cucumber (sem workers → com workers, headless → headed, variantes por locale) → API → Suítes combinadas → Relatórios Allure → Relatórios Cucumber → Docker.
+
+### Adicionado
+
+- **Atalhos por locale sem workers (headless e headed)**:
+  - `test:cucumber:headless:video:pt-br` — sem workers, headless, Português do Brasil
+  - `test:cucumber:headless:video:eng` — sem workers, headless, Inglês
+  - `test:cucumber:headed:video:pt-br` — sem workers, headed, Português do Brasil
+  - `test:cucumber:headed:video:eng` — sem workers, headed, Inglês
+
+  Complementam as variantes por locale com workers já existentes (`test:cucumber:workers:headless:video:pt-br` / `:eng` / `:all`) e preenchem a lacuna para execuções seriais.
+
 ## 2026-06-19
 
 ### Alterado
@@ -95,8 +189,8 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 ### Alterado
 
 - Refatorada a pasta `locators/` para separar por tipo de artefato:
-  - Seletores de UI browser movidos para `locators/web-elements/` (checkout, login, products, register)
-  - Endpoints de API movidos para `locators/endpoints/` (api-swapi)
+  - Seletores de UI browser movidos para `ui/locators/` (checkout, login, products, register)
+  - Endpoints de API movidos para `api/endpoints/` (api-swapi)
 - Atualizados todos os imports nos arquivos afetados:
   - `steps/web/{eng,pt-br}/*.step.ts` (checkout, login, products, register)
   - `pages/login.page.ts`
@@ -104,9 +198,9 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
 ### Documentação
 
-- Documentação da estrutura do projeto (EN/PT-BR) atualizada para refletir o novo layout `locators/web-elements/` e `locators/endpoints/`.
+- Documentação da estrutura do projeto (EN/PT-BR) atualizada para refletir o novo layout `ui/locators/` e `api/endpoints/`.
 - Guias how-to (EN/PT-BR) atualizados com os novos caminhos de subpasta de locators em exemplos de código e checklists.
-- Documentação de testes de API (EN/PT-BR) atualizada para referenciar `locators/endpoints/api-swapi.locator.ts`.
+- Documentação de testes de API (EN/PT-BR) atualizada para referenciar `api/endpoints/api-swapi.endpoint.ts`.
 
 ## 2026-05-05 (parte 7)
 
@@ -211,8 +305,8 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
   - `login.feature`, `register.feature`, `products.feature`, `checkout.feature`
   - **NOVO:** `api-swapi.feature` — Testes de integração da API Star Wars (bilíngues)
 - Novos arquivos de locators em `locators/`:
-  - `login.locator.ts`, `register.locator.ts`, `products.locator.ts`, `checkout.locator.ts`
-  - **NOVO:** `api-swapi.locator.ts` — Endpoints do SWAPI e propriedades de filmes
+  - `ui/locators/login.locator.ts`, `ui/locators/register.locator.ts`, `ui/locators/products.locator.ts`, `ui/locators/checkout.locator.ts`
+  - **NOVO:** `api-swapi.endpoint.ts` — Endpoints do SWAPI e propriedades de filmes
 - Novos arquivos de definição de steps:
   - `steps/checkout.step.ts`, `steps/products.step.ts`
   - **NOVO:** `steps/api-swapi.step.ts` — Steps de API bilíngues com implementação nativa de Fetch

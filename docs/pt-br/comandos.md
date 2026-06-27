@@ -40,17 +40,17 @@ yarn allure:server:report
 
 ### `yarn report:cucumber:summary`
 
-Gera um resumo compacto e colorido a partir dos relatórios JSON do Cucumber. Por padrão, procura arquivos por locale em `cucumber-reports/` (por exemplo `cucumber-report-pt-br.json` e `cucumber-report-eng.json`) e mescla os totais.
+Gera um resumo compacto e colorido a partir dos relatórios JSON do Cucumber. Por padrão, procura recursivamente em `cucumber-reports/` arquivos por locale (por exemplo `cucumber-report-pt-br.json` e `cucumber-report-eng.json`) e saídas de worker (por exemplo `worker-1/*.json`) para mesclar os totais.
 
-Quando os arquivos por locale nao existem, o comando usa fallback para o legado `cucumber-report.json` e exibe aviso, indicando que os totais podem representar apenas um locale.
+Quando os arquivos por locale/worker não existem, o comando usa fallback para o legado `cucumber-report.json` e exibe aviso, indicando que os totais podem representar apenas um locale. Para gerar o consolidado completo, execute antes `yarn test:cucumber:workers:headless:video:all`.
 
 ```bash
 yarn report:cucumber:summary
 
-# Opcional: resumir um arquivo especifico
+# Opcional: resumir um arquivo específico
 yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
 
-# Opcional: resumir todos os arquivos de um diretorio customizado
+# Opcional: resumir todos os arquivos de um diretório customizado
 yarn report:cucumber:summary --input cucumber-reports --output .tmp/cucumber-report-summary.json
 ```
 
@@ -116,6 +116,18 @@ Executa o ESLint com a flag `--fix`. Corrige automaticamente todos os problemas 
 
 ```bash
 yarn lint:fix
+```
+
+---
+
+## Testes — Preparação
+
+### `yarn test:prepare`
+
+Executa a limpeza pré-teste via `scripts/clean-artifacts.sh` e valida que os caminhos de artefatos gerados foram realmente removidos. Todos os scripts de teste chamam isso automaticamente antes de executar, mas você também pode invocar diretamente quando necessário.
+
+```bash
+yarn test:prepare
 ```
 
 ---
@@ -208,6 +220,38 @@ Alias de `test:cucumber:headless:video`. Executa o Cucumber em modo **headless**
 
 ```bash
 yarn test:cucumber:no-workers:headless:video
+```
+
+### `yarn test:cucumber:headless:video:pt-br`
+
+Executa a suíte Cucumber em modo **headless** com vídeo, single-threaded, usando o locale Português do Brasil (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:headless:video:pt-br
+```
+
+### `yarn test:cucumber:headless:video:eng`
+
+Executa a suíte Cucumber em modo **headless** com vídeo, single-threaded, usando o locale inglês (`FEATURE_LOCALE=eng`).
+
+```bash
+yarn test:cucumber:headless:video:eng
+```
+
+### `yarn test:cucumber:headed:video:pt-br`
+
+Executa a suíte Cucumber em modo **headed** com vídeo, single-threaded, usando o locale Português do Brasil (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:headed:video:pt-br
+```
+
+### `yarn test:cucumber:headed:video:eng`
+
+Executa a suíte Cucumber em modo **headed** com vídeo, single-threaded, usando o locale inglês (`FEATURE_LOCALE=eng`).
+
+```bash
+yarn test:cucumber:headed:video:eng
 ```
 
 ### `yarn test:cucumber:workers:headed:video`

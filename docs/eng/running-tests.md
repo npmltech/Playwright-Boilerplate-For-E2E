@@ -56,6 +56,26 @@ unsetopt correct correctall && yarn test:all:video:prompt
   yarn test:cucumber:no-workers:headless:video
   ```
 
+- Locale shortcuts (no-workers, headless):
+
+  ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:headless:video:pt-br
+
+  # English only
+  yarn test:cucumber:headless:video:eng
+  ```
+
+- Locale shortcuts (no-workers, headed):
+
+  ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:headed:video:pt-br
+
+  # English only
+  yarn test:cucumber:headed:video:eng
+  ```
+
 ### With workers (parallel scenario execution)
 
 - Headed mode (default 4 workers):

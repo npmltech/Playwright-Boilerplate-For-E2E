@@ -6,11 +6,59 @@
 
 ### eng
 
-A complete boilerplate project for end-to-end testing with Playwright, Cucumber BDD, TypeScript, Allure, and robust reporting.
+A production-ready boilerplate for end-to-end quality engineering with Playwright, Cucumber BDD, TypeScript, and a reporting stack designed for real execution at scale.
 
 ### pt-br
 
-Um projeto boilerplate completo para testes end-to-end com Playwright, Cucumber BDD, TypeScript, Allure e relatórios robustos.
+Um boilerplate pronto para produção em engenharia de qualidade end-to-end com Playwright, Cucumber BDD, TypeScript e uma esteira de relatórios pensada para execução real em escala.
+
+## Key Outcomes / Resultados-Chave
+
+### eng
+
+- Release confidence: stable E2E + API flows with consistent execution patterns for CI and local runs.
+- Traceability: BDD scenarios, Allure evidence, and consolidated summary artifacts aligned to the same execution context.
+- Faster diagnosis: colorized terminal summary, per-step evidence, and aggregated reporting reduce investigation time.
+
+### pt-br
+
+- Confiança de release: fluxos E2E + API estáveis com padrões consistentes para execução local e CI.
+- Rastreabilidade: cenários BDD, evidências no Allure e artefatos consolidados de summary no mesmo contexto de execução.
+- Menor tempo de diagnóstico: resumo colorido no terminal, evidências por step e visão agregada aceleram a análise de falhas.
+
+## Why This Boilerplate Stands Out / Diferenciais do Boilerplate
+
+### eng
+
+- Allure as the central reporting hub: consolidates execution evidence, screenshots, step history, and run context in one place.
+- Robust multi-source reporting: supports locale files, worker outputs, and merged terminal summaries without losing visibility.
+- BDD clarity with operational resilience: human-readable scenarios with execution modes for serial, parallel, locale-scoped, and Docker runs.
+- Report continuity by design: fallback behavior prevents complete reporting loss when only legacy JSON is available.
+
+### pt-br
+
+- Allure como hub central de relatórios: consolida evidências de execução, screenshots, histórico de steps e contexto de run em um único lugar.
+- Relatórios robustos de múltiplas fontes: suporta arquivos por locale, saídas por worker e resumo consolidado no terminal sem perder visibilidade.
+- Clareza de BDD com resiliência operacional: cenários legíveis com modos de execução serial, paralelo, por locale e em Docker.
+- Continuidade de relatórios por design: comportamento de fallback evita perda total de relatório quando apenas o JSON legado está disponível.
+
+## Reporting Strategy / Estratégia de Relatórios
+
+### eng
+
+Reporting is treated as a first-class layer in this project, not an afterthought:
+
+- Allure provides the aggregated and navigable quality view across runs.
+- Cucumber JSON/HTML outputs provide raw and locale-specific execution detail.
+- `yarn report:cucumber:summary` provides fast feedback in terminal plus JSON artifact output for automation flows.
+
+### pt-br
+
+Relatórios são tratados como camada de primeira classe neste projeto, não como complemento:
+
+- O Allure entrega a visão agregada e navegável de qualidade entre execuções.
+- As saídas JSON/HTML do Cucumber entregam detalhe bruto e por locale da execução.
+- `yarn report:cucumber:summary` entrega feedback rápido no terminal e artefato JSON para fluxos de automação.
 
 ## Quick Start
 
@@ -88,6 +136,15 @@ The summary includes:
 - colored terminal output (status, counters, failures)
 - Test Run timestamp in `dd.mm.yyyy hh:mm`
 - merged totals across locale files (`cucumber-report-pt-br.json` + `cucumber-report-eng.json`)
+- recursive discovery support for worker reports (for example `cucumber-reports/worker-1/*.json`)
+
+If locale or worker report files are not found yet, the command falls back to legacy `cucumber-report.json`.
+To generate a full combined summary across both locales:
+
+```bash
+yarn test:cucumber:workers:headless:video:all
+yarn report:cucumber:summary
+```
 
 Optional input/output:
 
@@ -98,7 +155,7 @@ yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summa
 
 ### pt-br
 
-Gere um resumo amigavel dos relatórios JSON do Cucumber:
+Gere um resumo amigável dos relatórios JSON do Cucumber:
 
 ```bash
 yarn report:cucumber:summary
@@ -107,10 +164,19 @@ yarn report:cucumber:summary
 O resumo inclui:
 
 - saída colorida no terminal (status, contadores, falhas)
-- timestamp de execucao em `dd.mm.aaaa hh:mm`
+- timestamp de execução em `dd.mm.aaaa hh:mm`
 - totais mesclados entre arquivos por locale (`cucumber-report-pt-br.json` + `cucumber-report-eng.json`)
+- suporte a descoberta recursiva de relatórios de worker (exemplo: `cucumber-reports/worker-1/*.json`)
 
-Entrada/saida opcionais:
+Se os arquivos por locale ou worker ainda não existirem, o comando usa fallback para `cucumber-report.json`.
+Para gerar um resumo completo consolidado dos dois locales:
+
+```bash
+yarn test:cucumber:workers:headless:video:all
+yarn report:cucumber:summary
+```
+
+Entrada/saída opcionais:
 
 ```bash
 yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json

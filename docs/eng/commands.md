@@ -40,9 +40,9 @@ yarn allure:server:report
 
 ### `yarn report:cucumber:summary`
 
-Builds a concise, colorized summary from Cucumber JSON reports. By default it searches for locale files in `cucumber-reports/` (for example `cucumber-report-pt-br.json` and `cucumber-report-eng.json`) and merges totals across them.
+Builds a concise, colorized summary from Cucumber JSON reports. By default it searches recursively in `cucumber-reports/` for locale files (for example `cucumber-report-pt-br.json`, `cucumber-report-eng.json`) and worker outputs (for example `worker-1/*.json`) and merges totals across them.
 
-When locale files are not found, it falls back to legacy `cucumber-report.json` and prints a warning so you know totals may represent only one locale.
+When locale/worker files are not found, it falls back to legacy `cucumber-report.json` and prints a warning so you know totals may represent only one locale. To generate a complete merged report first run `yarn test:cucumber:workers:headless:video:all`.
 
 ```bash
 yarn report:cucumber:summary
@@ -116,6 +116,18 @@ Runs ESLint with the `--fix` flag. Automatically fixes all auto-fixable lint iss
 
 ```bash
 yarn lint:fix
+```
+
+---
+
+## Tests — Preparation
+
+### `yarn test:prepare`
+
+Runs pre-test cleanup via `scripts/clean-artifacts.sh` and validates that generated artifact paths were actually removed. All test scripts call this automatically before running, but you can also invoke it directly when needed.
+
+```bash
+yarn test:prepare
 ```
 
 ---
@@ -208,6 +220,38 @@ Alias for `test:cucumber:headless:video`. Runs Cucumber **headless** with video,
 
 ```bash
 yarn test:cucumber:no-workers:headless:video
+```
+
+### `yarn test:cucumber:headless:video:pt-br`
+
+Runs the Cucumber suite **headless** with video, single-threaded, using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:headless:video:pt-br
+```
+
+### `yarn test:cucumber:headless:video:eng`
+
+Runs the Cucumber suite **headless** with video, single-threaded, using the English locale (`FEATURE_LOCALE=eng`).
+
+```bash
+yarn test:cucumber:headless:video:eng
+```
+
+### `yarn test:cucumber:headed:video:pt-br`
+
+Runs the Cucumber suite **headed** with video, single-threaded, using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
+
+```bash
+yarn test:cucumber:headed:video:pt-br
+```
+
+### `yarn test:cucumber:headed:video:eng`
+
+Runs the Cucumber suite **headed** with video, single-threaded, using the English locale (`FEATURE_LOCALE=eng`).
+
+```bash
+yarn test:cucumber:headed:video:eng
 ```
 
 ### `yarn test:cucumber:workers:headed:video`

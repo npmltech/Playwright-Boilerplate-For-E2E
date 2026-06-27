@@ -257,13 +257,13 @@ Correção aplicada:
 Verificação:
 
 - Execute `yarn docker:clean`
-- Confirme que `allure-results/`, `test-results/`, `cucumber-reports/` e `reports/` foram recriados sob o usuário do host
+- Confirme que `allure-results/`, `test-results/`, `cucumber-reports/` e `reports/` não existem mais após a limpeza
 
 Fallback:
 
 - Se o ambiente ainda exigir intervenção manual:
-  - `sudo chown -R "$USER":"$USER" allure-results test-results cucumber-reports reports`
-  - `sudo chmod -R u+rwX allure-results test-results cucumber-reports reports`
+  - `sudo rm -rf allure-results test-results cucumber-reports reports allure-report cucumber-report.html cucumber-report.json cucumber.log`
+  - Execute `yarn docker:clean` novamente para confirmar que a validação de limpeza passou
 
 ## 10.2) Bridge networking do Docker não suportado no daemon local
 
@@ -405,6 +405,74 @@ Verificação:
 
 - `yarn test:pw:headed:video` — todos os 4 testes passam no Chromium e Firefox.
 
+## 15) Teste de login no Firefox falha — steps após o submit são pulados
+
+Sintoma:
+
+- `should show error with wrong credentials` falha no Firefox mas passa no Chromium.
+- O alerta de erro nunca é encontrado; o teste expira após 15 s.
+- O snapshot da página mostra o formulário preenchido mas sem alerta de erro visível.
+
+Causa observada:
+
+- `loginExpectingError()` chamava `submitButton.first().click({ force: true })`. O Firefox não dispara o evento `submit` do formulário quando o clique é forçado — o foco permanecia no campo de senha e o POST nunca era enviado.
+- `toHaveURL(/rt=account\/login/)` passava imediatamente porque a URL já correspondia antes do envio, então o código avançava para verificar o alerta de erro antes que ele aparecesse.
+
+Correção aplicada:
+
+- Removido `{ force: true }` do clique no submit em `pages/login.page.ts` — o botão é visível e acionável, cliques forçados eram desnecessários.
+- Adicionado `await this.page.waitForLoadState('domcontentloaded')` após o clique para garantir que a resposta do servidor seja recebida antes de verificar o alerta de erro.
+
+Verificação:
+
+- `yarn test:pw:headless:video` — todos os testes Playwright passam no Chromium e no Firefox.
+
+## 16) Steps do Cucumber pulados após navegação — timeout no `page.goto`
+
+Sintoma:
+
+- Um step `Given` de navegação lança `page.goto: Timeout 30000ms exceeded, waiting until "load"`.
+- Todos os steps seguintes do cenário são reportados como **skipped** (não como falhas).
+- Ocorre de forma intermitente, com maior frequência em conexões lentas.
+
+Causa observada:
+
+- `BasePage.navigate()` chamava `page.goto(url)` sem opções, cujo comportamento padrão é `waitUntil: 'load'`.
+- O evento `load` aguarda todos os recursos externos — imagens, scripts de CDN, iframes de analytics. Qualquer recurso lento ou sem resposta bloqueia a resolução até o timeout de navegação do Playwright (30 s) ser atingido.
+- O timeout do step Cucumber (`CUCUMBER_TIMEOUT_MS`, padrão 60 s) é separado do timeout de navegação do Playwright (padrão 30 s), então mesmo com timeout de step alto o goto ainda expira.
+
+Correção aplicada:
+
+- Alterado `page.goto(url)` para `page.goto(url, { waitUntil: 'domcontentloaded' })` em `pages/base.page.ts`.
+- `domcontentloaded` retorna assim que o HTML é completamente analisado, sem aguardar recursos externos.
+- As asserções explícitas `toBeVisible()` / `toHaveURL()` em cada método de página confirmam que a página está utilizável antes de o step prosseguir.
+
+Verificação:
+
+- Cenários Cucumber de login, cadastro e navegação rodam sem steps pulados.
+
+## 17) `allure-results/` vazia após `yarn test:all:headless:video:prompt`
+
+Sintoma:
+
+- `allure-results/` não existe ou está vazia após rodar a suíte completa.
+- A saída do Cucumber também está ausente, mesmo que o Playwright tenha rodado.
+
+Causa observada:
+
+- O script encadeava Playwright e Cucumber com `&&`. Quando algum teste do Playwright falhava (mesmo um teste intermitente no Firefox), o shell curto-circuitava e o Cucumber nunca era executado.
+- `allure-results/` só é criada pelo formatter Allure do Cucumber — se o Cucumber não rodar, o diretório nunca é populado.
+- Causa secundária: `cucumber-runner.sh` capturava `$?` após o pipe com `tee`, que sempre retorna 0, então a verificação de geração automática do Allure rodava mas o `exit` reportava sucesso mesmo com falha no Cucumber.
+
+Correção aplicada:
+
+- Alterado `&&` para `;` entre Playwright e Cucumber em `test:all:headless:video:prompt` e `docker:test:all:video` — o Cucumber agora sempre roda independente do exit code do Playwright.
+- Corrigido `cucumber-runner.sh` para usar `PIPESTATUS[0]` (exit code do Cucumber) em vez de `$?` (exit code do tee), propagando-o via `exit $CUCUMBER_EXIT`.
+
+Verificação:
+
+- `allure-results/` é populada e `allure-report/` é gerado automaticamente mesmo quando um ou mais testes Playwright falham.
+
 ## Comandos úteis
 
 ```bash
@@ -412,6 +480,10 @@ yarn test:all:video:prompt
 yarn test:all:headless:video:prompt
 yarn test:cucumber:no-workers:headed:video
 yarn test:cucumber:no-workers:headless:video
+yarn test:cucumber:headless:video:pt-br
+yarn test:cucumber:headless:video:eng
+yarn test:cucumber:headed:video:pt-br
+yarn test:cucumber:headed:video:eng
 yarn test:cucumber:workers:headed:video
 yarn test:cucumber:workers:headless:video
 yarn test:cucumber:workers:headless:video:pt-br
