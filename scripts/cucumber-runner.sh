@@ -24,17 +24,28 @@ elif [ "$MODE" = "quiet" ]; then
 fi
 
 FILTER_ARGS=("$@")
-STEP_IMPORT_GLOB="steps/**/${FEATURE_LOCALE}/**/*.step.ts"
-  
-  env $VERBOSE_ENV NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
-    --import support/world.ts \
-    --import support/hooks.ts \
-    --import "$STEP_IMPORT_GLOB" \
-    $STDOUT_FORMAT \
-    --format html:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.html \
-    --format json:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.json \
-    --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js \
-    --format-options '{"resultsDir":"./allure-results"}' \
-    "${FILTER_ARGS[@]}" \
-    $EXTRA_ARGS \
-    "features/**/${FEATURE_LOCALE}/**/*.feature" 2>&1 | tee cucumber-reports/cucumber.log
+
+env $VERBOSE_ENV NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
+  --import support/world.ts \
+  --import support/hooks.ts \
+  --import "steps/web/${FEATURE_LOCALE}/*.step.ts" \
+  --import "steps/api/${FEATURE_LOCALE}/*.step.ts" \
+  $STDOUT_FORMAT \
+  --format html:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.html \
+  --format json:cucumber-reports/cucumber-report-${FEATURE_LOCALE}.json \
+  --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js \
+  --format-options '{"resultsDir":"./allure-results"}' \
+  "${FILTER_ARGS[@]}" \
+  $EXTRA_ARGS \
+  "features/web/${FEATURE_LOCALE}/**/*.feature" \
+  "features/api/${FEATURE_LOCALE}/**/*.feature" 2>&1 | tee cucumber-reports/cucumber-${FEATURE_LOCALE}.log
+
+CUCUMBER_EXIT=${PIPESTATUS[0]}
+
+if ls allure-results/*-result.json 1>/dev/null 2>&1; then
+  echo ""
+  echo "Generating Allure report..."
+  node node_modules/allure-commandline/bin/allure generate allure-results --clean -o allure-report
+fi
+
+exit $CUCUMBER_EXIT

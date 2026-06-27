@@ -17,9 +17,17 @@ export class ParallelFeatureExecutor {
     this.featureRunner = featureRunner;
   }
 
-  async run({ featuresDir, stepsDir, supportImports }) {
-    const featureFiles = await this.fileDiscovery.listFeatureFiles(featuresDir);
-    const stepFiles = await this.fileDiscovery.listStepFiles(stepsDir);
+  async run({ featuresDirs, stepsDirs, supportImports }) {
+    const featureFilesArrays = await Promise.all(
+      featuresDirs.map((dir) => this.fileDiscovery.listFeatureFiles(dir))
+    );
+    const featureFiles = featureFilesArrays.flat().sort();
+
+    const stepFilesArrays = await Promise.all(
+      stepsDirs.map((dir) => this.fileDiscovery.listStepFiles(dir))
+    );
+    const stepFiles = stepFilesArrays.flat();
+
     const importArgs = this.importArgsBuilder.build([
       ...supportImports,
       ...stepFiles,
