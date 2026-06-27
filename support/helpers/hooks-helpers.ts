@@ -33,6 +33,11 @@ export class HooksHelper {
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36';
   static readonly defaultBaseUrl = 'https://automationteststore.com/';
 
+  private static readonly _keywordCache = new WeakMap<
+    object,
+    Map<string, string>
+  >();
+
   static colorize(text: string, color: keyof typeof ANSI): string {
     return colorize(text, color);
   }
@@ -41,20 +46,25 @@ export class HooksHelper {
     gherkinDocument: GherkinDocumentLike,
     pickleStep: PickleStepLike
   ): string {
-    const astNodeIds = pickleStep?.astNodeIds ?? [];
-    const children = gherkinDocument?.feature?.children ?? [];
-
-    for (const child of children) {
-      const scenario = child?.scenario;
-      const steps = scenario?.steps ?? [];
-
-      for (const step of steps) {
-        if (step?.id !== undefined && astNodeIds.includes(step.id)) {
-          return (step?.keyword ?? '').trim();
+    let keywordMap = HooksHelper._keywordCache.get(
+      gherkinDocument as object
+    );
+    if (!keywordMap) {
+      keywordMap = new Map<string, string>();
+      for (const child of gherkinDocument?.feature?.children ?? []) {
+        for (const step of child?.scenario?.steps ?? []) {
+          if (step.id !== undefined) {
+            keywordMap.set(step.id, (step.keyword ?? '').trim());
+          }
         }
       }
+      HooksHelper._keywordCache.set(gherkinDocument as object, keywordMap);
     }
 
+    for (const id of pickleStep?.astNodeIds ?? []) {
+      const keyword = keywordMap.get(id);
+      if (keyword !== undefined) return keyword;
+    }
     return '';
   }
 

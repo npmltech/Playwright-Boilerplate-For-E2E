@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../pages/login.page';
 import { users } from '../../data/users';
-import { loginLocator } from '../../locators/web-elements/login.locator';
+import { loginLocator } from '../../ui/locators/login.locator';
 import { routePatterns } from '../../config/routes';
 
 console.log('>> Carregando Login.step.ts');
@@ -24,8 +24,7 @@ test.describe('Login', () => {
   test('should show error with wrong credentials', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
-    await loginPage.login('wrong_user', 'wrongpassword');
-    await loginPage.waitForElementVisible();
+    await loginPage.loginExpectingError('wrong_user', 'wrongpassword');
 
     await expect(page.locator(loginLocator.errorAlert).first()).toContainText(
       /incorrect|no match|error/i,

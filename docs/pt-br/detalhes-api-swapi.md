@@ -25,7 +25,7 @@ O projeto inclui testes abrangentes para a Star Wars API (https://swapi.info) pa
 
 ### Locators e configuração
 
-- `locators/endpoints/api-swapi.locator.ts` - Endpoints de API e propriedades de filme centralizados
+- `api/endpoints/api-swapi.endpoint.ts` - Endpoints de API e propriedades de filme centralizados
 
 ## Cenários de teste
 

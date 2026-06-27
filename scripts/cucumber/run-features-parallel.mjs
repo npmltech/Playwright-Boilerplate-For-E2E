@@ -10,8 +10,14 @@ import { ReportDirectoryManager } from './parallel/report-directory-manager.mjs'
 
 const rootDir = process.cwd();
 const featureLocale = process.env.FEATURE_LOCALE ?? 'pt-br';
-const featuresDir = path.join(rootDir, 'features', featureLocale);
-const stepsDir = path.join(rootDir, 'steps');
+const featuresDirs = [
+  path.join(rootDir, 'features', 'web', featureLocale),
+  path.join(rootDir, 'features', 'api', featureLocale),
+];
+const stepsDirs = [
+  path.join(rootDir, 'steps', 'web', featureLocale),
+  path.join(rootDir, 'steps', 'api', featureLocale),
+];
 const reportsBaseDir = path.join(
   rootDir,
   'cucumber-reports',
@@ -56,8 +62,8 @@ async function run() {
     featureRunner,
   });
   const failures = await parallelFeatureExecutor.run({
-    featuresDir,
-    stepsDir,
+    featuresDirs,
+    stepsDirs,
     supportImports: ['support/world.ts', 'support/hooks.ts'],
   });
 

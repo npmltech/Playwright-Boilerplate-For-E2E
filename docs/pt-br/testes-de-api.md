@@ -19,7 +19,7 @@ Para documentação completa incluindo detalhes do endpoint, schema de resposta 
 
 ### Locators & endpoints
 
-- `locators/endpoints/api-swapi.locator.ts` — Endpoints e propriedades de resposta centralizados
+- `api/endpoints/api-swapi.endpoint.ts` — Endpoints e propriedades de resposta centralizados
 
 ### Cenários de teste
 

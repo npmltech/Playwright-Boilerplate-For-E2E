@@ -1,0 +1,39 @@
+import { expect } from '@playwright/test';
+import type { CustomWorld } from '../../../support/world';
+import { registerLocator } from '../../../ui/locators/register.locator';
+import { HooksHelper } from '../../../support/helpers/hooks-helpers';
+
+export function uniqueSuffix() {
+  return `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
+}
+
+export async function selectValidZone(world: CustomWorld) {
+  const zoneOptions = world.page.locator(
+    `${registerLocator.zoneSelect} option`
+  );
+
+  await expect
+    .poll(async () => zoneOptions.count(), {
+      message: 'Zone options did not load after country selection',
+      timeout: HooksHelper.cucumberTimeoutMs,
+    })
+    .toBeGreaterThan(1);
+
+  const selected = await world.page.evaluate((selector) => {
+    const select = document.querySelector(selector) as HTMLSelectElement | null;
+    if (!select) return false;
+
+    for (const option of Array.from(select.options)) {
+      const value = option.value?.trim();
+      if (!value || value === '0' || value.toUpperCase() === 'FALSE') continue;
+      option.selected = true;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+    return false;
+  }, registerLocator.zoneSelect);
+
+  expect(selected, 'No valid zone option found for the selected country').toBe(
+    true
+  );
+}

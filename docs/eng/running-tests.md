@@ -56,6 +56,26 @@ unsetopt correct correctall && yarn test:all:video:prompt
   yarn test:cucumber:no-workers:headless:video
   ```
 
+- Locale shortcuts (no-workers, headless):
+
+  ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:headless:video:pt-br
+
+  # English only
+  yarn test:cucumber:headless:video:eng
+  ```
+
+- Locale shortcuts (no-workers, headed):
+
+  ```bash
+  # Brazilian Portuguese
+  yarn test:cucumber:headed:video:pt-br
+
+  # English only
+  yarn test:cucumber:headed:video:eng
+  ```
+
 ### With workers (parallel scenario execution)
 
 - Headed mode (default 4 workers):
@@ -115,6 +135,21 @@ yarn test:debug
 
 ```bash
 yarn test:report
+```
+
+## Cucumber report summary
+
+After running Cucumber (one locale or multiple locales), generate a merged summary:
+
+```bash
+yarn report:cucumber:summary
+```
+
+Useful options:
+
+```bash
+yarn report:cucumber:summary --input cucumber-reports/cucumber-report-eng.json
+yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summary.json
 ```
 
 ## Environment variables

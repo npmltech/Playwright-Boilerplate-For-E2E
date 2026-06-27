@@ -71,14 +71,15 @@ Playwright-Boilerplate-For-E2E/
 │           ├── register.feature
 │           ├── products.feature
 │           └── checkout.feature
-├── locators/
-│   ├── web-elements/
-│   │   ├── login.locator.ts
-│   │   ├── register.locator.ts
-│   │   ├── products.locator.ts
-│   │   └── checkout.locator.ts
-│   └── endpoints/
-│       └── api-swapi.locator.ts
+├── ui/
+│   └── locators/
+│       ├── login.locator.ts
+│       ├── register.locator.ts
+│       ├── products.locator.ts
+│       └── checkout.locator.ts
+├── endpoints/
+│   └── api/
+│       └── api-swapi.endpoint.ts
 ├── pages/
 │   ├── base.page.ts
 │   └── login.page.ts
@@ -94,6 +95,9 @@ Playwright-Boilerplate-For-E2E/
 │   │       └── report-directory-manager.mjs
 │   ├── exclude-some-artifacts.sh
 │   ├── clean-artifacts.sh
+│   ├── cucumber/
+│   │   ├── run-summary.mjs
+│   │   └── summary/
 │   └── open-maximized.sh
 ├── steps/
 │   ├── api/
@@ -102,6 +106,9 @@ Playwright-Boilerplate-For-E2E/
 │   │   └── pt-br/
 │   │       └── api-swapi.step.ts
 │   └── web/
+│       ├── shared/
+│       │   ├── checkout.helpers.ts
+│       │   └── register.helpers.ts
 │       ├── eng/
 │       │   ├── checkout.step.ts
 │       │   ├── login.step.ts
@@ -126,6 +133,10 @@ Playwright-Boilerplate-For-E2E/
 ├── allure-results/
 ├── allure-report/
 ├── cucumber-reports/
+│   ├── cucumber-report-pt-br.json
+│   ├── cucumber-report-eng.json
+│   ├── cucumber-report-pt-br.html
+│   └── cucumber-report-eng.html
 ├── test-results/
 ├── .env
 ├── .gitignore
