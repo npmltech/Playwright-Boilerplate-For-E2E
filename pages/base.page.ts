@@ -16,7 +16,7 @@ export class BasePage {
         console.log(message);
       });
     logger('Navegando para: ' + url);
-    await this.page.goto(url);
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForPageLoad() {

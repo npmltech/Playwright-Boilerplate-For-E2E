@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 import type { CustomWorld } from '../support/world';
-import { loginLocator } from '../locators/web-elements/login.locator';
+import { loginLocator } from '../ui/locators/login.locator';
 import { routes } from '../config/routes';
 import { BasePage } from './base.page';
 
@@ -46,21 +46,37 @@ export class LoginPage extends BasePage {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
 
-    // Use layered submit strategy to reduce browser-specific flakiness.
-    await this.submitButton.first().click({ force: true });
-    await this.waitUntilLoggedIn().catch(() => {});
+    // Layered submit strategy for cross-browser reliability.
+    await this.submitButton.first().click();
+    await this.page.waitForLoadState('domcontentloaded');
 
     if (this.page.url().includes('rt=account/login')) {
       await this.passwordInput.press('Enter');
-      await this.waitUntilLoggedIn().catch(() => {});
+      await this.page.waitForLoadState('domcontentloaded');
     }
 
     if (this.page.url().includes('rt=account/login')) {
       await this.loginForm.evaluate((form: HTMLFormElement) => form.submit());
-      await this.waitUntilLoggedIn();
+      await this.page.waitForLoadState('domcontentloaded');
     }
 
+    await this.waitUntilLoggedIn();
     await expect(this.accountContainer).toBeVisible();
+  }
+
+  async loginExpectingError(username: string, password: string) {
+    this.logger(`Iniciando login inválido com usuário: ${username}`);
+    await this.openLoginPage();
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.submitButton.first().click();
+    await this.page.waitForLoadState('domcontentloaded');
+
+    await expect(this.page).toHaveURL(/rt=account\/login/, { timeout: 15_000 });
+    await expect(this.errorAlert.first()).toContainText(
+      /incorrect|no match|error/i,
+      { timeout: 15_000 }
+    );
   }
 
   async loginWithEmptyCredentials() {

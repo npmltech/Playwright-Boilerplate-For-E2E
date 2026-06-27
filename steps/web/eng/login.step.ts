@@ -3,12 +3,11 @@ import { expect } from '@playwright/test';
 import type { CustomWorld } from '../../../support/world';
 import { LoginPage } from '../../../pages/login.page';
 import { users } from '../../../data/users';
-import { loginLocator } from '../../../locators/web-elements/login.locator';
+import { loginLocator } from '../../../ui/locators/login.locator';
 import { routePatterns } from '../../../config/routes';
+import { HooksHelper } from '../../../support/helpers/hooks-helpers';
 
-const cucumberTimeoutMs = Number(process.env.CUCUMBER_TIMEOUT_MS ?? 60_000);
-
-setDefaultTimeout(cucumberTimeoutMs);
+setDefaultTimeout(HooksHelper.cucumberTimeoutMs);
 
 Given('that I am on the login page', async function (this: CustomWorld) {
   const loginPage = new LoginPage(this.page, this);
@@ -23,14 +22,12 @@ When('I enter valid credentials', async function (this: CustomWorld) {
 
 When('I enter invalid credentials', async function (this: CustomWorld) {
   const loginPage = new LoginPage(this.page, this);
-  await loginPage.login('wrong_user', 'wrongpassword');
-  await loginPage.waitForElementVisible();
+  await loginPage.loginExpectingError('wrong_user', 'wrongpassword');
 });
 
 When('I click on forgot my password', async function (this: CustomWorld) {
   const loginPage = new LoginPage(this.page, this);
   await loginPage.goToForgotPasswordPage();
-  await loginPage.waitForElementVisible();
 });
 
 When(
@@ -44,19 +41,19 @@ When(
 
 Then('I should be logged in successfully', async function (this: CustomWorld) {
   await expect(this.page).toHaveURL(routePatterns.account, {
-    timeout: cucumberTimeoutMs,
+    timeout: HooksHelper.cucumberTimeoutMs,
   });
 
   await expect(
     this.page.locator(loginLocator.logoutMenuLink).first()
-  ).toBeVisible({ timeout: cucumberTimeoutMs });
+  ).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
 });
 
 Then('I should see an error message', async function (this: CustomWorld) {
   await expect(this.page.locator(loginLocator.errorAlert)).toContainText(
     /incorrect|no match|error/i,
     {
-      timeout: cucumberTimeoutMs,
+      timeout: HooksHelper.cucumberTimeoutMs,
     }
   );
 });
@@ -65,11 +62,11 @@ Then(
   'I should be redirected to the password recovery page',
   async function (this: CustomWorld) {
     await expect(this.page).toHaveURL(routePatterns.forgottenPassword, {
-      timeout: cucumberTimeoutMs,
+      timeout: HooksHelper.cucumberTimeoutMs,
     });
 
     await expect(this.page.locator(loginLocator.forgottenForm)).toBeVisible({
-      timeout: cucumberTimeoutMs,
+      timeout: HooksHelper.cucumberTimeoutMs,
     });
   }
 );
