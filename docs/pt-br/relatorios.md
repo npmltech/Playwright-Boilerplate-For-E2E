@@ -15,7 +15,7 @@ yarn allure:serve
 ### Gerar e servir (recomendado para execução isolada de relatórios)
 
 ```bash
-yarn allure:server:report
+yarn allure:generate && yarn allure:serve
 ```
 
 Este comando gera o relatório HTML Allure e o abre em um servidor Allure na porta 8080.

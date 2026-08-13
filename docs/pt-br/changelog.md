@@ -2,6 +2,34 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-08-13
+
+### Alterado
+
+- **Dependências atualizadas** — `@cucumber/cucumber`, `@cucumber/messages` e `@cucumber/pretty-formatter` incrementados para suas versões majors v13/v34/v4, além de `@playwright/test`, `@types/node`, `allure-cucumberjs`, `allure-js-commons`, `eslint`, `globals`, `prettier`, `tsx` e `typescript-eslint` incrementados dentro dos ranges já existentes. `typescript` permanece em `^6.0.3`: o patch de compatibilidade nativo do Yarn Berry para o pacote `typescript` (`builtin<compat/typescript>`) falha ao ser aplicado contra a nova estrutura de pacote do TypeScript 7.0.2 (ele procura por `lib/_tsc.js`, mas o TS7 passou a distribuir `lib/tsc.js` no lugar) — confirmado que isso acontece mesmo com uma dependência `typescript@7.0.2` simples, sem nenhum alias, ou seja, é uma incompatibilidade entre Yarn e TS7, não algo corrigível pela configuração deste projeto. Adiado da mesma forma que este changelog já adia o `@cucumber/cucumber` v13 em entradas anteriores.
+
+  | Pacote                       | Antes   | Depois   |
+  | ---------------------------- | ------- | -------- |
+  | `@cucumber/cucumber`         | 12.7.0  | 13.2.1   |
+  | `@cucumber/messages`         | ^32.3.1 | ^34.2.1  |
+  | `@cucumber/pretty-formatter` | ^3.2.0  | ^4.0.1   |
+  | `@playwright/test`           | ^1.61.1 | ^1.62.1  |
+  | `@types/node`                | ^26.0.0 | ^26.2.0  |
+  | `allure-cucumberjs`          | 3.10.1  | 3.10.2   |
+  | `allure-js-commons`          | 3.10.1  | 3.10.2   |
+  | `eslint`                     | ^10.5.0 | ^10.8.1  |
+  | `globals`                    | ^17.7.0 | ^17.11.0 |
+  | `prettier`                   | ^3.8.4  | ^3.9.6   |
+  | `tsx`                        | ^4.22.4 | ^4.23.12 |
+  | `typescript-eslint`          | ^8.62.0 | ^8.67.0  |
+
+- **Scripts do `package.json`** consolidados de 59 para 20: removidas as camadas de wrapper `:run` quase duplicadas, o cluster de aliases `no-workers` (idênticos aos scripts sem "no-workers") e combinações por modo (locale/headed/workers) que agora são alcançáveis via override inline de variável de ambiente (ex.: `FEATURE_LOCALE=eng yarn test:api`) em vez de um script dedicado por combinação. Todo script referenciado pelo `container/Dockerfile` e pelo `docker-compose.yml` com nome exato (`test:pw:headless:video`, `test:cucumber:headless:video`, `test:api`) foi mantido sem alteração. Todas as referências em `docs/eng/`, `docs/pt-br/` e nos changelogs irmãos foram atualizadas.
+
+### Corrigido
+
+- **`scripts/cucumber-runner.sh`**: o `@cucumber/cucumber` 13 mantém apenas o último alvo `--format` quando múltiplos formatters compartilham o mesmo stream de saída (stdout, quando nenhum `:PATH` é informado). Este script especificava `@cucumber/pretty-formatter`, `summary` e o caminho bruto do reporter do `allure-cucumberjs`, todos sem alvo explícito — então apenas o reporter do Allure era de fato inicializado, e a saída do pretty/summary (incluindo a contagem de cenários com sucesso/falha e os detalhes de falha) era silenciosamente descartada, mesmo com os exit codes sempre corretos. Trocado para o formatter nativo `--format pretty` (o `@cucumber/pretty-formatter` v4 não é mais utilizável diretamente como alvo `--format` autônomo) e dado ao reporter do Allure um alvo de log explícito (`cucumber-reports/allure-reporter-${FEATURE_LOCALE}.log`).
+- Isso revelou uma falha real e reproduzível que estava sendo silenciosamente engolida pelo bug do formatter: o fluxo de cadastro ("Criar conta com dados válidos") falha com um alerta "Please select a region / state!" do site, em ambos os idiomas. Não corrigido aqui — precisa de investigação em `selectValidZone()`, em `steps/web/shared/register.helpers.ts`.
+
 ## 2026-06-27
 
 ### Adicionado
@@ -28,22 +56,22 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 - **`steps/web/pt-br/checkout.step.ts`**, **`steps/web/eng/checkout.step.ts`**: reescritos para importar de `steps/web/shared/checkout.helpers.ts`; wrapper local `waitForPageReady()` removido em favor de `BasePage.waitForPageLoad()` usado dentro do módulo compartilhado.
 - **Dependências atualizadas** — 14 pacotes incrementados (mantendo `@cucumber/cucumber` em 12.7.0 aguardando migração para v13):
 
-  | Pacote | Antes | Depois |
-  |---|---|---|
-  | `@playwright/test` | ^1.59.0 | ^1.61.1 |
-  | `allure-cucumberjs` | 3.6.0 | 3.10.1 |
-  | `allure-js-commons` | 3.6.0 | 3.10.1 |
-  | `allure-commandline` | ^2.38.1 | ^2.43.0 |
-  | `prettier-plugin-gherkin` | ^3.1.3 | ^4.0.0 |
-  | `@types/node` | ^25.5.0 | ^26.0.0 |
-  | `eslint` | ^10.1.0 | ^10.5.0 |
-  | `typescript-eslint` | ^8.58.0 | ^8.62.0 |
-  | `typescript` | ^6.0.2 | ^6.0.3 |
-  | `tsx` | ^4.21.0 | ^4.22.4 |
-  | `prettier` | ^3.8.1 | ^3.8.4 |
-  | `globals` | ^17.4.0 | ^17.7.0 |
-  | `jiti` | ^2.6.1 | ^2.7.0 |
-  | `dotenv` | ^17.3.1 | ^17.4.2 |
+  | Pacote                    | Antes   | Depois  |
+  | ------------------------- | ------- | ------- |
+  | `@playwright/test`        | ^1.59.0 | ^1.61.1 |
+  | `allure-cucumberjs`       | 3.6.0   | 3.10.1  |
+  | `allure-js-commons`       | 3.6.0   | 3.10.1  |
+  | `allure-commandline`      | ^2.38.1 | ^2.43.0 |
+  | `prettier-plugin-gherkin` | ^3.1.3  | ^4.0.0  |
+  | `@types/node`             | ^25.5.0 | ^26.0.0 |
+  | `eslint`                  | ^10.1.0 | ^10.5.0 |
+  | `typescript-eslint`       | ^8.58.0 | ^8.62.0 |
+  | `typescript`              | ^6.0.2  | ^6.0.3  |
+  | `tsx`                     | ^4.21.0 | ^4.22.4 |
+  | `prettier`                | ^3.8.1  | ^3.8.4  |
+  | `globals`                 | ^17.4.0 | ^17.7.0 |
+  | `jiti`                    | ^2.6.1  | ^2.7.0  |
+  | `dotenv`                  | ^17.3.1 | ^17.4.2 |
 
   Browsers do Playwright reinstalados (`yarn playwright install`) após o caminho binário mudar de `firefox-1490` para `firefox-1532`.
 

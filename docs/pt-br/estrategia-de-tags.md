@@ -29,23 +29,23 @@
 
 ```bash
 # Apenas testes smoke
-yarn test:cucumber:no-workers:headless:video --tags "@smoke"
+yarn test:cucumber:headless:video --tags "@smoke"
 
 # Apenas testes de regressão
-yarn test:cucumber:no-workers:headless:video --tags "@regression"
+yarn test:cucumber:headless:video --tags "@regression"
 
 # Excluir testes smoke
-yarn test:cucumber:no-workers:headless:video --tags "not @smoke"
+yarn test:cucumber:headless:video --tags "not @smoke"
 
 # Testes de login
-yarn test:cucumber:no-workers:headless:video --tags "@login"
+yarn test:cucumber:headless:video --tags "@login"
 
 # Testes de registro
-yarn test:cucumber:no-workers:headless:video --tags "@register"
+yarn test:cucumber:headless:video --tags "@register"
 
 # Apenas testes de API
 yarn test:api
 
 # Combinar tags
-yarn test:cucumber:no-workers:headless:video --tags "@api and @smoke"
+yarn test:cucumber:headless:video --tags "@api and @smoke"
 ```

@@ -195,76 +195,52 @@ Builds (or rebuilds) images for all services. Run this after updating `package.j
 ### Clean Generated Artifacts
 
 ```bash
-yarn docker:clean
+yarn test:prepare
 ```
 
-Runs the repository cleanup script through a temporary Docker container with `--network host`. This is useful when old artifacts were created with Docker ownership and are difficult to delete directly from the host.
+Runs `scripts/clean-artifacts.sh` (the same command previously exposed as `docker:clean`). Useful when old artifacts were created with Docker ownership and are difficult to delete directly from the host.
 
 ### Run Tests with Video Evidence
 
-**Full suite (Playwright + Cucumber pt-br + eng):**
+**Full suite (Playwright + Cucumber pt-br + eng + API):**
 
 ```bash
-yarn docker:test:all:video
+yarn docker:build && yarn docker:up
 ```
 
-This shortcut runs Playwright first and then Cucumber for all supported locales in sequence (`pt-br` then `eng`).
+`docker compose up` with no service argument already starts all three services (playwright, cucumber, api) together — this is the direct equivalent of the old `docker:test:all:video` shortcut.
 
-**Playwright tests:**
+**Playwright tests only:**
 
 ```bash
-yarn docker:test:pw:video
+docker compose -f container/docker-compose.yml run --rm playwright
 ```
 
-Videos saved to `./reports/playwright/`
-
-This shortcut runs:
-
-```bash
-docker compose -f container/docker-compose.yml run --rm -e PW_VIDEO_MODE=on playwright sh -lc 'yarn test:pw:headless:video'
-```
+Videos saved to `./reports/playwright/`. The `playwright` service's Dockerfile `CMD` already defaults to `test:pw:headless:video`, so no extra command override is needed.
 
 **Cucumber tests (PT-BR):**
 
 ```bash
-yarn docker:test:cucumber:video:pt-br
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber
 ```
 
-Videos and reports saved to `./test-results/` and `./cucumber-reports/`
-
-This shortcut runs:
-
-```bash
-docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber sh -lc 'yarn test:cucumber:headless:video'
-```
+Videos and reports saved to `./test-results/` and `./cucumber-reports/`.
 
 **Cucumber tests (ENG):**
 
 ```bash
-yarn docker:test:cucumber:video:eng
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber
 ```
 
-Videos and reports saved to `./test-results/` and `./cucumber-reports/`
+Videos and reports saved to `./test-results/` and `./cucumber-reports/`.
 
-This shortcut runs:
+**API tests only:**
 
 ```bash
-docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=eng cucumber sh -lc 'yarn test:cucumber:headless:video'
+docker compose -f container/docker-compose.yml run --rm api
 ```
 
-**API tests:**
-
-```bash
-yarn docker:test:api:video
-```
-
-Reports saved to `./allure-results/`
-
-This shortcut runs:
-
-```bash
-docker compose -f container/docker-compose.yml run --rm api sh -lc 'yarn test:api'
-```
+Reports saved to `./allure-results/`.
 
 ### Interactive Container Execution
 
@@ -289,26 +265,20 @@ yarn docker:down
 ### View Live Logs
 
 ```bash
-yarn docker:logs
+docker compose -f container/docker-compose.yml logs -f
 ```
 
 Streams logs from all running containers in real-time. Press `Ctrl+C` to exit.
 
 ### Generic Docker Compose Commands
 
-For anything not covered by the shortcuts, use:
+For anything not covered by the shortcuts, use `docker compose` directly:
 
 ```bash
-yarn docker:compose <command>
-```
-
-Examples:
-
-```bash
-yarn docker:compose ps                 # List running containers
-yarn docker:compose exec playwright sh # Shell into a running container
-yarn docker:compose logs playwright    # Logs from one service
-yarn docker:compose run api bash       # Run a different command in api service
+docker compose -f container/docker-compose.yml ps                 # List running containers
+docker compose -f container/docker-compose.yml exec playwright sh # Shell into a running container
+docker compose -f container/docker-compose.yml logs playwright    # Logs from one service
+docker compose -f container/docker-compose.yml run api bash       # Run a different command in api service
 ```
 
 ## Workflow: Running Tests in Docker
@@ -320,13 +290,13 @@ yarn docker:compose run api bash       # Run a different command in api service
 yarn docker:build
 
 # Clean previous generated artifacts when needed
-yarn docker:clean
+yarn test:prepare
 
-# Run full suite (Playwright + Cucumber pt-br + eng)
-yarn docker:test:all:video
+# Run full suite (Playwright + Cucumber pt-br + eng + API)
+yarn docker:up
 
 # Run Cucumber tests with video (PT-BR)
-yarn docker:test:cucumber:video:pt-br
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber
 
 # Videos appear in ./test-results/ and ./cucumber-reports/
 ```
@@ -337,7 +307,7 @@ Modify your feature files or step definitions locally, then:
 
 ```bash
 # Run tests again (uses cached image, faster)
-yarn docker:test:cucumber:video:pt-br
+docker compose -f container/docker-compose.yml run --rm -e CUCUMBER_VIDEO=1 -e FEATURE_LOCALE=pt-br cucumber
 
 # Check videos for failures
 ls test-results/
@@ -395,7 +365,7 @@ This usually means previous container runs created bind-mounted artifacts with D
 Use the cleanup helper:
 
 ```bash
-yarn docker:clean
+yarn test:prepare
 ```
 
 If you still need a manual fallback:
@@ -416,7 +386,7 @@ Check volume mappings in `container/docker-compose.yml`. Videos should appear in
 If missing, check container logs:
 
 ```bash
-yarn docker:logs
+docker compose -f container/docker-compose.yml logs -f
 ```
 
 ### Container exits immediately

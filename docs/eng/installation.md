@@ -80,16 +80,18 @@ yarn test:api
 yarn test:pw:headed:video
 ```
 
-Run full flow (Playwright + Cucumber):
+Run full flow (Playwright + Cucumber, headed + video):
 
 ```bash
-yarn test:all:video:prompt
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 ```
 
 ## 7) Report generation
 
 ```bash
-yarn allure:server:report
+yarn allure:generate && yarn allure:serve
 ```
 
 Useful notes:

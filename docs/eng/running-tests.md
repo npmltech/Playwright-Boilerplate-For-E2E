@@ -14,30 +14,31 @@ yarn test:pw:headed:video
 yarn test:pw:headless:video
 ```
 
-## Run all tests (Playwright + Cucumber, with video and prompt output)
+## Run all tests (Playwright + Cucumber + API, with video and prompt output)
+
+There's no longer a single script that chains the whole suite. Run the phases directly:
 
 **Headed mode (recommended for local validation):**
 
 ```bash
-yarn test:all:video:prompt
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+yarn test:api
 ```
 
 **Headless mode (CI-friendly):**
 
 ```bash
-yarn test:all:headless:video:prompt
-```
-
-**Alias:**
-
-```bash
-yarn test:all:video
+yarn test:pw:headless:video
+yarn test:cucumber:workers:headless:video:all
+yarn test:api
 ```
 
 If your zsh shell asks to autocorrect test -> tests, run with:
 
 ```bash
-unsetopt correct correctall && yarn test:all:video:prompt
+unsetopt correct correctall && yarn test:pw:headless:video
 ```
 
 ## Cucumber tests (with video, step output always printed)
@@ -47,16 +48,16 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Headed mode:
 
   ```bash
-  yarn test:cucumber:no-workers:headed:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
   ```
 
 - Headless mode:
 
   ```bash
-  yarn test:cucumber:no-workers:headless:video
+  yarn test:cucumber:headless:video
   ```
 
-- Locale shortcuts (no-workers, headless):
+- Locale shortcuts (serial, headless):
 
   ```bash
   # Brazilian Portuguese
@@ -66,14 +67,14 @@ unsetopt correct correctall && yarn test:all:video:prompt
   yarn test:cucumber:headless:video:eng
   ```
 
-- Locale shortcuts (no-workers, headed):
+- Locale shortcuts (serial, headed):
 
   ```bash
   # Brazilian Portuguese
-  yarn test:cucumber:headed:video:pt-br
+  FEATURE_LOCALE=pt-br CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 
   # English only
-  yarn test:cucumber:headed:video:eng
+  FEATURE_LOCALE=eng CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
   ```
 
 ### With workers (parallel scenario execution)
@@ -81,30 +82,30 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Headed mode (default 4 workers):
 
   ```bash
-  yarn test:cucumber:workers:headed:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
   ```
 
 - Headless mode (default 4 workers):
 
   ```bash
-  yarn test:cucumber:workers:headless:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
   ```
 
 - Custom worker count:
 
   ```bash
-  CUCUMBER_PARALLEL=6 yarn test:cucumber:workers:headed:video
-  CUCUMBER_PARALLEL=6 yarn test:cucumber:workers:headless:video
+  CUCUMBER_PARALLEL=6 CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "$CUCUMBER_PARALLEL"
+  CUCUMBER_PARALLEL=6 CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "$CUCUMBER_PARALLEL"
   ```
 
 - Locale shortcuts (headless + workers):
 
   ```bash
   # Brazilian Portuguese
-  yarn test:cucumber:workers:headless:video:pt-br
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
   # English only
-  yarn test:cucumber:workers:headless:video:eng
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
   # All locales (pt-br + eng)
   yarn test:cucumber:workers:headless:video:all
@@ -116,11 +117,11 @@ unsetopt correct correctall && yarn test:all:video:prompt
 # Default locale (pt-br)
 yarn test:api
 
-# Portuguese
-yarn test:api:pt-br
+# Portuguese (explicit)
+FEATURE_LOCALE=pt-br yarn test:api
 
 # English
-yarn test:api:eng
+FEATURE_LOCALE=eng yarn test:api
 ```
 
 ## Debug & inspection
@@ -128,7 +129,7 @@ yarn test:api:eng
 **Playwright debug mode:**
 
 ```bash
-yarn test:debug
+playwright test --config=config/playwright.config.ts --debug
 ```
 
 **Playwright HTML report:**

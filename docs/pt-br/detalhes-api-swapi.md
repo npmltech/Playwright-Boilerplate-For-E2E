@@ -43,7 +43,7 @@ Valida que:
 **Execução:**
 
 ```bash
-yarn test:cucumber:no-workers:headed:video --tags "@swapi"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --tags "@swapi"
 ```
 
 ### 2. Validar estrutura de dados do filme (Esquema do Cenário)
@@ -97,41 +97,41 @@ yarn test:api
 ### Todos os testes (UI + API)
 
 ```bash
-yarn test:cucumber:no-workers:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 ```
 
 ### Somente testes SWAPI
 
 ```bash
-yarn test:cucumber:no-workers:headed:video --tags "@swapi"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --tags "@swapi"
 ```
 
 ### Somente testes de API (qualquer API)
 
 ```bash
-yarn test:cucumber:no-workers:headless:video --tags "@api"
+yarn test:cucumber:headless:video --tags "@api"
 
 # Atalhos
 yarn test:api
-yarn test:api:pt-br
-yarn test:api:eng
+FEATURE_LOCALE=pt-br yarn test:api
+FEATURE_LOCALE=eng yarn test:api
 ```
 
 ### Modo específico
 
 ```bash
 # Headless
-yarn test:cucumber:no-workers:headless:video --tags "@swapi"
+yarn test:cucumber:headless:video --tags "@swapi"
 
 # Com workers paralelos
-yarn test:cucumber:workers:headless:video --tags "@swapi"
-CUCUMBER_PARALLEL=4 yarn test:cucumber:workers:headless:video --tags "@swapi"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@swapi"
+CUCUMBER_PARALLEL=4 CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "$CUCUMBER_PARALLEL" --tags "@swapi"
 
 # Com workers paralelos (locale pt-br)
-yarn test:cucumber:workers:headless:video:pt-br --tags "@swapi"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@swapi"
 
 # Com workers paralelos (locale inglês)
-yarn test:cucumber:workers:headless:video:eng --tags "@swapi"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@swapi"
 
 # Com workers paralelos (todos os locales)
 yarn test:cucumber:workers:headless:video:all --tags "@swapi"
@@ -232,5 +232,5 @@ Exemplo:
 Combine tags para filtrar:
 
 ```bash
-yarn test:cucumber:no-workers:headed:video --tags "@api and @smoke"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --tags "@api and @smoke"
 ```

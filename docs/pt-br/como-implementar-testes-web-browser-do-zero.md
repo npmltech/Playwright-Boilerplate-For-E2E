@@ -124,19 +124,19 @@ Boas práticas:
 Rodar suíte Cucumber web+api:
 
 ```bash
-yarn test:cucumber:no-workers:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 ```
 
 Rodar apenas seu cenário por tag:
 
 ```bash
-yarn test:cucumber:no-workers:headed:video --tags "@minha_jornada"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --tags "@minha_jornada"
 ```
 
 Rodar em headless:
 
 ```bash
-yarn test:cucumber:no-workers:headless:video --tags "@minha_jornada"
+yarn test:cucumber:headless:video --tags "@minha_jornada"
 ```
 
 ## 7. Checklist rápido

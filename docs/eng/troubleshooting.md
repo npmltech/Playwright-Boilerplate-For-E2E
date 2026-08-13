@@ -121,7 +121,7 @@ Fix applied:
 
 When to use:
 
-- Use `yarn allure:server:report` when you want to generate and serve the report locally
+- Use `yarn allure:generate && yarn allure:serve` when you want to generate and serve the report locally
 - Use `yarn allure:serve` in CI, containers, remote shells, or Linux sessions without a graphical desktop
 - Use `yarn allure:open` only after the report exists and a desktop browser session is available
 
@@ -252,18 +252,18 @@ Observed cause:
 Fix applied:
 
 - Added a Docker-aware cleanup path to `scripts/clean-artifacts.sh`
-- Added `yarn docker:clean` to run cleanup through a temporary container with `--network host`
+- Exposed as `yarn test:prepare` (previously also available under the `docker:clean` alias, removed since it was an identical command under a different name)
 
 Verification:
 
-- Run `yarn docker:clean`
+- Run `yarn test:prepare`
 - Confirm `allure-results/`, `test-results/`, `cucumber-reports/`, and `reports/` no longer exist after cleanup
 
 Fallback:
 
 - If the environment still requires manual intervention:
   - `sudo rm -rf allure-results test-results cucumber-reports reports allure-report cucumber-report.html cucumber-report.json cucumber.log`
-  - Run `yarn docker:clean` again to confirm cleanup validation passes
+  - Run `yarn test:prepare` again to confirm cleanup validation passes
 
 ## 10.2) Docker bridge networking not supported in local daemon
 
@@ -285,10 +285,10 @@ Fix applied:
 Verification:
 
 - `yarn docker:build`
-- `yarn docker:test:cucumber:video:pt-br`
-- `yarn docker:test:cucumber:video:eng`
-- `yarn docker:test:all:video`
-- `yarn docker:clean`
+- `docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=pt-br cucumber`
+- `docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=eng cucumber`
+- `yarn docker:up`
+- `yarn test:prepare`
 
 ## 11) Target migration to Automation Test Store
 
@@ -451,48 +451,48 @@ Verification:
 
 - Login, register, and navigation Cucumber scenarios run without skipped steps.
 
-## 17) `allure-results/` empty after `yarn test:all:headless:video:prompt`
+## 17) `allure-results/` empty when chaining Playwright and Cucumber manually
 
 Symptom:
 
-- `allure-results/` does not exist or is empty after running the full suite.
+- `allure-results/` does not exist or is empty after running Playwright followed by Cucumber.
 - Cucumber output is also missing even though Playwright ran.
 
 Observed cause:
 
-- The script chained Playwright and Cucumber with `&&`. When any Playwright test failed (even one flaky Firefox test), the shell short-circuited and Cucumber never ran.
+- If the phases are chained with `&&` (for example `yarn test:pw:headless:video && yarn test:cucumber:workers:headless:video:all`), when any Playwright test fails (even one flaky Firefox test) the shell short-circuits and Cucumber never runs.
 - `allure-results/` is only created by the Cucumber Allure formatter — if Cucumber never runs, the directory is never populated.
-- A secondary cause: `cucumber-runner.sh` was capturing `$?` after the `tee` pipe, which always returns 0, so the Allure auto-generation check ran correctly but the `exit` code was wrong.
+- A secondary cause (already fixed): `cucumber-runner.sh` was capturing `$?` after the `tee` pipe, which always returns 0, so the Allure auto-generation check ran correctly but the `exit` code was wrong.
 
 Fix applied:
 
-- Changed `&&` to `;` between Playwright and Cucumber in `test:all:headless:video:prompt` and `docker:test:all:video` — Cucumber now always runs regardless of the Playwright exit code.
-- Fixed `cucumber-runner.sh` to use `PIPESTATUS[0]` (Cucumber's exit code) instead of `$?` (tee's exit code), and propagate it via `exit $CUCUMBER_EXIT`.
+- When chaining phases manually, use `;` instead of `&&` between Playwright and Cucumber (see the examples in [Running Tests](running-tests.md)) — Cucumber runs regardless of the Playwright exit code.
+- `cucumber-runner.sh` uses `PIPESTATUS[0]` (Cucumber's exit code) instead of `$?` (tee's exit code), propagating it via `exit $CUCUMBER_EXIT`.
 
 Verification:
 
-- `allure-results/` is populated and `allure-report/` is auto-generated even when one or more Playwright tests fail.
+- `allure-results/` is populated and `allure-report/` is auto-generated even when one or more Playwright tests fail, as long as the phases are chained with `;`.
 
 ## Useful commands
 
 ```bash
-yarn test:all:video:prompt
-yarn test:all:headless:video:prompt
-yarn test:cucumber:no-workers:headed:video
-yarn test:cucumber:no-workers:headless:video
+yarn test:pw:headed:video
+yarn test:pw:headless:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+yarn test:cucumber:headless:video
 yarn test:cucumber:headless:video:pt-br
 yarn test:cucumber:headless:video:eng
-yarn test:cucumber:headed:video:pt-br
-yarn test:cucumber:headed:video:eng
-yarn test:cucumber:workers:headed:video
-yarn test:cucumber:workers:headless:video
-yarn test:cucumber:workers:headless:video:pt-br
-yarn test:cucumber:workers:headless:video:eng
+FEATURE_LOCALE=pt-br CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+FEATURE_LOCALE=eng CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 yarn test:cucumber:workers:headless:video:all
 yarn test:api
-yarn test:api:pt-br
-yarn test:api:eng
-yarn allure:server:report
+FEATURE_LOCALE=pt-br yarn test:api
+FEATURE_LOCALE=eng yarn test:api
+yarn allure:generate && yarn allure:serve
 yarn allure:serve
 ./scripts/exclude-some-artifacts.sh
 ./scripts/clean-artifacts.sh
