@@ -2,22 +2,22 @@
 
 ## Tags atuais em features web
 
-- Tags Cucumber: `@login`, `@authentication`, `@smoke`, `@regression`
+- Tags Cucumber: `@login`, `@autenticacao`, `@smoke`, `@regression`
 - Labels Allure como tags:
   - `@allure.label.severity:critical`
   - `@allure.label.severity:normal`
   - `@allure.label.suite:Login`
-  - `@allure.label.feature:Authentication`
+  - `@allure.label.feature:Autenticacao`
 
 ## Tags em features de registro
 
-- Tags Cucumber: `@register`, `@authentication`, `@smoke`, `@regression`
+- Tags Cucumber: `@register`, `@autenticacao`, `@smoke`, `@regression`
 - Labels Allure como tags:
   - `@allure.label.severity:critical`
   - `@allure.label.severity:normal`
   - `@allure.label.suite:Cadastro`
   - `@allure.label.suite:RecuperacaoSenha`
-  - `@allure.label.feature:Authentication`
+  - `@allure.label.feature:Autenticacao`
 
 ## Tags de testes de API
 
