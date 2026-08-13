@@ -13,6 +13,8 @@ export interface GherkinDocumentLike {
   feature?: {
     children?: ReadonlyArray<{
       scenario?: {
+        id?: string;
+        keyword?: string;
         steps?: ReadonlyArray<{ id?: string; keyword?: string }>;
       };
     }>;
@@ -22,6 +24,10 @@ export interface GherkinDocumentLike {
 export interface PickleStepLike {
   astNodeIds?: ReadonlyArray<string>;
   text: string;
+}
+
+export interface PickleLike {
+  astNodeIds?: ReadonlyArray<string>;
 }
 
 export class HooksHelper {
@@ -42,17 +48,18 @@ export class HooksHelper {
     return colorize(text, color);
   }
 
-  static getStepKeyword(
-    gherkinDocument: GherkinDocumentLike,
-    pickleStep: PickleStepLike
-  ): string {
-    let keywordMap = HooksHelper._keywordCache.get(
-      gherkinDocument as object
-    );
+  private static _buildKeywordMap(
+    gherkinDocument: GherkinDocumentLike
+  ): Map<string, string> {
+    let keywordMap = HooksHelper._keywordCache.get(gherkinDocument as object);
     if (!keywordMap) {
       keywordMap = new Map<string, string>();
       for (const child of gherkinDocument?.feature?.children ?? []) {
-        for (const step of child?.scenario?.steps ?? []) {
+        const scenario = child?.scenario;
+        if (scenario?.id !== undefined) {
+          keywordMap.set(scenario.id, (scenario.keyword ?? '').trim());
+        }
+        for (const step of scenario?.steps ?? []) {
           if (step.id !== undefined) {
             keywordMap.set(step.id, (step.keyword ?? '').trim());
           }
@@ -60,8 +67,31 @@ export class HooksHelper {
       }
       HooksHelper._keywordCache.set(gherkinDocument as object, keywordMap);
     }
+    return keywordMap;
+  }
 
+  static getStepKeyword(
+    gherkinDocument: GherkinDocumentLike,
+    pickleStep: PickleStepLike
+  ): string {
+    const keywordMap = HooksHelper._buildKeywordMap(gherkinDocument);
     for (const id of pickleStep?.astNodeIds ?? []) {
+      const keyword = keywordMap.get(id);
+      if (keyword !== undefined) return keyword;
+    }
+    return '';
+  }
+
+  // Resolves the Gherkin document's own localized "Scenario"/"Cenário"
+  // (etc.) keyword for a pickle, the same way getStepKeyword resolves
+  // localized step keywords - so log output matches the feature file's
+  // actual language instead of a hardcoded word.
+  static getScenarioKeyword(
+    gherkinDocument: GherkinDocumentLike,
+    pickle: PickleLike
+  ): string {
+    const keywordMap = HooksHelper._buildKeywordMap(gherkinDocument);
+    for (const id of pickle?.astNodeIds ?? []) {
       const keyword = keywordMap.get(id);
       if (keyword !== undefined) return keyword;
     }

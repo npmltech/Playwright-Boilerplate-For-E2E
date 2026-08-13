@@ -10,10 +10,12 @@ const cucumberVideoDir =
 
 Before(
   { timeout: HooksHelper.cucumberTimeoutMs },
-  async function (this: CustomWorld, { pickle }) {
+  async function (this: CustomWorld, { pickle, gherkinDocument }) {
     if (HooksHelper.isVerbose) {
+      const scenarioKeyword =
+        HooksHelper.getScenarioKeyword(gherkinDocument, pickle) || 'Scenario';
       console.log(
-        `\n${HooksHelper.colorize(`📋 Cenário: ${pickle.name}`, 'cyan')}`
+        `\n${HooksHelper.colorize(`📋 ${scenarioKeyword}: ${pickle.name}`, 'cyan')}`
       );
     }
 
