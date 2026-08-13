@@ -5,10 +5,7 @@ import { BasePage } from '../../../pages/base.page';
 import { registerLocator } from '../../../ui/locators/register.locator';
 import { routes, routePatterns } from '../../../config/routes';
 import { HooksHelper } from '../../../support/helpers/hooks-helpers';
-import {
-  uniqueSuffix,
-  selectValidZone,
-} from '../shared/register.helpers';
+import { uniqueSuffix, selectCountryAndZone } from '../shared/register.helpers';
 
 const notRegisteredEmail = 'nao-cadastrado-e2e@example.com';
 
@@ -62,8 +59,7 @@ When('I fill in valid required data', async function (this: CustomWorld) {
   await this.page.locator(registerLocator.telephoneInput).fill('11999999999');
   await this.page.locator(registerLocator.address1Input).fill('Rua Teste, 123');
   await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
-  await this.page.locator(registerLocator.countrySelect).selectOption('30');
-  await selectValidZone(this);
+  await selectCountryAndZone(this, '30');
   await this.page.locator(registerLocator.postcodeInput).fill('01000');
   await this.page.locator(registerLocator.loginNameInput).fill(`user${suffix}`);
   await this.page.locator(registerLocator.passwordInput).fill('SenhaForte@123');
@@ -88,8 +84,7 @@ When(
       .locator(registerLocator.address1Input)
       .fill('Avenida Teste, 456');
     await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
-    await this.page.locator(registerLocator.countrySelect).selectOption('30');
-    await selectValidZone(this);
+    await selectCountryAndZone(this, '30');
     await this.page.locator(registerLocator.postcodeInput).fill('02000');
     await this.page
       .locator(registerLocator.loginNameInput)
