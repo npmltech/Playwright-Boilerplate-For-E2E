@@ -80,16 +80,18 @@ yarn test:api
 yarn test:pw:headed:video
 ```
 
-Rodar fluxo completo (Playwright + Cucumber):
+Rodar fluxo completo (Playwright + Cucumber, headed + vídeo):
 
 ```bash
-yarn test:all:video:prompt
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 ```
 
 ## 7) Geração de relatório
 
 ```bash
-yarn allure:server:report
+yarn allure:generate && yarn allure:serve
 ```
 
 Notas úteis:

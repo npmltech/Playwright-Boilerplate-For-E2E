@@ -85,24 +85,27 @@ yarn test:api
 
 ### eng
 
-To run the full suite with video and verbose output:
+To run the full suite with video and verbose output (headed, Playwright then Cucumber for both locales then API):
 
 ### pt-br
 
-Para executar a suíte completa com vídeo e output declarativo:
+Para executar a suíte completa com vídeo e output declarativo (headed, Playwright depois Cucumber nos dois locales e depois API):
 
 ```bash
-yarn test:all:video:prompt
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+yarn test:api
 ```
 
 ### eng — Locale shortcuts (headless + workers)
 
 ```bash
 # Brazilian Portuguese
-yarn test:cucumber:workers:headless:video:pt-br
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
 # English only
-yarn test:cucumber:workers:headless:video:eng
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
 # All locales (pt-br + eng)
 yarn test:cucumber:workers:headless:video:all
@@ -112,10 +115,10 @@ yarn test:cucumber:workers:headless:video:all
 
 ```bash
 # Português do Brasil
-yarn test:cucumber:workers:headless:video:pt-br
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
 # Apenas inglês
-yarn test:cucumber:workers:headless:video:eng
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
 # Todos os locales (pt-br + eng)
 yarn test:cucumber:workers:headless:video:all
@@ -189,23 +192,23 @@ yarn report:cucumber:summary --input cucumber-reports --output .tmp/custom-summa
 # Build container images
 yarn docker:build
 
-# Clean generated artifacts safely
-yarn docker:clean
+# Clean generated artifacts safely (same command as test:prepare)
+yarn test:prepare
 
-# Run full suite in Docker (Playwright + Cucumber PT-BR + ENG)
-yarn docker:test:all:video
+# Run full suite in Docker (Playwright + Cucumber PT-BR + ENG + API, all 3 services together)
+yarn docker:build && yarn docker:up
 
-# Run Playwright tests in Docker with video
-yarn docker:test:pw:video
+# Run only the Playwright service in Docker (defaults to test:pw:headless:video)
+docker compose -f container/docker-compose.yml run --rm playwright
 
-# Run Cucumber tests in Docker with video (PT-BR)
-yarn docker:test:cucumber:video:pt-br
+# Run only the Cucumber service in Docker (PT-BR)
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=pt-br cucumber
 
-# Run Cucumber tests in Docker with video (ENG)
-yarn docker:test:cucumber:video:eng
+# Run only the Cucumber service in Docker (ENG)
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=eng cucumber
 
-# Run API tests in Docker
-yarn docker:test:api:video
+# Run only the API service in Docker
+docker compose -f container/docker-compose.yml run --rm api
 
 # Start all containers (interactive)
 yarn docker:up
@@ -214,10 +217,10 @@ yarn docker:up
 yarn docker:down
 
 # View live logs
-yarn docker:logs
+docker compose -f container/docker-compose.yml logs -f
 
 # Run any docker-compose command
-yarn docker:compose ps
+docker compose -f container/docker-compose.yml ps
 ```
 
 ### pt-br — Comandos Docker (com vídeos de evidência)
@@ -226,23 +229,23 @@ yarn docker:compose ps
 # Construir imagens do container
 yarn docker:build
 
-# Limpar artefatos gerados com segurança
-yarn docker:clean
+# Limpar artefatos gerados com segurança (mesmo comando de test:prepare)
+yarn test:prepare
 
-# Executar suíte completa no Docker (Playwright + Cucumber PT-BR + ENG)
-yarn docker:test:all:video
+# Executar suíte completa no Docker (Playwright + Cucumber PT-BR + ENG + API, os 3 serviços juntos)
+yarn docker:build && yarn docker:up
 
-# Executar testes Playwright no Docker com vídeo
-yarn docker:test:pw:video
+# Executar apenas o serviço Playwright no Docker (padrão: test:pw:headless:video)
+docker compose -f container/docker-compose.yml run --rm playwright
 
-# Executar testes Cucumber no Docker com vídeo (PT-BR)
-yarn docker:test:cucumber:video:pt-br
+# Executar apenas o serviço Cucumber no Docker (PT-BR)
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=pt-br cucumber
 
-# Executar testes Cucumber no Docker com vídeo (ENG)
-yarn docker:test:cucumber:video:eng
+# Executar apenas o serviço Cucumber no Docker (ENG)
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=eng cucumber
 
-# Executar testes de API no Docker
-yarn docker:test:api:video
+# Executar apenas o serviço de API no Docker
+docker compose -f container/docker-compose.yml run --rm api
 
 # Iniciar todos os containers (interativo)
 yarn docker:up
@@ -251,10 +254,10 @@ yarn docker:up
 yarn docker:down
 
 # Ver logs em tempo real
-yarn docker:logs
+docker compose -f container/docker-compose.yml logs -f
 
 # Executar qualquer comando docker-compose
-yarn docker:compose ps
+docker compose -f container/docker-compose.yml ps
 ```
 
 ## Documentation / Documentação

@@ -14,30 +14,31 @@ yarn test:pw:headed:video
 yarn test:pw:headless:video
 ```
 
-## Executar todos os testes (Playwright + Cucumber, com vídeo e saída detalhada)
+## Executar todos os testes (Playwright + Cucumber + API, com vídeo e saída detalhada)
+
+Não existe mais um único script que encadeia a suíte inteira. Execute as fases diretamente:
 
 **Modo headed (recomendado para validação local):**
 
 ```bash
-yarn test:all:video:prompt
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+yarn test:api
 ```
 
 **Modo headless (ideal para CI):**
 
 ```bash
-yarn test:all:headless:video:prompt
-```
-
-**Alias:**
-
-```bash
-yarn test:all:video
+yarn test:pw:headless:video
+yarn test:cucumber:workers:headless:video:all
+yarn test:api
 ```
 
 Se o zsh pedir autocorreção de test -> tests, execute com:
 
 ```bash
-unsetopt correct correctall && yarn test:all:video:prompt
+unsetopt correct correctall && yarn test:pw:headless:video
 ```
 
 ## Testes Cucumber (com vídeo, output sempre impresso)
@@ -47,13 +48,13 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Modo headed:
 
   ```bash
-  yarn test:cucumber:no-workers:headed:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
   ```
 
 - Modo headless:
 
   ```bash
-  yarn test:cucumber:no-workers:headless:video
+  yarn test:cucumber:headless:video
   ```
 
 - Atalhos por locale (sem workers, headless):
@@ -70,10 +71,10 @@ unsetopt correct correctall && yarn test:all:video:prompt
 
   ```bash
   # Português do Brasil
-  yarn test:cucumber:headed:video:pt-br
+  FEATURE_LOCALE=pt-br CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 
   # Apenas inglês
-  yarn test:cucumber:headed:video:eng
+  FEATURE_LOCALE=eng CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
   ```
 
 ### Com workers (execução paralela de cenários)
@@ -81,30 +82,30 @@ unsetopt correct correctall && yarn test:all:video:prompt
 - Modo headed (padrão 4 workers):
 
   ```bash
-  yarn test:cucumber:workers:headed:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
   ```
 
 - Modo headless (padrão 4 workers):
 
   ```bash
-  yarn test:cucumber:workers:headless:video
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
   ```
 
 - Número de workers customizado:
 
   ```bash
-  CUCUMBER_PARALLEL=6 yarn test:cucumber:workers:headed:video
-  CUCUMBER_PARALLEL=6 yarn test:cucumber:workers:headless:video
+  CUCUMBER_PARALLEL=6 CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "$CUCUMBER_PARALLEL"
+  CUCUMBER_PARALLEL=6 CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "$CUCUMBER_PARALLEL"
   ```
 
 - Atalhos por locale (headless + workers):
 
   ```bash
   # Português do Brasil
-  yarn test:cucumber:workers:headless:video:pt-br
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
   # Apenas inglês
-  yarn test:cucumber:workers:headless:video:eng
+  CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
   # Todos os locales (pt-br + eng)
   yarn test:cucumber:workers:headless:video:all
@@ -116,11 +117,11 @@ unsetopt correct correctall && yarn test:all:video:prompt
 # Locale padrão (pt-br)
 yarn test:api
 
-# Português
-yarn test:api:pt-br
+# Português (explícito)
+FEATURE_LOCALE=pt-br yarn test:api
 
 # Inglês
-yarn test:api:eng
+FEATURE_LOCALE=eng yarn test:api
 ```
 
 ## Debug & inspeção
@@ -128,7 +129,7 @@ yarn test:api:eng
 **Modo debug do Playwright:**
 
 ```bash
-yarn test:debug
+playwright test --config=config/playwright.config.ts --debug
 ```
 
 **Relatório HTML do Playwright:**

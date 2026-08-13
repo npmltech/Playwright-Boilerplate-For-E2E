@@ -1,6 +1,6 @@
 # language: en
 @login
-@autenticacao
+@authentication
 Feature: Login
   As a system user
   I want to access my account with valid or invalid credentials

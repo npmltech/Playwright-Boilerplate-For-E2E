@@ -107,19 +107,19 @@ yarn test:api
 Rodar API em pt-br:
 
 ```bash
-yarn test:api:pt-br
+FEATURE_LOCALE=pt-br yarn test:api
 ```
 
 Rodar API em pt-br com workers paralelos:
 
 ```bash
-yarn test:cucumber:workers:headless:video:pt-br --tags "@minha_api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@minha_api"
 ```
 
 Filtrar por tag específica:
 
 ```bash
-yarn test:cucumber:no-workers:headless:video --tags "@minha_api"
+yarn test:cucumber:headless:video --tags "@minha_api"
 ```
 
 ## 6. Expandir para validação de payload

@@ -34,16 +34,16 @@ Para documentação completa incluindo detalhes do endpoint, schema de resposta 
 yarn test:api
 
 # Português
-yarn test:api:pt-br
+FEATURE_LOCALE=pt-br yarn test:api
 
 # Inglês
-yarn test:api:eng
+FEATURE_LOCALE=eng yarn test:api
 
 # Com workers paralelos (pt-br)
-yarn test:cucumber:workers:headless:video:pt-br --tags "@api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@api"
 
 # Com workers paralelos (inglês)
-yarn test:cucumber:workers:headless:video:eng --tags "@api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@api"
 
 # Com workers paralelos (todos os locales)
 yarn test:cucumber:workers:headless:video:all --tags "@api"

@@ -1,6 +1,6 @@
 # language: en
 @checkout
-@compras
+@shopping
 Feature: Checkout
   As a logged-in user
   I want to complete my purchase and confirm the order

@@ -1,6 +1,6 @@
 # language: en
 @register
-@autenticacao
+@authentication
 Feature: Registration
   As an application visitor
   I want to create an account and recover access when needed

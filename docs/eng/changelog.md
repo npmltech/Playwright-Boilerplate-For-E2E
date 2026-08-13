@@ -2,6 +2,38 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-08-13
+
+### Changed
+
+- **Dependencies updated** — bumped `@cucumber/cucumber`, `@cucumber/messages`, and `@cucumber/pretty-formatter` to their v13/v34/v4 majors, plus `@playwright/test`, `@types/node`, `allure-cucumberjs`, `allure-js-commons`, `eslint`, `globals`, `prettier`, `tsx`, and `typescript-eslint` within their existing ranges. `typescript` stays on `^6.0.3`: Yarn Berry's built-in compat patch for the `typescript` package (`builtin<compat/typescript>`) hard-fails against TypeScript 7.0.2's restructured package layout (it looks for `lib/_tsc.js`, which TS7 ships as `lib/tsc.js` instead) — confirmed this happens even with a plain, unaliased `typescript@7.0.2` dependency, so it's a Yarn/TS7 compatibility gap rather than something fixable from this project's config. Deferred the same way this changelog already defers `@cucumber/cucumber` v13 in earlier entries.
+
+  | Package                      | Before  | After    |
+  | ---------------------------- | ------- | -------- |
+  | `@cucumber/cucumber`         | 12.7.0  | 13.2.1   |
+  | `@cucumber/messages`         | ^32.3.1 | ^34.2.1  |
+  | `@cucumber/pretty-formatter` | ^3.2.0  | ^4.0.1   |
+  | `@playwright/test`           | ^1.61.1 | ^1.62.1  |
+  | `@types/node`                | ^26.0.0 | ^26.2.0  |
+  | `allure-cucumberjs`          | 3.10.1  | 3.10.2   |
+  | `allure-js-commons`          | 3.10.1  | 3.10.2   |
+  | `eslint`                     | ^10.5.0 | ^10.8.1  |
+  | `globals`                    | ^17.7.0 | ^17.11.0 |
+  | `prettier`                   | ^3.8.4  | ^3.9.6   |
+  | `tsx`                        | ^4.22.4 | ^4.23.12 |
+  | `typescript-eslint`          | ^8.62.0 | ^8.67.0  |
+
+- **`package.json` scripts** consolidated from 59 to 20: dropped near-duplicate `:run` wrapper tiers, the `no-workers` alias cluster (identical to the non-`no-workers` scripts), and per-mode locale/headed/workers combinations reachable via inline env var overrides (e.g. `FEATURE_LOCALE=eng yarn test:api`) instead of a dedicated script per combination. Every script `container/Dockerfile` and `docker-compose.yml` reference by exact name (`test:pw:headless:video`, `test:cucumber:headless:video`, `test:api`) was kept unchanged. Updated every doc reference across `docs/eng/`, `docs/pt-br/`, and this changelog's own siblings to match.
+
+### Fixed
+
+- **`scripts/cucumber-runner.sh`**: `@cucumber/cucumber` 13 only keeps the last `--format` target when multiple formatters share the same output stream (stdout, when no `:PATH` is given). This script specified `@cucumber/pretty-formatter`, `summary`, and the raw `allure-cucumberjs` reporter path all without explicit targets, so only the Allure reporter actually initialized — pretty/summary output (including the pass/fail scenario count and failure details) was silently dropped, even though exit codes were always correct. Switched to the built-in `--format pretty` (`@cucumber/pretty-formatter` v4 is no longer directly usable as a standalone `--format` target) and gave the Allure reporter its own explicit log target (`cucumber-reports/allure-reporter-${FEATURE_LOCALE}.log`).
+- This surfaced a real, reproducible failure that had been silently swallowed by the formatter bug: the register flow ("Criar conta com dados válidos" / "Create account with valid data") failed with a "Please select a region / state!" alert from the site, in both locales — root-caused and fixed below.
+- **`steps/web/shared/register.helpers.ts`**: the site's own JS reloads the zone (`#AccountFrm_zone_id`) `<select>`'s entire content via jQuery's `.load('...rt=common/zone...')` whenever the country dropdown fires a `change` event. `selectValidZone()` only polled the zone select's `options.count()`, so it could select a zone before that AJAX call resolved — the response then landed afterward and overwrote the select, silently discarding the selection and producing "Please select a region / state!" on submit, even though a zone had been picked. Added `selectCountryAndZone()`, which races `page.waitForResponse()` for the zone endpoint against the country `selectOption()` call so the reload is guaranteed to finish before `selectValidZone()` runs. Updated both locale register step files (4 call sites) to use it. Verified fixed in both locales individually, as part of the full suite (20/20 each), and under `test:cucumber:workers:headless:video:all` with 4 parallel workers (40/40 scenarios, 222/222 steps) — confirming the fix holds under concurrent execution too.
+- **`features/web/eng/*.feature`**: the eng feature files were carrying Portuguese tags/Allure label values copy-pasted from the pt-br originals — `@compras`, `@autenticacao`, `@funcionalidade`, and Allure suite/feature values (`Compras`, `Produtos`, `Catalogo`, `RecuperacaoSenha`, `Cadastro`, `Autenticacao`). Translated to `@shopping`, `@authentication`, `@functionality`, and their English label equivalents (`Shopping`, `Products`, `Catalog`, `PasswordRecovery`, `Registration`, `Authentication`) so the eng files are fully English; `docs/eng/tagging-strategy.md` updated to match. pt-br files and `docs/pt-br/estrategia-de-tags.md` are unaffected — their Portuguese tags are correct there (the pt-br doc did have two unrelated pre-existing inaccuracies of its own, listing `@authentication`/`Authentication` instead of the actual `@autenticacao`/`Autenticacao` used by the pt-br feature files — corrected alongside this).
+- **`support/hooks.ts`**: the verbose scenario-start log line hardcoded "Cenário" regardless of which locale was actually running, so English scenarios printed `📋 Cenário: Fail to create account without accepting terms` instead of `📋 Scenario: ...`. Added `HooksHelper.getScenarioKeyword()`, which resolves a pickle's own scenario keyword from the parsed `GherkinDocument` AST — the same approach `getStepKeyword()` already used for step keywords (which is why step lines were already correctly localized while the scenario line wasn't). Verified: eng now logs `Scenario`, pt-br still logs `Cenário`.
+- **`support/helpers/hooks-helpers.ts`**: `_buildKeywordMap()` only walked `child.scenario.steps` when indexing step ids to their localized keyword, never `child.background.steps` — `Background` is a separate AST node from `Scenario` in the Gherkin messages format. Any step living in a `Background:` (`Contexto:` in pt-br) block therefore resolved to an empty keyword: `login.feature`'s Background step logged as `that I am on the login page` / `que eu estou na página de login` instead of `Given that I am on the login page` / `Dado que eu estou na página de login`. `login.feature` is the only feature file using `Background`/`Contexto`, so indexing `child.background.steps` too closes the gap completely. Verified both locales now show the correct keyword.
+
 ## 2026-06-27
 
 ### Added
@@ -28,22 +60,22 @@ All notable changes to this project are documented in this file.
 - **`steps/web/pt-br/checkout.step.ts`**, **`steps/web/eng/checkout.step.ts`**: rewritten to import from `steps/web/shared/checkout.helpers.ts`; local `waitForPageReady()` wrapper removed in favour of `BasePage.waitForPageLoad()` used inside the shared module.
 - **Dependencies updated** — 14 packages bumped (keeping `@cucumber/cucumber` at 12.7.0 pending v13 migration):
 
-  | Package | Before | After |
-  |---|---|---|
-  | `@playwright/test` | ^1.59.0 | ^1.61.1 |
-  | `allure-cucumberjs` | 3.6.0 | 3.10.1 |
-  | `allure-js-commons` | 3.6.0 | 3.10.1 |
-  | `allure-commandline` | ^2.38.1 | ^2.43.0 |
-  | `prettier-plugin-gherkin` | ^3.1.3 | ^4.0.0 |
-  | `@types/node` | ^25.5.0 | ^26.0.0 |
-  | `eslint` | ^10.1.0 | ^10.5.0 |
-  | `typescript-eslint` | ^8.58.0 | ^8.62.0 |
-  | `typescript` | ^6.0.2 | ^6.0.3 |
-  | `tsx` | ^4.21.0 | ^4.22.4 |
-  | `prettier` | ^3.8.1 | ^3.8.4 |
-  | `globals` | ^17.4.0 | ^17.7.0 |
-  | `jiti` | ^2.6.1 | ^2.7.0 |
-  | `dotenv` | ^17.3.1 | ^17.4.2 |
+  | Package                   | Before  | After   |
+  | ------------------------- | ------- | ------- |
+  | `@playwright/test`        | ^1.59.0 | ^1.61.1 |
+  | `allure-cucumberjs`       | 3.6.0   | 3.10.1  |
+  | `allure-js-commons`       | 3.6.0   | 3.10.1  |
+  | `allure-commandline`      | ^2.38.1 | ^2.43.0 |
+  | `prettier-plugin-gherkin` | ^3.1.3  | ^4.0.0  |
+  | `@types/node`             | ^25.5.0 | ^26.0.0 |
+  | `eslint`                  | ^10.1.0 | ^10.5.0 |
+  | `typescript-eslint`       | ^8.58.0 | ^8.62.0 |
+  | `typescript`              | ^6.0.2  | ^6.0.3  |
+  | `tsx`                     | ^4.21.0 | ^4.22.4 |
+  | `prettier`                | ^3.8.1  | ^3.8.4  |
+  | `globals`                 | ^17.4.0 | ^17.7.0 |
+  | `jiti`                    | ^2.6.1  | ^2.7.0  |
+  | `dotenv`                  | ^17.3.1 | ^17.4.2 |
 
   Playwright browsers reinstalled (`yarn playwright install`) after the binary path changed from `firefox-1490` to `firefox-1532`.
 

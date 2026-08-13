@@ -1,6 +1,6 @@
 # language: en
 @products
-@funcionalidade
+@functionality
 Feature: Products
   As a system user
   I want to view and interact with the product list

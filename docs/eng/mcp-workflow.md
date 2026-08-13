@@ -55,7 +55,7 @@ yarn lint
 
 ```bash
 yarn test:pw:headed:video
-yarn test:cucumber:no-workers:headless:video
+yarn test:cucumber:headless:video
 yarn test:api
 ```
 
@@ -64,7 +64,7 @@ yarn test:api
 ```bash
 yarn allure:generate
 yarn allure:open
-yarn allure:server:report
+yarn allure:generate && yarn allure:serve
 ```
 
 ### Commit flow
