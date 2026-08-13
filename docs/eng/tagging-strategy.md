@@ -15,8 +15,8 @@
 - Allure labels as tags:
   - `@allure.label.severity:critical`
   - `@allure.label.severity:normal`
-  - `@allure.label.suite:Cadastro`
-  - `@allure.label.suite:RecuperacaoSenha`
+  - `@allure.label.suite:Registration`
+  - `@allure.label.suite:PasswordRecovery`
   - `@allure.label.feature:Authentication`
 
 ## API test tags
