@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-08-13
+
+### Changed
+
+- **Dependencies updated** — bumped `@cucumber/cucumber`, `@cucumber/messages`, and `@cucumber/pretty-formatter` to their v13/v34/v4 majors, plus `@playwright/test`, `@types/node`, `allure-cucumberjs`, `allure-js-commons`, `eslint`, `globals`, `prettier`, `tsx`, and `typescript-eslint` within their existing ranges. `typescript` stays on `^6.0.3`: Yarn Berry's built-in compat patch for the `typescript` package (`builtin<compat/typescript>`) hard-fails against TypeScript 7.0.2's restructured package layout (it looks for `lib/_tsc.js`, which TS7 ships as `lib/tsc.js` instead) — confirmed this happens even with a plain, unaliased `typescript@7.0.2` dependency, so it's a Yarn/TS7 compatibility gap rather than something fixable from this project's config. Deferred the same way this changelog already defers `@cucumber/cucumber` v13 in earlier entries.
+
+  | Package                      | Before  | After    |
+  | ---------------------------- | ------- | -------- |
+  | `@cucumber/cucumber`         | 12.7.0  | 13.2.1   |
+  | `@cucumber/messages`         | ^32.3.1 | ^34.2.1  |
+  | `@cucumber/pretty-formatter` | ^3.2.0  | ^4.0.1   |
+  | `@playwright/test`           | ^1.61.1 | ^1.62.1  |
+  | `@types/node`                | ^26.0.0 | ^26.2.0  |
+  | `allure-cucumberjs`          | 3.10.1  | 3.10.2   |
+  | `allure-js-commons`          | 3.10.1  | 3.10.2   |
+  | `eslint`                     | ^10.5.0 | ^10.8.1  |
+  | `globals`                    | ^17.7.0 | ^17.11.0 |
+  | `prettier`                   | ^3.8.4  | ^3.9.6   |
+  | `tsx`                        | ^4.22.4 | ^4.23.12 |
+  | `typescript-eslint`          | ^8.62.0 | ^8.67.0  |
+
+- **`package.json` scripts** consolidated from 59 to 20: dropped near-duplicate `:run` wrapper tiers, the `no-workers` alias cluster (identical to the non-`no-workers` scripts), and per-mode locale/headed/workers combinations reachable via inline env var overrides (e.g. `FEATURE_LOCALE=eng yarn test:api`) instead of a dedicated script per combination. Every script `container/Dockerfile` and `docker-compose.yml` reference by exact name (`test:pw:headless:video`, `test:cucumber:headless:video`, `test:api`) was kept unchanged. Updated every doc reference across `docs/eng/`, `docs/pt-br/`, and this changelog's own siblings to match.
+
+### Fixed
+
+- **`scripts/cucumber-runner.sh`**: `@cucumber/cucumber` 13 only keeps the last `--format` target when multiple formatters share the same output stream (stdout, when no `:PATH` is given). This script specified `@cucumber/pretty-formatter`, `summary`, and the raw `allure-cucumberjs` reporter path all without explicit targets, so only the Allure reporter actually initialized — pretty/summary output (including the pass/fail scenario count and failure details) was silently dropped, even though exit codes were always correct. Switched to the built-in `--format pretty` (`@cucumber/pretty-formatter` v4 is no longer directly usable as a standalone `--format` target) and gave the Allure reporter its own explicit log target (`cucumber-reports/allure-reporter-${FEATURE_LOCALE}.log`).
+- This surfaced a real, reproducible failure that had been silently swallowed by the formatter bug: the register flow ("Criar conta com dados válidos" / "Create account with valid data") fails with a "Please select a region / state!" alert from the site, in both locales. Not fixed here — needs investigation in `steps/web/shared/register.helpers.ts`'s `selectValidZone()`.
+
 ## 2026-06-27
 
 ### Added
