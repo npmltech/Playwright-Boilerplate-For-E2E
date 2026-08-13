@@ -121,19 +121,19 @@ Best practices:
 Run Cucumber suite (web + api):
 
 ```bash
-yarn test:cucumber:no-workers:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 ```
 
 Run only your scenario by tag:
 
 ```bash
-yarn test:cucumber:no-workers:headed:video --tags "@my_journey"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --tags "@my_journey"
 ```
 
 Run in headless mode:
 
 ```bash
-yarn test:cucumber:no-workers:headless:video --tags "@my_journey"
+yarn test:cucumber:headless:video --tags "@my_journey"
 ```
 
 ## 7. Quick checklist

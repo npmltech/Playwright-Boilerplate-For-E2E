@@ -31,28 +31,28 @@ For full documentation including endpoint details, response schema, and AJV vali
 
 ```bash
 # All tests including API
-yarn test:cucumber:no-workers:headless:video
+yarn test:cucumber:headless:video
 
 # Only SWAPI tests
-yarn test:cucumber:no-workers:headless:video --tags "@swapi"
+yarn test:cucumber:headless:video --tags "@swapi"
 
 # Only API tests
-yarn test:cucumber:no-workers:headless:video --tags "@api"
+yarn test:cucumber:headless:video --tags "@api"
 
 # API only (default locale)
 yarn test:api
 
 # API only in Portuguese
-yarn test:api:pt-br
+FEATURE_LOCALE=pt-br yarn test:api
 
 # API only in English
-yarn test:api:eng
+FEATURE_LOCALE=eng yarn test:api
 
 # API with parallel workers (Portuguese)
-yarn test:cucumber:workers:headless:video:pt-br --tags "@api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@api"
 
 # API with parallel workers (English)
-yarn test:cucumber:workers:headless:video:eng --tags "@api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@api"
 
 # API with parallel workers (all locales)
 yarn test:cucumber:workers:headless:video:all --tags "@api"

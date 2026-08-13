@@ -121,7 +121,7 @@ Correção aplicada:
 
 Quando usar:
 
-- Use `yarn allure:server:report` para gerar e servir o relatório localmente
+- Use `yarn allure:generate && yarn allure:serve` para gerar e servir o relatório localmente
 - Use `yarn allure:serve` em CI, containers, shells remotos ou sessões Linux sem desktop gráfico
 - Use `yarn allure:open` somente após o relatório existir e uma sessão browser desktop estar disponível
 
@@ -252,18 +252,18 @@ Causa observada:
 Correção aplicada:
 
 - Adicionado um fluxo de limpeza compatível com Docker em `scripts/clean-artifacts.sh`
-- Adicionado `yarn docker:clean` para executar a limpeza por meio de um container temporário com `--network host`
+- Exposto como `yarn test:prepare` (antes também disponível sob o alias `docker:clean`, removido por ser um comando idêntico com outro nome)
 
 Verificação:
 
-- Execute `yarn docker:clean`
+- Execute `yarn test:prepare`
 - Confirme que `allure-results/`, `test-results/`, `cucumber-reports/` e `reports/` não existem mais após a limpeza
 
 Fallback:
 
 - Se o ambiente ainda exigir intervenção manual:
   - `sudo rm -rf allure-results test-results cucumber-reports reports allure-report cucumber-report.html cucumber-report.json cucumber.log`
-  - Execute `yarn docker:clean` novamente para confirmar que a validação de limpeza passou
+  - Execute `yarn test:prepare` novamente para confirmar que a validação de limpeza passou
 
 ## 10.2) Bridge networking do Docker não suportado no daemon local
 
@@ -285,10 +285,10 @@ Correção aplicada:
 Verificação:
 
 - `yarn docker:build`
-- `yarn docker:test:cucumber:video:pt-br`
-- `yarn docker:test:cucumber:video:eng`
-- `yarn docker:test:all:video`
-- `yarn docker:clean`
+- `docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=pt-br cucumber`
+- `docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=eng cucumber`
+- `yarn docker:up`
+- `yarn test:prepare`
 
 ## 11) Migração de target para Automation Test Store
 
@@ -451,48 +451,48 @@ Verificação:
 
 - Cenários Cucumber de login, cadastro e navegação rodam sem steps pulados.
 
-## 17) `allure-results/` vazia após `yarn test:all:headless:video:prompt`
+## 17) `allure-results/` vazia ao encadear Playwright e Cucumber manualmente
 
 Sintoma:
 
-- `allure-results/` não existe ou está vazia após rodar a suíte completa.
+- `allure-results/` não existe ou está vazia após rodar Playwright seguido de Cucumber.
 - A saída do Cucumber também está ausente, mesmo que o Playwright tenha rodado.
 
 Causa observada:
 
-- O script encadeava Playwright e Cucumber com `&&`. Quando algum teste do Playwright falhava (mesmo um teste intermitente no Firefox), o shell curto-circuitava e o Cucumber nunca era executado.
+- Se as fases forem encadeadas com `&&` (por exemplo `yarn test:pw:headless:video && yarn test:cucumber:workers:headless:video:all`), quando algum teste do Playwright falha (mesmo um teste intermitente no Firefox) o shell curto-circuita e o Cucumber nunca é executado.
 - `allure-results/` só é criada pelo formatter Allure do Cucumber — se o Cucumber não rodar, o diretório nunca é populado.
-- Causa secundária: `cucumber-runner.sh` capturava `$?` após o pipe com `tee`, que sempre retorna 0, então a verificação de geração automática do Allure rodava mas o `exit` reportava sucesso mesmo com falha no Cucumber.
+- Causa secundária (já corrigida): `cucumber-runner.sh` capturava `$?` após o pipe com `tee`, que sempre retorna 0, então a verificação de geração automática do Allure rodava mas o `exit` reportava sucesso mesmo com falha no Cucumber.
 
 Correção aplicada:
 
-- Alterado `&&` para `;` entre Playwright e Cucumber em `test:all:headless:video:prompt` e `docker:test:all:video` — o Cucumber agora sempre roda independente do exit code do Playwright.
-- Corrigido `cucumber-runner.sh` para usar `PIPESTATUS[0]` (exit code do Cucumber) em vez de `$?` (exit code do tee), propagando-o via `exit $CUCUMBER_EXIT`.
+- Ao encadear fases manualmente, use `;` em vez de `&&` entre Playwright e Cucumber (veja os exemplos em [Executando Testes](executando-testes.md)) — o Cucumber roda independente do exit code do Playwright.
+- `cucumber-runner.sh` usa `PIPESTATUS[0]` (exit code do Cucumber) em vez de `$?` (exit code do tee), propagando-o via `exit $CUCUMBER_EXIT`.
 
 Verificação:
 
-- `allure-results/` é populada e `allure-report/` é gerado automaticamente mesmo quando um ou mais testes Playwright falham.
+- `allure-results/` é populada e `allure-report/` é gerado automaticamente mesmo quando um ou mais testes Playwright falham, desde que as fases estejam encadeadas com `;`.
 
 ## Comandos úteis
 
 ```bash
-yarn test:all:video:prompt
-yarn test:all:headless:video:prompt
-yarn test:cucumber:no-workers:headed:video
-yarn test:cucumber:no-workers:headless:video
+yarn test:pw:headed:video
+yarn test:pw:headless:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+yarn test:cucumber:headless:video
 yarn test:cucumber:headless:video:pt-br
 yarn test:cucumber:headless:video:eng
-yarn test:cucumber:headed:video:pt-br
-yarn test:cucumber:headed:video:eng
-yarn test:cucumber:workers:headed:video
-yarn test:cucumber:workers:headless:video
-yarn test:cucumber:workers:headless:video:pt-br
-yarn test:cucumber:workers:headless:video:eng
+FEATURE_LOCALE=pt-br CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+FEATURE_LOCALE=eng CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 yarn test:cucumber:workers:headless:video:all
 yarn test:api
-yarn test:api:pt-br
-yarn test:api:eng
-yarn allure:server:report
+FEATURE_LOCALE=pt-br yarn test:api
+FEATURE_LOCALE=eng yarn test:api
+yarn allure:generate && yarn allure:serve
 yarn allure:serve
 ./scripts/exclude-some-artifacts.sh
 ./scripts/clean-artifacts.sh

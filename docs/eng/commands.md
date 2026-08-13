@@ -1,6 +1,6 @@
 # Commands Reference
 
-All available commands from `package.json`, organized by category.
+All available commands from `package.json`, organized by category. The script surface was trimmed to 20 core commands; less common combinations are documented below as raw commands you can run directly (or pass `--tags`, `FEATURE_LOCALE`, etc. inline).
 
 ---
 
@@ -30,12 +30,10 @@ Generates and serves a live Allure report from `allure-results/` directly in the
 yarn allure:serve
 ```
 
-### `yarn allure:server:report`
-
-Shortcut that chains `allure:generate` and then `allure:serve`. Generates the report and immediately opens it in the browser in one command.
+To generate and serve in one step (previously `allure:server:report`):
 
 ```bash
-yarn allure:server:report
+yarn allure:generate && yarn allure:serve
 ```
 
 ### `yarn report:cucumber:summary`
@@ -60,7 +58,7 @@ yarn report:cucumber:summary --input cucumber-reports --output .tmp/cucumber-rep
 
 ### `yarn format`
 
-Formats all files in the project using Prettier. Rewrites files in-place.
+Formats all files in the project using Prettier, including `.feature` files (the Gherkin plugin is registered globally in `.prettierrc`, so there's no separate `format:features` command). Rewrites files in-place.
 
 ```bash
 yarn format
@@ -68,34 +66,16 @@ yarn format
 
 ### `yarn format:check`
 
-Checks whether all files comply with Prettier formatting rules without writing any changes. Exits with a non-zero code if any file is not formatted correctly. Useful in CI.
+Checks whether all files — including `.feature` files — comply with Prettier formatting rules without writing any changes. Exits with a non-zero code if any file is not formatted correctly. Useful in CI.
 
 ```bash
 yarn format:check
 ```
 
-### `yarn format:features`
-
-Formats only `.feature` files in the `features/` directory using Prettier with the Gherkin plugin.
+To run ESLint auto-fixes and Prettier formatting together in one pass (previously `format:lint`):
 
 ```bash
-yarn format:features
-```
-
-### `yarn format:features:check`
-
-Checks formatting of `.feature` files only, without writing changes. Useful in CI to validate Gherkin formatting.
-
-```bash
-yarn format:features:check
-```
-
-### `yarn format:lint`
-
-Runs `lint:fix` first and then `format`. Applies both ESLint auto-fixes and Prettier formatting in one pass.
-
-```bash
-yarn format:lint
+yarn lint:fix && yarn format
 ```
 
 ---
@@ -134,28 +114,19 @@ yarn test:prepare
 
 ## Tests — Full Suite
 
-### `yarn test:all:headless:video:prompt`
-
-Runs the full test suite in **headless** mode with video recording enabled. Runs Playwright first, then Cucumber, printing a labeled prompt for each phase.
+There's no longer a single script that chains the whole suite with a labeled prompt. Run the three phases directly:
 
 ```bash
-yarn test:all:headless:video:prompt
-```
+# Headless + video
+yarn test:pw:headless:video
+yarn test:cucumber:workers:headless:video:all
+yarn test:api
 
-### `yarn test:all:video`
-
-Alias for `test:all:video:prompt`. Runs the full suite in **headed** mode with video recording.
-
-```bash
-yarn test:all:video
-```
-
-### `yarn test:all:video:prompt`
-
-Runs the full test suite in **headed** mode with video recording. Runs Playwright first, then Cucumber, printing a labeled prompt for each phase.
-
-```bash
-yarn test:all:video:prompt
+# Headed + video
+yarn test:pw:headed:video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+yarn test:api
 ```
 
 ---
@@ -170,61 +141,28 @@ Runs only API tests (tagged `@api`) using Cucumber in headless mode without vide
 yarn test:api
 ```
 
-### `yarn test:api:eng`
-
-Runs API tests (tagged `@api`) using the English locale (`FEATURE_LOCALE=eng`), headless, without video.
+For a specific locale, override `FEATURE_LOCALE` inline (previously `test:api:eng` / `test:api:pt-br`):
 
 ```bash
-yarn test:api:eng
-```
-
-### `yarn test:api:pt-br`
-
-Runs API tests (tagged `@api`) using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`), headless, without video.
-
-```bash
-yarn test:api:pt-br
+FEATURE_LOCALE=eng yarn test:api
+FEATURE_LOCALE=pt-br yarn test:api
 ```
 
 ---
 
 ## Tests — Cucumber
 
-### `yarn test:cucumber:headed:video`
-
-Runs the full Cucumber suite in **headed** browser mode with video recording enabled. Uses verbose output.
-
-```bash
-yarn test:cucumber:headed:video
-```
-
 ### `yarn test:cucumber:headless:video`
 
-Runs the full Cucumber suite in **headless** browser mode with video recording enabled. Uses verbose output.
+Runs the full Cucumber suite in **headless** browser mode with video recording enabled, using the locale from `FEATURE_LOCALE` (default from `.env`). Uses verbose output.
 
 ```bash
 yarn test:cucumber:headless:video
 ```
 
-### `yarn test:cucumber:no-workers:headed:video`
-
-Alias for `test:cucumber:headed:video`. Runs Cucumber **headed** with video, single-threaded (no parallel workers).
-
-```bash
-yarn test:cucumber:no-workers:headed:video
-```
-
-### `yarn test:cucumber:no-workers:headless:video`
-
-Alias for `test:cucumber:headless:video`. Runs Cucumber **headless** with video, single-threaded (no parallel workers).
-
-```bash
-yarn test:cucumber:no-workers:headless:video
-```
-
 ### `yarn test:cucumber:headless:video:pt-br`
 
-Runs the Cucumber suite **headless** with video, single-threaded, using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
+Runs the Cucumber suite **headless** with video, using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
 
 ```bash
 yarn test:cucumber:headless:video:pt-br
@@ -232,83 +170,49 @@ yarn test:cucumber:headless:video:pt-br
 
 ### `yarn test:cucumber:headless:video:eng`
 
-Runs the Cucumber suite **headless** with video, single-threaded, using the English locale (`FEATURE_LOCALE=eng`).
+Runs the Cucumber suite **headless** with video, using the English locale (`FEATURE_LOCALE=eng`).
 
 ```bash
 yarn test:cucumber:headless:video:eng
 ```
 
-### `yarn test:cucumber:headed:video:pt-br`
+### Headed mode
 
-Runs the Cucumber suite **headed** with video, single-threaded, using the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
-
-```bash
-yarn test:cucumber:headed:video:pt-br
-```
-
-### `yarn test:cucumber:headed:video:eng`
-
-Runs the Cucumber suite **headed** with video, single-threaded, using the English locale (`FEATURE_LOCALE=eng`).
+There's no dedicated headed Cucumber script anymore; run the underlying command directly (`CUCUMBER_HEADLESS=1` in `test:cucumber:headless:video` is hardcoded in `package.json`, so exporting `CUCUMBER_HEADLESS=0` beforehand won't override it — call the runner script directly instead):
 
 ```bash
-yarn test:cucumber:headed:video:eng
-```
+# Default locale, headed, with video
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 
-### `yarn test:cucumber:workers:headed:video`
-
-Runs Cucumber in **headed** mode with video and **parallel workers**. The number of workers defaults to 4 and can be overridden with `CUCUMBER_PARALLEL`.
-
-```bash
-yarn test:cucumber:workers:headed:video
-# or with custom worker count:
-CUCUMBER_PARALLEL=8 yarn test:cucumber:workers:headed:video
-```
-
-### `yarn test:cucumber:workers:headless:video`
-
-Runs Cucumber in **headless** mode with video and **parallel workers**. The number of workers defaults to 4 and can be overridden with `CUCUMBER_PARALLEL`.
-
-```bash
-yarn test:cucumber:workers:headless:video
-# or with custom worker count:
-CUCUMBER_PARALLEL=8 yarn test:cucumber:workers:headless:video
+# A specific locale, headed, with video
+FEATURE_LOCALE=pt-br CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
+FEATURE_LOCALE=eng CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose
 ```
 
 ### `yarn test:cucumber:workers:headless:video:all`
 
-Runs the Cucumber suite with workers in **headless** mode with video for **all supported locales**, in sequence (`pt-br` then `eng`).
+Runs the Cucumber suite with parallel workers in **headless** mode with video for **all supported locales**, in sequence (`pt-br` then `eng`). The number of workers defaults to 4 and can be overridden with `CUCUMBER_PARALLEL`.
 
 ```bash
 yarn test:cucumber:workers:headless:video:all
+# or with a custom worker count:
+CUCUMBER_PARALLEL=8 yarn test:cucumber:workers:headless:video:all
 ```
 
-### `yarn test:cucumber:workers:headless:video:eng`
-
-Runs the Cucumber suite with workers in **headless** mode with video only for the English locale (`FEATURE_LOCALE=eng`).
+For a single locale with workers, or for headed mode with workers, run the runner script directly:
 
 ```bash
-yarn test:cucumber:workers:headless:video:eng
-```
+# Single locale, headless, with workers
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 
-### `yarn test:cucumber:workers:headless:video:pt-br`
-
-Runs the Cucumber suite with workers in **headless** mode with video only for the Brazilian Portuguese locale (`FEATURE_LOCALE=pt-br`).
-
-```bash
-yarn test:cucumber:workers:headless:video:pt-br
+# Headed, with workers
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"
 ```
 
 ---
 
 ## Tests — Playwright
-
-### `yarn test:debug`
-
-Opens Playwright in interactive **debug mode** (Playwright Inspector). Lets you step through test execution and inspect selectors in real time.
-
-```bash
-yarn test:debug
-```
 
 ### `yarn test:pw:headed:video`
 
@@ -324,6 +228,12 @@ Runs only the Playwright (non-Cucumber) tests in **headless** mode with video re
 
 ```bash
 yarn test:pw:headless:video
+```
+
+For interactive debug mode (Playwright Inspector), run the underlying command directly:
+
+```bash
+playwright test --config=config/playwright.config.ts --debug
 ```
 
 ### `yarn test:report`
@@ -348,20 +258,12 @@ Builds (or rebuilds) Docker container images for all services (playwright, cucum
 yarn docker:build
 ```
 
-### `yarn docker:clean`
-
-Safely removes generated Docker artifacts using a temporary cleanup container. Use this when previous runs produced files that are hard to remove from the host because of Docker ownership.
-
-```bash
-yarn docker:clean
-```
-
 ### `yarn docker:up`
 
-Starts all containers in interactive mode. Containers remain running until you press `Ctrl+C` or run `docker down`.
+Starts all three containers (playwright, cucumber, api) together — this is the equivalent of the old `docker:test:all:video`. Containers remain running until you press `Ctrl+C` or run `docker down`.
 
 ```bash
-yarn docker:up
+yarn docker:build && yarn docker:up
 ```
 
 ### `yarn docker:down`
@@ -372,67 +274,28 @@ Stops and removes all containers and associated networks.
 yarn docker:down
 ```
 
-### `yarn docker:logs`
+To clean up generated artifact directories, use `yarn test:prepare` (previously `docker:clean` ran the identical command under a different name).
 
-Streams live logs from all running containers. Press `Ctrl+C` to exit.
-
-```bash
-yarn docker:logs
-```
-
-### `yarn docker:test:all:video`
-
-Runs the full Docker test flow in sequence with video evidence: Playwright first, then Cucumber workers for all locales (`pt-br` and `eng`).
+For streaming logs, running a single service, or other advanced operations, use `docker compose` directly:
 
 ```bash
-yarn docker:test:all:video
-```
+# Stream logs from all running containers
+docker compose -f container/docker-compose.yml logs -f
 
-### `yarn docker:test:pw:video`
+# Run only the Playwright service (defaults to test:pw:headless:video)
+docker compose -f container/docker-compose.yml run --rm playwright
 
-Runs Playwright tests inside Docker with video recording enabled. Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos are saved to `./reports/playwright/`.
+# Run only the Cucumber service for a specific locale
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=pt-br cucumber
+docker compose -f container/docker-compose.yml run --rm -e FEATURE_LOCALE=eng cucumber
 
-```bash
-yarn docker:test:pw:video
-```
+# Run only the API service
+docker compose -f container/docker-compose.yml run --rm api
 
-### `yarn docker:test:cucumber:video:pt-br`
-
-Runs Cucumber tests inside Docker with video recording enabled for Brazilian Portuguese (`FEATURE_LOCALE=pt-br`). Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos and reports are saved to `./test-results/` and `./cucumber-reports/`.
-
-```bash
-yarn docker:test:cucumber:video:pt-br
-```
-
-### `yarn docker:test:cucumber:video:eng`
-
-Runs Cucumber tests inside Docker with video recording enabled for English (`FEATURE_LOCALE=eng`). Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Videos and reports are saved to `./test-results/` and `./cucumber-reports/`.
-
-```bash
-yarn docker:test:cucumber:video:eng
-```
-
-### `yarn docker:test:api:video`
-
-Runs API tests inside Docker. Executes the test command explicitly with `docker compose run --rm ... sh -lc ...`. Reports are saved to `./allure-results/`.
-
-```bash
-yarn docker:test:api:video
-```
-
-### `yarn docker:compose`
-
-Generic wrapper for `docker compose` commands. Useful for advanced operations.
-
-```bash
-# List running containers
-yarn docker:compose ps
-
-# Execute a command inside a running container
-yarn docker:compose exec playwright /bin/sh
-
-# View logs from a specific service
-yarn docker:compose logs cucumber
+# List running containers / exec into one / view a single service's logs
+docker compose -f container/docker-compose.yml ps
+docker compose -f container/docker-compose.yml exec playwright /bin/sh
+docker compose -f container/docker-compose.yml logs cucumber
 ```
 
 ---
@@ -443,14 +306,14 @@ Any Cucumber command accepts `--tags` to filter scenarios. Examples:
 
 ```bash
 # Run only smoke tests
-yarn test:cucumber:no-workers:headless:video --tags "@smoke"
+yarn test:cucumber:headless:video --tags "@smoke"
 
 # Run only SWAPI tests
-yarn test:cucumber:no-workers:headless:video --tags "@swapi"
+yarn test:cucumber:headless:video --tags "@swapi"
 
 # Exclude smoke tests
-yarn test:cucumber:no-workers:headless:video --tags "not @smoke"
+yarn test:cucumber:headless:video --tags "not @smoke"
 
 # Combine filters
-yarn test:cucumber:no-workers:headless:video --tags "@api and @smoke"
+yarn test:cucumber:headless:video --tags "@api and @smoke"
 ```

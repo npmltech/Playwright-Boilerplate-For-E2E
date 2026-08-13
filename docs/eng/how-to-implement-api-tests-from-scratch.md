@@ -107,25 +107,25 @@ yarn test:api
 Run API tests in English locale:
 
 ```bash
-yarn test:api:eng
+FEATURE_LOCALE=eng yarn test:api
 ```
 
 Run API tests in Portuguese locale with workers:
 
 ```bash
-yarn test:cucumber:workers:headless:video:pt-br --tags "@my_api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@my_api"
 ```
 
 Run API tests in English locale with workers:
 
 ```bash
-yarn test:cucumber:workers:headless:video:eng --tags "@my_api"
+CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=1 FEATURE_LOCALE=eng bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}" --tags "@my_api"
 ```
 
 Filter by a specific tag:
 
 ```bash
-yarn test:cucumber:no-workers:headless:video --tags "@my_api"
+yarn test:cucumber:headless:video --tags "@my_api"
 ```
 
 ## 6. Expand to payload validation

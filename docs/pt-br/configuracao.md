@@ -60,12 +60,12 @@ Comportamento atual:
 Comando para validar:
 
 ```bash
-yarn test:cucumber:no-workers:headless:video
+yarn test:cucumber:headless:video
 ```
 
 ## 4) Comportamento de scripts que impacta configuração
 
-- `test:all:video:prompt` executa Playwright primeiro e depois Cucumber
+- Execute `test:pw:headed:video` e depois as fases do Cucumber para rodar Playwright antes do Cucumber (veja [Executando Testes](executando-testes.md))
 - `allure:open` e `allure:serve` usam script de browser maximizado
 - Ruído de warnings Wayland é filtrado nos scripts de Allure
 
@@ -74,8 +74,8 @@ yarn test:cucumber:no-workers:headless:video
 1. Ajuste `.env`
 2. Rode `yarn test:api`
 3. Rode `yarn test:pw:headed:video`
-4. Rode `yarn test:all:video:prompt`
-5. Abra relatório com `yarn allure:server:report`
+4. Rode `CUCUMBER_VIDEO=1 CUCUMBER_HEADLESS=0 FEATURE_LOCALE=pt-br bash scripts/cucumber-runner.sh verbose --parallel "${CUCUMBER_PARALLEL:-4}"` e depois com `FEATURE_LOCALE=eng`
+5. Abra relatório com `yarn allure:generate && yarn allure:serve`
 
 ## 6) Erros comuns e prevenção
 

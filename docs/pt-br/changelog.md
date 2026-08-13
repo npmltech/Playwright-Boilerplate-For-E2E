@@ -28,22 +28,22 @@ Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 - **`steps/web/pt-br/checkout.step.ts`**, **`steps/web/eng/checkout.step.ts`**: reescritos para importar de `steps/web/shared/checkout.helpers.ts`; wrapper local `waitForPageReady()` removido em favor de `BasePage.waitForPageLoad()` usado dentro do módulo compartilhado.
 - **Dependências atualizadas** — 14 pacotes incrementados (mantendo `@cucumber/cucumber` em 12.7.0 aguardando migração para v13):
 
-  | Pacote | Antes | Depois |
-  |---|---|---|
-  | `@playwright/test` | ^1.59.0 | ^1.61.1 |
-  | `allure-cucumberjs` | 3.6.0 | 3.10.1 |
-  | `allure-js-commons` | 3.6.0 | 3.10.1 |
-  | `allure-commandline` | ^2.38.1 | ^2.43.0 |
-  | `prettier-plugin-gherkin` | ^3.1.3 | ^4.0.0 |
-  | `@types/node` | ^25.5.0 | ^26.0.0 |
-  | `eslint` | ^10.1.0 | ^10.5.0 |
-  | `typescript-eslint` | ^8.58.0 | ^8.62.0 |
-  | `typescript` | ^6.0.2 | ^6.0.3 |
-  | `tsx` | ^4.21.0 | ^4.22.4 |
-  | `prettier` | ^3.8.1 | ^3.8.4 |
-  | `globals` | ^17.4.0 | ^17.7.0 |
-  | `jiti` | ^2.6.1 | ^2.7.0 |
-  | `dotenv` | ^17.3.1 | ^17.4.2 |
+  | Pacote                    | Antes   | Depois  |
+  | ------------------------- | ------- | ------- |
+  | `@playwright/test`        | ^1.59.0 | ^1.61.1 |
+  | `allure-cucumberjs`       | 3.6.0   | 3.10.1  |
+  | `allure-js-commons`       | 3.6.0   | 3.10.1  |
+  | `allure-commandline`      | ^2.38.1 | ^2.43.0 |
+  | `prettier-plugin-gherkin` | ^3.1.3  | ^4.0.0  |
+  | `@types/node`             | ^25.5.0 | ^26.0.0 |
+  | `eslint`                  | ^10.1.0 | ^10.5.0 |
+  | `typescript-eslint`       | ^8.58.0 | ^8.62.0 |
+  | `typescript`              | ^6.0.2  | ^6.0.3  |
+  | `tsx`                     | ^4.21.0 | ^4.22.4 |
+  | `prettier`                | ^3.8.1  | ^3.8.4  |
+  | `globals`                 | ^17.4.0 | ^17.7.0 |
+  | `jiti`                    | ^2.6.1  | ^2.7.0  |
+  | `dotenv`                  | ^17.3.1 | ^17.4.2 |
 
   Browsers do Playwright reinstalados (`yarn playwright install`) após o caminho binário mudar de `firefox-1490` para `firefox-1532`.
 
