@@ -12,6 +12,9 @@ dotenv.config({ path: resolve(__dirname, '../.env'), quiet: true });
 export interface GherkinDocumentLike {
   feature?: {
     children?: ReadonlyArray<{
+      background?: {
+        steps?: ReadonlyArray<{ id?: string; keyword?: string }>;
+      };
       scenario?: {
         id?: string;
         keyword?: string;
@@ -60,6 +63,16 @@ export class HooksHelper {
           keywordMap.set(scenario.id, (scenario.keyword ?? '').trim());
         }
         for (const step of scenario?.steps ?? []) {
+          if (step.id !== undefined) {
+            keywordMap.set(step.id, (step.keyword ?? '').trim());
+          }
+        }
+        // Background steps are a separate AST node from scenario steps and
+        // were previously never indexed, so any step living in a
+        // `Background:` block resolved to an empty keyword (e.g. "that I am
+        // on the login page" instead of "Given that I am on the login
+        // page").
+        for (const step of child?.background?.steps ?? []) {
           if (step.id !== undefined) {
             keywordMap.set(step.id, (step.keyword ?? '').trim());
           }
