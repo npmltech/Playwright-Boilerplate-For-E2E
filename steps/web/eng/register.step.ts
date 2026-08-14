@@ -7,7 +7,7 @@ import { routes, routePatterns } from '../../../config/routes';
 import { HooksHelper } from '../../../support/helpers/hooks-helpers';
 import { uniqueSuffix, selectCountryAndZone } from '../shared/register.helpers';
 
-const notRegisteredEmail = 'nao-cadastrado-e2e@example.com';
+const notRegisteredEmail = 'not-registered-e2e@example.com';
 
 Given(
   'that I am on the password recovery page',
@@ -37,7 +37,7 @@ Then(
   'I should see a message saying the email was not found',
   async function (this: CustomWorld) {
     await expect(this.page.locator(registerLocator.errorAlert)).toContainText(
-      /not found|not in our records|nao encontrado/i
+      /not found|not in our records/i
     );
   }
 );
@@ -51,21 +51,21 @@ Given('that I am on the registration page', async function (this: CustomWorld) {
 When('I fill in valid required data', async function (this: CustomWorld) {
   const suffix = uniqueSuffix();
 
-  await this.page.locator(registerLocator.firstNameInput).fill('Teste');
-  await this.page.locator(registerLocator.lastNameInput).fill('Automacao');
+  await this.page.locator(registerLocator.firstNameInput).fill('Test');
+  await this.page.locator(registerLocator.lastNameInput).fill('Automation');
   await this.page
     .locator(registerLocator.emailInput)
-    .fill(`teste.${suffix}@example.com`);
+    .fill(`test.${suffix}@example.com`);
   await this.page.locator(registerLocator.telephoneInput).fill('11999999999');
-  await this.page.locator(registerLocator.address1Input).fill('Rua Teste, 123');
-  await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
+  await this.page.locator(registerLocator.address1Input).fill('123 Test Street');
+  await this.page.locator(registerLocator.cityInput).fill('New York');
   await selectCountryAndZone(this, '30');
-  await this.page.locator(registerLocator.postcodeInput).fill('01000');
+  await this.page.locator(registerLocator.postcodeInput).fill('10001');
   await this.page.locator(registerLocator.loginNameInput).fill(`user${suffix}`);
-  await this.page.locator(registerLocator.passwordInput).fill('SenhaForte@123');
+  await this.page.locator(registerLocator.passwordInput).fill('StrongPass@123');
   await this.page
     .locator(registerLocator.confirmPasswordInput)
-    .fill('SenhaForte@123');
+    .fill('StrongPass@123');
   await this.page.locator(registerLocator.agreeCheckbox).check();
 });
 
@@ -74,27 +74,27 @@ When(
   async function (this: CustomWorld) {
     const suffix = uniqueSuffix();
 
-    await this.page.locator(registerLocator.firstNameInput).fill('Teste');
-    await this.page.locator(registerLocator.lastNameInput).fill('SemTermos');
+    await this.page.locator(registerLocator.firstNameInput).fill('Test');
+    await this.page.locator(registerLocator.lastNameInput).fill('NoTerms');
     await this.page
       .locator(registerLocator.emailInput)
-      .fill(`sem.termos.${suffix}@example.com`);
+      .fill(`no.terms.${suffix}@example.com`);
     await this.page.locator(registerLocator.telephoneInput).fill('11988888888');
     await this.page
       .locator(registerLocator.address1Input)
-      .fill('Avenida Teste, 456');
-    await this.page.locator(registerLocator.cityInput).fill('Sao Paulo');
+      .fill('456 Test Avenue');
+    await this.page.locator(registerLocator.cityInput).fill('New York');
     await selectCountryAndZone(this, '30');
-    await this.page.locator(registerLocator.postcodeInput).fill('02000');
+    await this.page.locator(registerLocator.postcodeInput).fill('10001');
     await this.page
       .locator(registerLocator.loginNameInput)
-      .fill(`usersemtermos${suffix}`);
+      .fill(`usernoterms${suffix}`);
     await this.page
       .locator(registerLocator.passwordInput)
-      .fill('SenhaForte@123');
+      .fill('StrongPass@123');
     await this.page
       .locator(registerLocator.confirmPasswordInput)
-      .fill('SenhaForte@123');
+      .fill('StrongPass@123');
   }
 );
 
@@ -138,7 +138,7 @@ Then(
 
     await expect(
       this.page.locator(registerLocator.mainContainer)
-    ).toContainText(/your account has been created|conta criada/i, {
+    ).toContainText(/your account has been created/i, {
       timeout: HooksHelper.cucumberTimeoutMs,
     });
   }
@@ -148,7 +148,7 @@ Then(
   'I should see an error message about accepting terms',
   async function (this: CustomWorld) {
     await expect(this.page.locator(registerLocator.errorAlert)).toContainText(
-      /agree|privacy policy|termos/i
+      /agree|privacy policy/i
     );
   }
 );
