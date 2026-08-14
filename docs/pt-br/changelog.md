@@ -2,6 +2,22 @@
 
 Todas as mudanças relevantes neste projeto estão documentadas neste arquivo.
 
+## 2026-08-14
+
+### Corrigido
+
+- **`pages/login.page.ts`**: aumentado o timeout pós-login de 5s para 15s e o clique principal de submit agora está em um try/catch, então um clique que falha não lança erro imediatamente — cai no fallback de Enter já existente.
+- **`ui/locators/login.locator.ts`, `ui/locators/register.locator.ts`**: `errorAlert` voltou a `.alert.alert-error, .alert.alert-danger`, removendo o fallback genérico `.alert`.
+- **`ui/locators/products.locator.ts`**: `successNotification` agora também casa com `.quick_basket` — o elemento que o site realmente renderiza quando um produto é adicionado ao carrinho a partir da home/lista de destaques via AJAX. O seletor antes só verificava `.alert.alert-success` e os IDs do botão de checkout do carrinho, que nunca aparecem nessa página, então "selecionar um produto e adicionar ao carrinho" estourava o timeout de 60s esperando por uma notificação que nunca apareceria.
+- **`steps/web/eng/register.step.ts`**: substituídos os dados de teste em português restantes (nomes, endereço, cidade, senha) e as alternativas de regex em PT pelas equivalentes em inglês, para que a suíte do locale eng não dependa mais de strings em português.
+- **`config/playwright.config.ts`**: o `webServer` local agora só é iniciado quando `package.json` define um script `start`; antes ele tentava subir um servidor de desenvolvimento local mesmo quando `baseURL` apontava para um site externo sem esse script.
+- **`package.json`**: `test:cucumber:workers:headless:video:all` agora encadeia as execuções pt-br/eng com `&&` em vez de `;`, então uma falha no primeiro locale interrompe o script em vez de seguir silenciosamente para o segundo.
+
+### Alterado
+
+- **`scripts/cucumber-runner.sh`**: adicionadas as variáveis de ambiente `CUCUMBER_RETRY` (padrão `1`) e `CUCUMBER_FAIL_FAST` (padrão `1`, mapeia para `--fail-fast`).
+- **`steps/web/eng/checkout.step.ts`, `steps/web/{eng,pt-br}/products.step.ts`**: timeouts fixos de `10000`/`5000` ms substituídos pela constante compartilhada `HooksHelper.cucumberTimeoutMs`, alinhando com o restante da suíte.
+
 ## 2026-08-13
 
 ### Alterado

@@ -473,6 +473,46 @@ Verificação:
 
 - `allure-results/` é populada e `allure-report/` é gerado automaticamente mesmo quando um ou mais testes Playwright falham, desde que as fases estejam encadeadas com `;`.
 
+## 18) Cadastro falha com "Please select a region / state!" após preenchimento válido
+
+Sintoma:
+
+- O formulário é preenchido corretamente, mas o submit ainda falha com um alerta do site lendo `Please select a region / state!`.
+- Isso aparece apenas depois da mudança do campo país e depende do timing entre a alteração no browser e o recarregamento AJAX da zona.
+
+Causa observada:
+
+- O site dispara o evento de mudança do país e recarrega o `<select>` da zona via `rt=common/zone`.
+- Se o teste seleciona uma zona antes que esse carregamento AJAX termine, a resposta sobrescreve o controle de zona e descarta a escolha anterior.
+- O erro de validação, portanto, não era causado por dados inválidos, mas sim por o estado do browser ser resetado no meio do fluxo de cadastro.
+
+Correção aplicada:
+
+- Adicionado um helper compartilhado em `steps/web/shared/register.helpers.ts` que aguarda a resposta do endpoint da zona e só depois aplica a seleção válida.
+- Os arquivos de step do cadastro agora usam `selectCountryAndZone()` em vez de separar seleção de país e zona em passos sujeitos a race condition.
+
+Verificação:
+
+- Os cenários de cadastro passam em PT-BR e ENG após a correção, sem que o aviso de região/estado seja reproduzido nas execuções validadas.
+
+## 19) Saída com ruído em `yarn allure:open` / `yarn allure:serve`
+
+Sintoma:
+
+- `pci id for fd 5: 10de:1299, driver (null)` impresso várias vezes (uma por render node/aba), onde `10de:1299` é o PCI vendor:device ID da sua GPU.
+- `Opening in existing browser session.`
+- Após pressionar `Ctrl+C` para parar o servidor (conforme instruído por `Press <Ctrl+C> to exit`): `ERROR: Yarn is terminating due to an unexpected empty event loop. Please report this issue at https://github.com/yarnpkg/berry/issues.`
+
+Causa observada:
+
+- As linhas `pci id for fd ...` são sondagem de driver DRI/EGL do Mesa, impressas pelo próprio Chrome/Chromium ao enumerar os nós `/dev/dri/renderD*` na inicialização e por aba. `driver (null)` só significa que o Mesa não encontrou um driver open-source vinculado a esse nó — esperado em uma configuração com driver proprietário da NVIDIA, sem relação com o Allure ou este projeto.
+- `Opening in existing browser session.` é o launcher `xdg`/`google-chrome` (invocado via `scripts/open-maximized.sh`) reaproveitando uma instância do Chrome já em execução em vez de abrir uma nova.
+- O erro `empty event loop` do Yarn é um bug cosmético conhecido do Yarn Berry: ele trata mal o `SIGINT` enquanto um script está aguardando um processo filho de longa duração (o servidor web em Java do Allure, neste caso) e imprime essa mensagem mesmo quando a interrupção foi intencional.
+
+Correção aplicada:
+
+- Nenhuma necessária — as três mensagens são ruído inofensivo do Chrome/xdg e do próprio Yarn, não do Allure ou da suíte de testes. O relatório é servido e aberto corretamente; o erro só aparece depois que o servidor já cumpriu seu papel e está encerrando por causa do seu próprio `Ctrl+C`.
+
 ## Comandos úteis
 
 ```bash

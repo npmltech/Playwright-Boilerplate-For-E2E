@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,9 +11,15 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const defaultBaseUrl = 'https://automationteststore.com/';
 const baseURL = process.env.BASE_URL || defaultBaseUrl;
 const videoMode = process.env.PW_VIDEO_MODE || 'retain-on-failure';
-const shouldUseWebServer = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(
-  baseURL
+const packageJson = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8')
 );
+const hasLocalStartScript =
+  typeof packageJson?.scripts?.start === 'string' &&
+  packageJson.scripts.start.trim().length > 0;
+const shouldUseWebServer =
+  hasLocalStartScript &&
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(baseURL);
 const projects = [
   {
     name: 'chromium',

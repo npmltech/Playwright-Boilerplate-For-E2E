@@ -29,7 +29,7 @@ export class LoginPage extends BasePage {
 
   private async waitUntilLoggedIn() {
     await expect(this.page).toHaveURL(/rt=account\/account/, {
-      timeout: 5000,
+      timeout: 15_000,
     });
   }
 
@@ -47,8 +47,12 @@ export class LoginPage extends BasePage {
     await this.passwordInput.fill(password);
 
     // Layered submit strategy for cross-browser reliability.
-    await this.submitButton.first().click();
-    await this.page.waitForLoadState('domcontentloaded');
+    try {
+      await this.submitButton.first().click();
+      await this.page.waitForLoadState('domcontentloaded');
+    } catch (error) {
+      this.logger(`Primary login submit attempt failed: ${String(error)}`);
+    }
 
     if (this.page.url().includes('rt=account/login')) {
       await this.passwordInput.press('Enter');

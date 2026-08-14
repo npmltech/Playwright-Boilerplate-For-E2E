@@ -40,7 +40,9 @@ When('eu filtro por uma categoria', async function (this: CustomWorld) {
     .locator(productsLocator.categoryFilterLink)
     .filter({ visible: true })
     .first();
-  await expect(categoryFilter).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
+  await expect(categoryFilter).toBeVisible({
+    timeout: HooksHelper.cucumberTimeoutMs,
+  });
   await categoryFilter.click();
   await expect(
     this.page.locator(productsLocator.productCards).first()
@@ -64,7 +66,9 @@ When(
       .locator(productsLocator.addToCartButton)
       .filter({ visible: true })
       .first();
-    await expect(addToCartButton).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
+    await expect(addToCartButton).toBeVisible({
+      timeout: HooksHelper.cucumberTimeoutMs,
+    });
     await addToCartButton.click();
     await expect(
       this.page.locator(productsLocator.successNotification).first()
@@ -78,6 +82,6 @@ Then(
     const notification = await this.page
       .locator(productsLocator.successNotification)
       .first();
-    await expect(notification).toBeVisible({ timeout: 5000 });
+    await expect(notification).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
   }
 );

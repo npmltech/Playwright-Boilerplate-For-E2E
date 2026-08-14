@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented in this file.
 
+## 2026-08-14
+
+### Fixed
+
+- **`pages/login.page.ts`**: increased the post-login timeout from 5s to 15s and wrapped the primary submit click in a try/catch so a failed click no longer throws immediately — it now falls through to the existing Enter-key fallback.
+- **`ui/locators/login.locator.ts`, `ui/locators/register.locator.ts`**: narrowed `errorAlert` back to `.alert.alert-error, .alert.alert-danger`, dropping the generic `.alert` fallback.
+- **`ui/locators/products.locator.ts`**: `successNotification` now also matches `.quick_basket` — the element the site actually renders when a product is added to the cart from the homepage/featured listing via AJAX. The selector previously only checked `.alert.alert-success` and the cart-checkout button IDs, which never appear on that page, so "select a product and add to cart" timed out after 60s waiting for a notification that was never going to show up.
+- **`steps/web/eng/register.step.ts`**: replaced the remaining hardcoded Portuguese test data (names, address, city, password) and PT-only regex alternatives with English-only equivalents, so the eng-locale suite no longer depends on Portuguese strings.
+- **`config/playwright.config.ts`**: the local `webServer` is now only started when `package.json` defines a `start` script; previously it tried to boot a local dev server even when `baseURL` pointed at an external site with no such script.
+- **`package.json`**: `test:cucumber:workers:headless:video:all` now chains the pt-br/eng runs with `&&` instead of `;`, so a failure in the first locale stops the script instead of silently continuing into the second.
+
+### Changed
+
+- **`scripts/cucumber-runner.sh`**: added `CUCUMBER_RETRY` (default `1`) and `CUCUMBER_FAIL_FAST` (default `1`, maps to `--fail-fast`) environment toggles.
+- **`steps/web/eng/checkout.step.ts`, `steps/web/{eng,pt-br}/products.step.ts`**: replaced hardcoded `10000`/`5000` ms timeouts with the shared `HooksHelper.cucumberTimeoutMs` constant, matching the rest of the suite.
+
 ## 2026-08-13
 
 ### Changed
