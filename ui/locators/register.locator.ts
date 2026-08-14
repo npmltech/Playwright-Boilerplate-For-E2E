@@ -2,7 +2,7 @@ export const registerLocator = {
   forgottenForm: '#forgottenFrm',
   forgottenEmailInput: '#forgottenFrm_email',
   forgottenContinueButton: "#forgottenFrm button[title='Continue']",
-  errorAlert: '.alert.alert-error, .alert.alert-danger, .alert',
+  errorAlert: '.alert.alert-error, .alert.alert-danger',
   accountForm: '#AccountFrm',
   firstNameInput: '#AccountFrm_firstname',
   lastNameInput: '#AccountFrm_lastname',

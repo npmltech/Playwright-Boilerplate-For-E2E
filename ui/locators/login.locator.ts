@@ -8,6 +8,6 @@ export const loginLocator = {
   forgotPasswordLink: "a[href*='rt=account/forgotten/password']",
   accountContainer: '#maincontainer',
   logoutMenuLink: "a[href*='rt=account/logout']:visible",
-  errorAlert: '.alert.alert-error, .alert.alert-danger, .alert',
+  errorAlert: '.alert.alert-error, .alert.alert-danger',
   forgottenForm: '#forgottenFrm',
 } as const;
