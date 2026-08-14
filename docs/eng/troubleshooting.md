@@ -495,6 +495,24 @@ Verification:
 
 - The registration scenarios pass in both PT-BR and ENG after the fix, with no region/state warning reproduced in the validated runs.
 
+## 19) Noisy output from `yarn allure:open` / `yarn allure:serve`
+
+Symptom:
+
+- `pci id for fd 5: 10de:1299, driver (null)` printed several times (once per render node/tab), where `10de:1299` is your GPU's PCI vendor:device ID.
+- `Opening in existing browser session.`
+- After pressing `Ctrl+C` to stop the server (as instructed by `Press <Ctrl+C> to exit`): `ERROR: Yarn is terminating due to an unexpected empty event loop. Please report this issue at https://github.com/yarnpkg/berry/issues.`
+
+Observed cause:
+
+- The `pci id for fd ...` lines are Mesa's DRI/EGL driver probing, printed by Chrome/Chromium itself as it enumerates `/dev/dri/renderD*` nodes on startup and per-tab. `driver (null)` just means Mesa found no open-source driver bound to that node — expected on a proprietary NVIDIA driver setup, unrelated to Allure or this project.
+- `Opening in existing browser session.` is the `xdg`/`google-chrome` launcher (invoked via `scripts/open-maximized.sh`) reusing an already-running Chrome instance instead of spawning a new one.
+- The Yarn `empty event loop` error is a known cosmetic bug in Yarn Berry: it mishandles `SIGINT` while a script is awaiting a long-running child process (Allure's Java web server here) and prints this message even when the interruption was intentional.
+
+Fix applied:
+
+- None needed — all three are benign noise from Chrome/xdg and Yarn itself, not from Allure or the test suite. The report is served and opened correctly; the error only appears after the server has already done its job and is shutting down on your own `Ctrl+C`.
+
 ## Useful commands
 
 ```bash
