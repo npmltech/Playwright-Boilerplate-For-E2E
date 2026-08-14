@@ -473,6 +473,28 @@ Verificação:
 
 - `allure-results/` é populada e `allure-report/` é gerado automaticamente mesmo quando um ou mais testes Playwright falham, desde que as fases estejam encadeadas com `;`.
 
+## 18) Cadastro falha com "Please select a region / state!" após preenchimento válido
+
+Sintoma:
+
+- O formulário é preenchido corretamente, mas o submit ainda falha com um alerta do site lendo `Please select a region / state!`.
+- Isso aparece apenas depois da mudança do campo país e depende do timing entre a alteração no browser e o recarregamento AJAX da zona.
+
+Causa observada:
+
+- O site dispara o evento de mudança do país e recarrega o `<select>` da zona via `rt=common/zone`.
+- Se o teste seleciona uma zona antes que esse carregamento AJAX termine, a resposta sobrescreve o controle de zona e descarta a escolha anterior.
+- O erro de validação, portanto, não era causado por dados inválidos, mas sim por o estado do browser ser resetado no meio do fluxo de cadastro.
+
+Correção aplicada:
+
+- Adicionado um helper compartilhado em `steps/web/shared/register.helpers.ts` que aguarda a resposta do endpoint da zona e só depois aplica a seleção válida.
+- Os arquivos de step do cadastro agora usam `selectCountryAndZone()` em vez de separar seleção de país e zona em passos sujeitos a race condition.
+
+Verificação:
+
+- Os cenários de cadastro passam em PT-BR e ENG após a correção, sem que o aviso de região/estado seja reproduzido nas execuções validadas.
+
 ## Comandos úteis
 
 ```bash
