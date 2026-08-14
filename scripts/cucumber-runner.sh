@@ -25,6 +25,15 @@ fi
 
 FILTER_ARGS=("$@")
 
+# Retry count: default 1; set CUCUMBER_RETRY=0 to disable.
+CUCUMBER_RETRY="${CUCUMBER_RETRY:-1}"
+# Fail-fast: default on; set CUCUMBER_FAIL_FAST=0 to let all scenarios run.
+CUCUMBER_FAIL_FAST="${CUCUMBER_FAIL_FAST:-1}"
+
+RETRY_ARG="--retry ${CUCUMBER_RETRY}"
+FAIL_FAST_ARG=""
+[ "$CUCUMBER_FAIL_FAST" = "1" ] && FAIL_FAST_ARG="--fail-fast"
+
 env $VERBOSE_ENV NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
   --import support/world.ts \
   --import support/hooks.ts \
@@ -36,6 +45,8 @@ env $VERBOSE_ENV NODE_OPTIONS='--import tsx/esm' yarn cucumber-js \
   --format ./node_modules/allure-cucumberjs/dist/esm/reporter.js:./cucumber-reports/allure-reporter-${FEATURE_LOCALE}.log \
   --format-options '{"resultsDir":"./allure-results"}' \
   "${FILTER_ARGS[@]}" \
+  $RETRY_ARG \
+  $FAIL_FAST_ARG \
   $EXTRA_ARGS \
   "features/web/${FEATURE_LOCALE}/**/*.feature" \
   "features/api/${FEATURE_LOCALE}/**/*.feature" 2>&1 | tee cucumber-reports/cucumber-${FEATURE_LOCALE}.log
