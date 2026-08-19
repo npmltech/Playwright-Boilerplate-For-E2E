@@ -57,7 +57,9 @@ When('I fill in valid required data', async function (this: CustomWorld) {
     .locator(registerLocator.emailInput)
     .fill(`test.${suffix}@example.com`);
   await this.page.locator(registerLocator.telephoneInput).fill('11999999999');
-  await this.page.locator(registerLocator.address1Input).fill('123 Test Street');
+  await this.page
+    .locator(registerLocator.address1Input)
+    .fill('123 Test Street');
   await this.page.locator(registerLocator.cityInput).fill('New York');
   await selectCountryAndZone(this, '30');
   await this.page.locator(registerLocator.postcodeInput).fill('10001');

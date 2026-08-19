@@ -82,6 +82,8 @@ Then(
     const notification = await this.page
       .locator(productsLocator.successNotification)
       .first();
-    await expect(notification).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
+    await expect(notification).toBeVisible({
+      timeout: HooksHelper.cucumberTimeoutMs,
+    });
   }
 );

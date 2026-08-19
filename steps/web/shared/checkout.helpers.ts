@@ -5,6 +5,7 @@ import { users } from '../../../data/users';
 import { LoginPage } from '../../../pages/login.page';
 import { routes } from '../../../config/routes';
 import { BasePage } from '../../../pages/base.page';
+import { ELEMENT_VISIBLE_TIMEOUT_MS } from '../../../support/constants/timeouts';
 
 export async function ensureLoggedIn(world: CustomWorld) {
   const logoutLink = world.page
@@ -27,7 +28,9 @@ export async function openCheckoutFromCart(world: CustomWorld) {
     .locator(checkoutLocator.checkoutButton)
     .filter({ visible: true })
     .first();
-  await expect(checkoutButton).toBeVisible({ timeout: 15000 });
+  await expect(checkoutButton).toBeVisible({
+    timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+  });
   await checkoutButton.click();
   await basePage.waitForPageLoad();
 
@@ -40,7 +43,9 @@ export async function openCheckoutFromCart(world: CustomWorld) {
       .locator(checkoutLocator.checkoutButton)
       .filter({ visible: true })
       .first();
-    await expect(retryCheckoutButton).toBeVisible({ timeout: 15000 });
+    await expect(retryCheckoutButton).toBeVisible({
+      timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+    });
     await retryCheckoutButton.click();
     await basePage.waitForPageLoad();
   }
@@ -83,7 +88,9 @@ export async function ensureProductInCart(world: CustomWorld) {
     .locator(checkoutLocator.categoryMenuLink)
     .filter({ visible: true })
     .first();
-  await expect(categoryLink).toBeVisible({ timeout: 15000 });
+  await expect(categoryLink).toBeVisible({
+    timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+  });
   await categoryLink.click();
   await basePage.waitForPageLoad();
 
@@ -91,7 +98,9 @@ export async function ensureProductInCart(world: CustomWorld) {
     .locator(checkoutLocator.productLink)
     .filter({ visible: true })
     .first();
-  await expect(firstProductLink).toBeVisible({ timeout: 15000 });
+  await expect(firstProductLink).toBeVisible({
+    timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+  });
   await firstProductLink.click();
   await basePage.waitForPageLoad();
 
@@ -99,7 +108,9 @@ export async function ensureProductInCart(world: CustomWorld) {
     .locator(checkoutLocator.productAddToCartLink)
     .filter({ visible: true })
     .first();
-  await expect(addToCartLink).toBeVisible({ timeout: 15000 });
+  await expect(addToCartLink).toBeVisible({
+    timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+  });
   await addToCartLink.click();
   await basePage.waitForPageLoad();
 
