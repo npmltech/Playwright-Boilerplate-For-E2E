@@ -41,7 +41,9 @@ When('I fill the delivery address', async function (this: CustomWorld) {
     .first();
 
   if (await addressField.count()) {
-    await addressField.fill('123 Test Street', { timeout: HooksHelper.cucumberTimeoutMs });
+    await addressField.fill('123 Test Street', {
+      timeout: HooksHelper.cucumberTimeoutMs,
+    });
     await addressField.evaluate((el) =>
       el.dispatchEvent(new Event('change', { bubbles: true }))
     );
@@ -100,5 +102,7 @@ Then('I should receive order confirmation', async function (this: CustomWorld) {
   const confirmation = await this.page
     .locator(checkoutLocator.orderConfirmation)
     .first();
-  await expect(confirmation).toBeVisible({ timeout: HooksHelper.cucumberTimeoutMs });
+  await expect(confirmation).toBeVisible({
+    timeout: HooksHelper.cucumberTimeoutMs,
+  });
 });
