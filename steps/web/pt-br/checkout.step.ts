@@ -41,7 +41,9 @@ When('eu preencho o endereço de entrega', async function (this: CustomWorld) {
     .first();
 
   if (await addressField.count()) {
-    await addressField.fill('123 Test Street', { timeout: 10000 });
+    await addressField.fill('123 Test Street', {
+      timeout: HooksHelper.cucumberTimeoutMs,
+    });
     await addressField.evaluate((el) =>
       el.dispatchEvent(new Event('change', { bubbles: true }))
     );
@@ -53,7 +55,7 @@ When('eu preencho o endereço de entrega', async function (this: CustomWorld) {
     .filter({ visible: true })
     .first();
   if (await continueButton.count()) {
-    await continueButton.click({ timeout: 10000 });
+    await continueButton.click({ timeout: HooksHelper.cucumberTimeoutMs });
     await basePage.waitForPageLoad();
   }
 });
@@ -105,6 +107,8 @@ Then(
     const confirmation = await this.page
       .locator(checkoutLocator.orderConfirmation)
       .first();
-    await expect(confirmation).toBeVisible({ timeout: 10000 });
+    await expect(confirmation).toBeVisible({
+      timeout: HooksHelper.cucumberTimeoutMs,
+    });
   }
 );

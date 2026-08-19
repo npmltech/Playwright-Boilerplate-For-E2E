@@ -3,6 +3,7 @@ import type { CustomWorld } from '../support/world';
 import { loginLocator } from '../ui/locators/login.locator';
 import { routes } from '../config/routes';
 import { BasePage } from './base.page';
+import { ELEMENT_VISIBLE_TIMEOUT_MS } from '../support/constants/timeouts';
 
 export class LoginPage extends BasePage {
   private loginForm = this.page.locator(loginLocator.loginForm);
@@ -29,7 +30,7 @@ export class LoginPage extends BasePage {
 
   private async waitUntilLoggedIn() {
     await expect(this.page).toHaveURL(/rt=account\/account/, {
-      timeout: 15_000,
+      timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
     });
   }
 
@@ -76,10 +77,12 @@ export class LoginPage extends BasePage {
     await this.submitButton.first().click();
     await this.page.waitForLoadState('domcontentloaded');
 
-    await expect(this.page).toHaveURL(/rt=account\/login/, { timeout: 15_000 });
+    await expect(this.page).toHaveURL(/rt=account\/login/, {
+      timeout: ELEMENT_VISIBLE_TIMEOUT_MS,
+    });
     await expect(this.errorAlert.first()).toContainText(
       /incorrect|no match|error/i,
-      { timeout: 15_000 }
+      { timeout: ELEMENT_VISIBLE_TIMEOUT_MS }
     );
   }
 
