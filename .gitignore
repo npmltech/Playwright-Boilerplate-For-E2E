@@ -430,9 +430,6 @@ coverage/
 *.pnp.js
 
 # Allure & Reports
-**/allure*
-**/cucumber-reports
-**/*-results*
-**/*report*
-**/*reports*
-**/*result*
+**/allure-results/
+**/allure-report/
+**/cucumber-reports/
